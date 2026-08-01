@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#050a12",
   "theme_color": "#071426",
-  "description": "A privacy-first personal progress system with flexible focus tracking and an adaptive daily routine.",
+  "description": "A privacy-first progress system with flexible focus tracking, adaptive routines and local digital activity analytics.",
   "icons": [
     {
       "src": "icon.svg",
