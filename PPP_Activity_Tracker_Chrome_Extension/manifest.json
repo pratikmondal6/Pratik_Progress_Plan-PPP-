@@ -3,7 +3,7 @@
   "name": "PPP Activity Tracker",
   "short_name": "PPP Tracker",
   "version": "1.0.0",
-  "description": "Privately tracks active website time by domain for Personal Progress Planner. Data stays on this Chrome profile.",
+  "description": "Privately tracks active website time by domain for Pratik´s Progress Plan. Data stays on this Chrome profile.",
   "permissions": [
     "tabs",
     "storage",
