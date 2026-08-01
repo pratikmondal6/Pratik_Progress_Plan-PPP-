@@ -1,20 +1,20 @@
-FINAL PPP DEPLOYMENT COMMANDS
+DEPLOY PERSONAL PROGRESS PLANNER V13
 
-cd C:\Users\hp\Desktop\Books\Pratiks_Progress_Plan_PPP_Web_App
+Copy the extracted files into:
+C:\Users\hp\Desktop\Books\Pratiks_Progress_Plan_PPP_Web_App
+
+Then run:
 git status
 git add .
-git commit -m "Deploy final complete PPP release"
+git commit -m "Deploy universal recurring PPP"
 git push origin main
 git status
-
-Expected final message:
-nothing to commit, working tree clean
-
-Then check:
-GitHub repository → Actions → pages build and deployment
 
 Live site:
 https://pratikmondal6.github.io/Pratik_Progress_Plan-PPP-/
 
-Hard refresh:
+After deployment:
 Ctrl + Shift + R
+
+The existing extension may be reloaded at:
+chrome://extensions → PPP Activity Tracker → Reload

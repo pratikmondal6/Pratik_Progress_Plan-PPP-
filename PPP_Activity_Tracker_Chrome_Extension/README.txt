@@ -2,7 +2,7 @@ PPP ACTIVITY TRACKER — CHROME EXTENSION
 
 PURPOSE
 Tracks how long the currently active Chrome tab is used and sends local summaries
-to the Digital Activity page inside Pratik´s Progress Plan (PPP).
+to the Digital Activity page inside Personal Progress Planner (PPP).
 
 INSTALL
 1. Extract this ZIP/folder.

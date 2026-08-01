@@ -1,50 +1,50 @@
-PRATIK´S PROGRESS PLAN (PPP) — FINAL COMPLETE RELEASE
+PERSONAL PROGRESS PLANNER (PPP) — UNIVERSAL EDITION V13
 
-WEBSITE
-- Correct branding:
-  Pratik´s Progress Plan
-  PPP • Personal Progress System
-- Final homepage quote:
-  “Fall in love with the process, and the results will follow.”
-- Flexible count-up and countdown focus timer
-- Finish & Save for actual focused minutes
-- Balanced, Busy and Recovery daily routines
-- Full monthly habit, study and sleep tracking
-- Points, streaks, achievements and smart local insights
-- Digital Activity dashboard
-- Laptop calendar column-overlap fix
-- Only Date remains pinned
-- Start of Table button
-- Local storage; no database required
+MADE FOR ANYONE
+- Generic branding: Personal Progress Planner
+- Friendly onboarding with five starter templates
+- Every built-in daily goal can be renamed and given a new emoji
+- Current month opens automatically
+- Existing PPP data migrates automatically
 
-CHROME EXTENSION
-The folder PPP_Activity_Tracker_Chrome_Extension contains the activity tracker.
-It stores domain names and active seconds locally in the current Chrome profile.
+FLEXIBLE DAILY GOALS
+- Three minute-based focus goals
+- Six status-based habits
+- Labels and icons are fully customizable
+- Starter packs: Balanced Life, Student, Professional, Language Learner and Wellness
+
+UNIVERSAL PLANNER
+- Unlimited custom tasks, work, appointments, classes, errands and personal items
+- Built-in templates for common formal tasks
+- Add, edit, delete, complete and reopen
+- Fixed blocks with start/end time and buffer
+- Flexible tasks with duration and preferred time of day
+- Priority, category and notes
+- Recurrence: daily, weekdays, weekends, weekly or custom weekdays
+- Optional repeat-until date
+- Repeating occurrences can be completed separately
+- Conflict detection samples the repeating series
+- Now Plan and Daily Routine automatically include recurring commitments
+
+MORE LIVELY
+- Animated background and cards
+- Friendly motivational mascot
+- Playful microcopy and celebration sparks
+- Reduced-motion accessibility support
+
+PRIVACY
+- No database required
+- Goals, planner items and routines stay in browser localStorage
+- Digital activity remains in chrome.storage.local
+- Export backups regularly
 
 DEPLOYMENT
 1. Extract this ZIP.
-2. Copy everything into:
-   C:\Users\hp\Desktop\Books\Pratiks_Progress_Plan_PPP_Web_App
-3. Replace the existing files.
-4. Open Command Prompt in that folder.
-5. Run:
-
+2. Copy all website files into the GitHub project folder.
+3. Run:
    git add .
-   git commit -m "Deploy final complete PPP release"
+   git commit -m "Deploy universal recurring PPP"
    git push origin main
+4. Wait for GitHub Pages and press Ctrl + Shift + R.
 
-6. Wait for GitHub Pages to finish.
-7. Open:
-   https://pratikmondal6.github.io/Pratik_Progress_Plan-PPP-/
-8. Press Ctrl + Shift + R.
-
-EXTENSION
-The extension is already installed. For this website update it does not need
-to be installed again. When necessary:
-chrome://extensions → PPP Activity Tracker → Reload
-
-DATA SAFETY
-- Existing PPP progress stays available because the website URL and storage key
-  are unchanged.
-- Activity data remains in chrome.storage.local.
-- Export backups regularly.
+The Chrome extension does not need to be reinstalled for a website-only update.

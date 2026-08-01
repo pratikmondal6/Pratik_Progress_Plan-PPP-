@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071426">
-<meta name="description" content="Pratik´s Progress Plan (PPP) — a privacy-first personal progress system for habits, study, sleep and discipline.">
-<title>Pratik´s Progress Plan (PPP)</title>
+<meta name="description" content="Personal Progress Planner (PPP) — a flexible, privacy-first planner for goals, habits, tasks, routines and focused work.">
+<title>Personal Progress Planner (PPP)</title>
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
@@ -145,6 +145,44 @@ linear-gradient(125deg,rgba(7,20,38,.95),rgba(21,52,87,.92) 55%,rgba(74,36,126,.
 .remaining-item strong{font-size:.86rem}.remaining-item span{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
 .next-action{padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(43,213,118,.12),rgba(39,214,232,.10));border:1px solid rgba(43,213,118,.22)}
 .next-action h3{margin:0 0 6px}.next-action p{color:var(--muted);font-size:.82rem;line-height:1.5}
+.now-plan-shell{display:grid;gap:13px}
+.now-plan-top{position:relative;overflow:hidden;background:linear-gradient(135deg,rgba(39,214,232,.12),rgba(79,140,255,.11),rgba(155,108,255,.12))}
+.now-plan-top:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-120px;background:radial-gradient(circle,rgba(39,214,232,.22),transparent 68%);pointer-events:none}
+.now-plan-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;position:relative;z-index:1}
+.now-clock{font-size:2.1rem;font-weight:950;letter-spacing:-.06em;line-height:1}
+.now-date{font-size:.78rem;color:var(--muted);margin-top:6px}
+.now-phase{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.now-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid var(--line);background:rgba(5,15,28,.24);font-size:.72rem;font-weight:900}
+.now-pill.urgent{border-color:rgba(255,92,126,.28);background:rgba(255,92,126,.10);color:#ff9caf}
+.now-pill.protect{border-color:rgba(255,191,63,.28);background:rgba(255,191,63,.10);color:#ffd477}
+.now-pill.go{border-color:rgba(43,213,118,.28);background:rgba(43,213,118,.10);color:#8df0b6}
+.now-plan-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:15px;position:relative;z-index:1}
+.now-stat{padding:11px;border-radius:14px;border:1px solid var(--line);background:rgba(5,15,28,.20)}
+.now-stat strong{display:block;font-size:1.05rem}.now-stat span{display:block;color:var(--muted);font-size:.7rem;margin-top:3px}
+.now-plan-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:13px}
+.now-primary{position:relative;overflow:hidden;padding:20px;border:1px solid rgba(39,214,232,.22);background:linear-gradient(135deg,rgba(39,214,232,.10),rgba(79,140,255,.09))}
+.now-primary-icon{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;font-size:1.55rem;background:linear-gradient(135deg,rgba(79,140,255,.24),rgba(155,108,255,.20));margin-bottom:13px}
+.now-primary h2{font-size:1.38rem;margin:0;letter-spacing:-.025em}
+.now-primary p{color:var(--muted);font-size:.86rem;line-height:1.58;margin:8px 0}
+.now-reason{padding:10px 12px;border-radius:12px;background:rgba(5,15,28,.20);border:1px solid var(--line);font-size:.76rem;color:#aac0da;line-height:1.48;margin:12px 0}
+.now-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.now-backup{padding:17px}
+.now-backup-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:950}
+.now-backup h3{margin:8px 0 5px;font-size:1rem}
+.now-backup p{font-size:.78rem;color:var(--muted);line-height:1.5;margin:0 0 13px}
+.now-sequence{display:grid;gap:8px;margin-top:12px}
+.now-step{display:grid;grid-template-columns:62px 34px 1fr;gap:9px;align-items:start;padding:10px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.now-step-time{font-size:.72rem;color:#9eb8d7;font-weight:900;padding-top:7px}
+.now-step-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:rgba(79,140,255,.14)}
+.now-step strong{display:block;font-size:.82rem}.now-step span{display:block;color:var(--muted);font-size:.73rem;line-height:1.4;margin-top:2px}
+.now-remaining-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:12px}
+.now-task{padding:11px;border-radius:13px;border:1px solid var(--line);background:var(--panel2)}
+.now-task.done{opacity:.58}.now-task strong{display:block;font-size:.8rem}.now-task span{display:block;color:var(--muted);font-size:.7rem;margin-top:4px}
+.now-progress-track{height:7px;border-radius:999px;background:rgba(130,150,180,.12);overflow:hidden;margin-top:8px}
+.now-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+@media(max-width:900px){.now-plan-grid{grid-template-columns:1fr}.now-plan-stats{grid-template-columns:repeat(2,1fr)}.now-remaining-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.now-plan-head{flex-direction:column}.now-clock{font-size:1.75rem}.now-remaining-grid{grid-template-columns:1fr}.now-step{grid-template-columns:54px 30px 1fr}}
+
 .quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .input-card{border-radius:18px;padding:15px}
 .input-card h3{margin:0 0 10px;font-size:.92rem}
@@ -247,13 +285,99 @@ textarea{min-height:95px;resize:vertical}
   .calendar-table td{padding:6px}
 }
 
+
+.planner-quick{display:flex;gap:8px;flex-wrap:wrap}
+.planner-layout{display:grid;grid-template-columns:minmax(300px,.78fr) minmax(0,1.22fr);gap:13px}
+.planner-form{display:grid;gap:11px}
+.planner-form label{display:grid;gap:6px;color:var(--muted);font-size:.74rem;font-weight:850}
+.planner-form input,.planner-form select,.planner-form textarea{width:100%}
+.planner-form textarea{min-height:82px;resize:vertical}
+.planner-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.planner-row.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.planner-actions{display:flex;gap:8px;flex-wrap:wrap}
+.planner-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:12px 0}
+.planner-summary-card{padding:11px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.planner-summary-card strong{display:block;font-size:1.02rem}.planner-summary-card span{display:block;color:var(--muted);font-size:.69rem;margin-top:3px}
+.planner-list{display:grid;gap:9px}
+.planner-item{position:relative;display:grid;grid-template-columns:58px 1fr auto;gap:11px;align-items:start;padding:13px;border-radius:15px;background:var(--panel2);border:1px solid var(--line)}
+.planner-item.done{opacity:.58}
+.planner-item.conflict{border-color:rgba(255,92,126,.38);box-shadow:0 0 0 3px rgba(255,92,126,.07)}
+.planner-time{font-size:.74rem;font-weight:950;color:#9eb9d8;line-height:1.35;padding-top:3px}
+.planner-main strong{display:block;font-size:.9rem}
+.planner-main p{margin:4px 0 0;color:var(--muted);font-size:.75rem;line-height:1.45}
+.planner-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.planner-tag{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;background:rgba(79,140,255,.11);border:1px solid rgba(79,140,255,.19);color:#b9d1ff;font-size:.66rem;font-weight:900}
+.planner-tag.high{background:rgba(255,92,126,.10);border-color:rgba(255,92,126,.20);color:#ff9caf}
+.planner-tag.medium{background:rgba(255,191,63,.10);border-color:rgba(255,191,63,.20);color:#ffd477}
+.planner-item-actions{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.planner-mini-btn{border:1px solid var(--line);background:rgba(5,15,28,.18);color:var(--muted);border-radius:9px;padding:7px 8px;font-size:.69rem;font-weight:900}
+.planner-mini-btn:hover{color:var(--text);border-color:rgba(79,140,255,.35)}
+.planner-mini-btn.danger:hover{color:#ff9caf;border-color:rgba(255,92,126,.35)}
+.planner-date-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.planner-date-title{font-size:1.05rem;font-weight:950}
+.planner-empty{padding:28px 16px;border:1px dashed var(--line);border-radius:15px;text-align:center;color:var(--muted);font-size:.8rem}
+.planner-upcoming{display:grid;gap:8px}
+.planner-upcoming-day{padding:11px;border-radius:13px;border:1px solid var(--line);background:var(--panel2)}
+.planner-upcoming-day strong{font-size:.8rem}.planner-upcoming-day span{display:block;color:var(--muted);font-size:.72rem;margin-top:3px}
+.planner-conflict-note{padding:10px 12px;border-radius:12px;background:rgba(255,92,126,.08);border:1px solid rgba(255,92,126,.18);color:#ffc1cd;font-size:.74rem;line-height:1.45}
+.planner-fixed-fields.hidden-tool,.planner-flex-fields.hidden-tool{display:none}
+@media(max-width:950px){.planner-layout{grid-template-columns:1fr}.planner-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.planner-row,.planner-row.three{grid-template-columns:1fr}.planner-item{grid-template-columns:52px 1fr}.planner-item-actions{grid-column:1/-1;justify-content:flex-start}}
+
+
+.hero-greeting{margin-top:12px;font-size:.88rem;color:var(--cyan);font-weight:900}
+body:before,body:after{content:"";position:fixed;z-index:-2;border-radius:50%;filter:blur(12px);opacity:.22;pointer-events:none;animation:floatBlob 15s ease-in-out infinite alternate}
+body:before{width:360px;height:360px;left:-150px;top:18%;background:radial-gradient(circle,var(--purple),transparent 68%)}
+body:after{width:420px;height:420px;right:-190px;bottom:4%;background:radial-gradient(circle,var(--cyan),transparent 68%);animation-delay:-6s}
+@keyframes floatBlob{0%{transform:translate3d(0,0,0) scale(.92)}50%{transform:translate3d(30px,-25px,0) scale(1.06)}100%{transform:translate3d(-18px,34px,0) scale(.98)}}
+.logo{animation:logoWiggle 5.5s ease-in-out infinite}
+@keyframes logoWiggle{0%,88%,100%{transform:rotate(0) scale(1)}91%{transform:rotate(-8deg) scale(1.08)}95%{transform:rotate(8deg) scale(1.08)}}
+.card,.box,.input-card,.planner-item,.routine-step{transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.card:hover,.box:hover,.input-card:hover{transform:translateY(-3px);box-shadow:0 22px 55px rgba(0,0,0,.28)}
+.btn{transition:transform .15s ease,filter .15s ease,box-shadow .15s ease}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.06)}
+.btn:active{transform:translateY(0) scale(.97)}
+.jolly-strip{display:flex;gap:8px;align-items:center;overflow:hidden;margin:12px 0 0;color:var(--muted);font-size:.77rem}
+.jolly-strip span{display:inline-flex;white-space:nowrap;animation:jollyDrift 18s linear infinite}
+@keyframes jollyDrift{from{transform:translateX(0)}to{transform:translateX(-35%)}}
+.template-pack-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.template-pack{padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;text-align:left;color:var(--text)}
+.template-pack.selected{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(39,214,232,.1)}
+.template-pack:hover{border-color:rgba(79,140,255,.4);transform:translateY(-2px)}
+.template-pack strong{display:block;font-size:.82rem}.template-pack span{display:block;color:var(--muted);font-size:.7rem;line-height:1.4;margin-top:4px}
+.goal-config-grid{display:grid;gap:9px}
+.goal-config-row{display:grid;grid-template-columns:54px minmax(150px,1fr) 86px;gap:8px;align-items:center;padding:9px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.goal-config-row input{width:100%}
+.goal-config-row .goal-key{font-size:.68rem;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.06em}
+.planner-template-row{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}
+.planner-template-btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:999px;padding:7px 10px;font-size:.7rem;font-weight:900}
+.planner-template-btn:hover{border-color:rgba(39,214,232,.42);transform:translateY(-2px)}
+.repeat-days{display:flex;gap:6px;flex-wrap:wrap}
+.repeat-day{display:flex!important;align-items:center!important;gap:5px!important;padding:7px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);font-size:.68rem!important;color:var(--muted)!important}
+.repeat-day input{width:auto!important}
+.onboarding{position:fixed;inset:0;z-index:2000;display:none;place-items:center;padding:20px;background:rgba(2,8,16,.78);backdrop-filter:blur(14px)}
+.onboarding.open{display:grid}
+.onboarding-card{width:min(760px,100%);max-height:92vh;overflow:auto;padding:24px;border-radius:26px;background:var(--panel-solid);border:1px solid var(--line);box-shadow:0 30px 90px rgba(0,0,0,.45)}
+.onboarding-card h2{font-size:2rem;margin:0}.onboarding-card>p{color:var(--muted);line-height:1.6}
+.onboarding-actions{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.mascot{position:fixed;right:20px;bottom:20px;z-index:1200;display:flex;align-items:flex-end;gap:10px}
+.mascot-bubble{max-width:260px;padding:11px 13px;border-radius:16px 16px 4px 16px;background:var(--panel-solid);border:1px solid var(--line);box-shadow:var(--shadow);font-size:.76rem;line-height:1.45;color:var(--muted);transform-origin:bottom right;animation:bubblePop .3s ease}
+.mascot-bubble strong{color:var(--text)}
+.mascot-btn{width:52px;height:52px;border-radius:17px;border:0;background:linear-gradient(135deg,var(--gold),var(--orange));font-size:1.5rem;box-shadow:0 14px 35px rgba(255,122,69,.26);cursor:pointer;animation:mascotBounce 3s ease-in-out infinite}
+@keyframes mascotBounce{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(3deg)}}
+@keyframes bubblePop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.fun-spark{position:fixed;pointer-events:none;z-index:2500;font-size:1.2rem;animation:sparkFly .9s ease-out forwards}
+@keyframes sparkFly{from{opacity:1;transform:translate(0,0) scale(.7)}to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.4) rotate(25deg)}}
+@media(max-width:760px){.template-pack-grid{grid-template-columns:1fr}.goal-config-row{grid-template-columns:44px 1fr}.goal-config-row .goal-key{grid-column:1/-1}.mascot{right:10px;bottom:10px}.mascot-bubble{max-width:210px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
 <canvas id="confetti" class="confetti"></canvas>
 <div class="app">
   <header class="topbar glass">
-    <div class="brand"><div class="logo">⚡</div><div><div>Pratik´s Progress Plan</div><small style="color:var(--muted);font-weight:700">PPP • Personal Progress System</small></div></div>
+    <div class="brand"><div class="logo">⚡</div><div><div>Personal Progress Planner</div><small style="color:var(--muted);font-weight:700">PPP • Plan • Prioritize • Progress</small></div></div>
     <div class="month-switch">
       <button class="icon-btn" id="prevMonth">‹</button>
       <div class="month-label" id="monthLabel">August 2026</div>
@@ -269,14 +393,17 @@ textarea{min-height:95px;resize:vertical}
   <section class="hero">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow">🧠 Privacy-first smart coach • No subscription</span>
+        <span class="eyebrow">✨ Your cheerful, privacy-first life planner • No subscription</span>
+        <div class="hero-greeting" id="heroGreeting">Hello, future you 👋</div>
         <h1><span class="gradient-text">Fall in love with the process,</span><br>and the results will follow.</h1>
-        <p>German. Focused study. Discipline. Digital control. Diet. Sleep. Focus on showing up, doing the work, and repeating the process. Progress will take care of itself.</p>
+        <p id="heroSupport">Goals. Work. Learning. Health. Habits. Appointments. Build a day that fits your real life, then keep adjusting with kindness and consistency.</p>
         <div class="hero-actions">
           <button class="btn green" id="todayHeroBtn">Complete Today's Check-in</button>
-          <button class="btn gold" id="beastBtn">⚡ Minimum Beast Day</button>
+          <button class="btn gold" id="beastBtn">⚡ Minimum Momentum Day</button>
           <button class="btn" id="focusHeroBtn">Open Focus Timer</button>
+          <button class="btn primary" id="nowHeroBtn">What Should I Do Now?</button>
         </div>
+        <div class="jolly-strip"><span>🌱 tiny steps count • 🧠 plans can change • ☕ breaks are legal • 🎯 done beats perfect • 😴 sleep is productive • 🌈 restart without drama • 🌱 tiny steps count • 🧠 plans can change • ☕ breaks are legal</span></div>
       </div>
       <div class="readiness">
         <div class="ring">
@@ -294,6 +421,8 @@ textarea{min-height:95px;resize:vertical}
   <nav class="nav glass">
     <button class="active" data-tab="command">Command Center</button>
     <button data-tab="today">Today's Check-in</button>
+    <button data-tab="nowplan">Now Plan</button>
+    <button data-tab="planner">Planner</button>
     <button data-tab="calendar">Calendar & Data</button>
     <button data-tab="routine">Daily Routine</button>
     <button data-tab="activity">Digital Activity</button>
@@ -302,13 +431,13 @@ textarea{min-height:95px;resize:vertical}
   </nav>
 
   <section id="command" class="panel active">
-    <div class="section-head"><div><h2>Command Center</h2><p>Live view of momentum, health, focus, and risk.</p></div></div>
+    <div class="section-head"><div><h2>Command Center</h2><p>A lively view of progress, energy, focus, and what deserves attention next.</p></div></div>
     <div class="cards">
       <div class="card glass" style="--accent:var(--gold)"><div class="k-label">Total points</div><div class="k-value" id="totalPoints">0</div><div class="k-sub" id="rewardLevel">Starter</div><span class="trend flat" id="pointsTrend">No trend yet</span></div>
       <div class="card glass" style="--accent:var(--teal)"><div class="k-label">Completion</div><div class="k-value" id="completion">0%</div><div class="k-sub">Across logged days</div><span class="trend flat" id="completionTrend">No trend yet</span></div>
       <div class="card glass" style="--accent:var(--purple)"><div class="k-label">Current streak</div><div class="k-value" id="currentStreak">0</div><div class="k-sub">Mission days</div><span class="trend flat" id="streakStatus">Ready to start</span></div>
       <div class="card glass" style="--accent:var(--cyan)"><div class="k-label">Sleep average</div><div class="k-value" id="avgSleep">—</div><div class="k-sub">Hours per logged night</div><span class="trend flat" id="sleepTrend">No sleep data</span></div>
-      <div class="card glass" style="--accent:var(--green)"><div class="k-label">Discipline score</div><div class="k-value" id="disciplineScore">0</div><div class="k-sub">Porn-free + social + diet</div><span class="trend flat" id="disciplineTrend">Build the baseline</span></div>
+      <div class="card glass" style="--accent:var(--green)"><div class="k-label">Balance score</div><div class="k-value" id="disciplineScore">0</div><div class="k-sub">Boundaries + digital balance + nutrition</div><span class="trend flat" id="disciplineTrend">Build the baseline</span></div>
     </div>
 
     <div class="grid3" style="margin-top:13px">
@@ -375,16 +504,16 @@ textarea{min-height:95px;resize:vertical}
   <section id="today" class="panel">
     <div class="section-head"><div><h2>Today's Check-in</h2><p id="todaySubtitle">Fast, focused, and autosaved.</p></div><button class="btn gold" id="autoSuggestBtn">✦ Apply Smart Minimum</button></div>
     <div class="quick-grid">
-      <div class="input-card glass"><h3>🇩🇪 German minutes</h3><div class="minute-display" id="germanDisplay">0</div><input type="range" min="0" max="180" step="5" id="germanRange"><div class="preset-row" data-minute="german"></div></div>
-      <div class="input-card glass"><h3>👥 Study with Soumi</h3><div class="minute-display" id="soumiDisplay">0</div><input type="range" min="0" max="180" step="5" id="soumiRange"><div class="preset-row" data-minute="soumi"></div></div>
-      <div class="input-card glass"><h3>📚 Self study</h3><div class="minute-display" id="selfStudyDisplay">0</div><input type="range" min="0" max="240" step="5" id="selfStudyRange"><div class="preset-row" data-minute="selfStudy"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="german">🎯 Primary Focus minutes</h3><div class="minute-display" id="germanDisplay">0</div><input type="range" min="0" max="180" step="5" id="germanRange"><div class="preset-row" data-minute="german"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="soumi">📘 Secondary Focus</h3><div class="minute-display" id="soumiDisplay">0</div><input type="range" min="0" max="180" step="5" id="soumiRange"><div class="preset-row" data-minute="soumi"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="selfStudy">🌱 Personal Project</h3><div class="minute-display" id="selfStudyDisplay">0</div><input type="range" min="0" max="240" step="5" id="selfStudyRange"><div class="preset-row" data-minute="selfStudy"></div></div>
 
-      <div class="input-card glass"><h3>🗣 German with Habib</h3><div class="segment" data-status="habib"></div></div>
-      <div class="input-card glass"><h3>📖 English reading</h3><div class="segment" data-status="english"></div></div>
-      <div class="input-card glass"><h3>🧠 Self-improvement reading</h3><div class="segment" data-status="selfImprovement"></div></div>
-      <div class="input-card glass"><h3>🛡 Porn-free</h3><div class="segment" data-status="pornFree" data-binary="1"></div></div>
-      <div class="input-card glass"><h3>📵 Social media controlled</h3><div class="segment" data-status="social"></div></div>
-      <div class="input-card glass"><h3>🥗 Diet followed</h3><div class="segment" data-status="diet"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="habib">🤝 Practice / Connection</h3><div class="segment" data-status="habib"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="english">📖 Reading</h3><div class="segment" data-status="english"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="selfImprovement">🧠 Growth / Reflection</h3><div class="segment" data-status="selfImprovement"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="pornFree">🛡 Personal Boundary</h3><div class="segment" data-status="pornFree" data-binary="1"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="social">📵 Digital Balance</h3><div class="segment" data-status="social"></div></div>
+      <div class="input-card glass"><h3 data-goal-title="diet">🥗 Nutrition</h3><div class="segment" data-status="diet"></div></div>
 
       <div class="input-card glass">
         <h3>🌙 Sleep rhythm</h3><div class="time-grid"><label>Sleep<input type="time" id="sleepTime"></label><label>Wake<input type="time" id="wakeTime"></label></div>
@@ -395,6 +524,236 @@ textarea{min-height:95px;resize:vertical}
       </div>
     </div>
     <div class="save-bar glass"><div><strong id="todayScorePreview">0 points • 0% completion</strong><div class="save-status" id="saveStatus">Changes save automatically.</div></div><button class="btn green" id="completeTodayBtn">Complete Check-in ✓</button></div>
+  </section>
+
+
+  <section id="nowplan" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>What Should I Do Now?</h2>
+        <p>A live plan based on the current time, today’s completed work, unfinished targets, and your sleep rhythm.</p>
+      </div>
+      <button class="btn primary" id="refreshNowPlanBtn">Recalculate Now</button>
+    </div>
+
+    <div class="now-plan-shell">
+      <div class="box glass now-plan-top">
+        <div class="now-plan-head">
+          <div>
+            <div class="now-clock" id="nowPlanClock">--:--</div>
+            <div class="now-date" id="nowPlanDate">Loading today…</div>
+          </div>
+          <div class="now-phase">
+            <span class="now-pill" id="nowPlanPhase">Current phase</span>
+            <span class="now-pill go" id="nowPlanUrgency">Balanced</span>
+          </div>
+        </div>
+        <div class="now-plan-stats">
+          <div class="now-stat"><strong id="nowPlanDoneCount">0 / 9</strong><span>Goals completed today</span></div>
+          <div class="now-stat"><strong id="nowPlanCoreRemaining">0 min</strong><span>Core study remaining</span></div>
+          <div class="now-stat"><strong id="nowPlanCompletion">0%</strong><span>Today’s weighted completion</span></div>
+          <div class="now-stat"><strong id="nowPlanSleepCountdown">—</strong><span>Until target sleep</span></div>
+        </div>
+      </div>
+
+      <div class="now-plan-grid">
+        <div class="box glass now-primary">
+          <div class="now-primary-icon" id="nowPlanIcon">▶</div>
+          <div class="k-label">Best action right now</div>
+          <h2 id="nowPlanTitle">Calculating your next move…</h2>
+          <p id="nowPlanDetail">The recommendation updates from your current time and today’s progress.</p>
+          <div class="now-reason"><strong>Why now:</strong> <span id="nowPlanReason">Waiting for today’s context.</span></div>
+          <div class="now-actions">
+            <button class="btn green" id="nowPlanActionBtn">Open Recommended Action</button>
+            <button class="btn" id="nowPlanCheckinBtn">Open Today’s Check-in</button>
+          </div>
+        </div>
+
+        <div class="box glass now-backup">
+          <div class="now-backup-label">Low-energy backup</div>
+          <h3 id="nowPlanBackupTitle">Use the minimum version</h3>
+          <p id="nowPlanBackupDetail">A smaller action will be suggested when the full block feels unrealistic.</p>
+          <button class="btn" id="nowPlanBackupBtn">Open Backup Action</button>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="box glass">
+          <h3>Rest of Today</h3>
+          <div class="box-sub">A realistic sequence from this moment—not a perfect imaginary schedule.</div>
+          <div class="now-sequence" id="nowPlanSequence"></div>
+        </div>
+        <div class="box glass">
+          <h3>Today’s Task State</h3>
+          <div class="box-sub">Done, partial, and remaining targets are recalculated automatically.</div>
+          <div class="now-remaining-grid" id="nowPlanTasks"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="planner" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>Tasks, Work & Appointments</h2>
+        <p>Add real-life commitments. Fixed blocks constrain the routine; flexible tasks are fitted into available time.</p>
+      </div>
+      <div class="planner-quick">
+        <button class="btn" id="plannerTodayBtn">Today</button>
+        <button class="btn primary" id="plannerTomorrowBtn">Plan Tomorrow</button>
+      </div>
+    </div>
+
+    <div class="planner-layout">
+      <div class="box glass">
+        <h3 id="plannerFormTitle">Add a task or appointment</h3>
+        <div class="box-sub">Everything is stored locally and included in the full PPP backup.</div>
+        <div class="planner-template-row" id="plannerTemplates"></div>
+        <form class="planner-form" id="plannerForm" style="margin-top:14px">
+          <input type="hidden" id="plannerEditId">
+
+          <label>Task, work or appointment
+            <input id="plannerTitle" maxlength="120" required placeholder="Example: Work shift, doctor appointment, submit assignment">
+          </label>
+
+          <div class="planner-row">
+            <label>Date
+              <input id="plannerDate" type="date" required>
+            </label>
+            <label>Scheduling type
+              <select id="plannerMode">
+                <option value="fixed">Fixed time block</option>
+                <option value="flexible">Flexible task</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="planner-fixed-fields" id="plannerFixedFields">
+            <div class="planner-row three">
+              <label>Start
+                <input id="plannerStart" type="time" value="09:00">
+              </label>
+              <label>End
+                <input id="plannerEnd" type="time" value="10:00">
+              </label>
+              <label>Buffer
+                <select id="plannerBuffer">
+                  <option value="0">No buffer</option>
+                  <option value="10">10 min</option>
+                  <option value="15" selected>15 min</option>
+                  <option value="30">30 min</option>
+                  <option value="60">60 min</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="planner-flex-fields hidden-tool" id="plannerFlexFields">
+            <div class="planner-row">
+              <label>Estimated duration
+                <input id="plannerDuration" type="number" min="5" max="720" step="5" value="30">
+              </label>
+              <label>Preferred part of day
+                <select id="plannerPreferred">
+                  <option value="any">Any available time</option>
+                  <option value="morning">Morning</option>
+                  <option value="afternoon">Afternoon</option>
+                  <option value="evening">Evening</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="planner-row">
+            <label>Category
+              <select id="plannerCategory">
+                <option value="work">Work</option>
+                <option value="appointment">Appointment</option>
+                <option value="study">Study</option>
+                <option value="errand">Errand</option>
+                <option value="health">Health</option>
+                <option value="personal">Personal</option>
+              </select>
+            </label>
+            <label>Priority
+              <select id="plannerPriority">
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="planner-row">
+            <label>Repeat
+              <select id="plannerRepeat">
+                <option value="none">Does not repeat</option>
+                <option value="daily">Every day</option>
+                <option value="weekdays">Weekdays</option>
+                <option value="weekends">Weekends</option>
+                <option value="weekly">Every week on this day</option>
+                <option value="custom">Custom weekdays</option>
+              </select>
+            </label>
+            <label>Repeat until (optional)
+              <input id="plannerRepeatUntil" type="date">
+            </label>
+          </div>
+
+          <div id="plannerRepeatDaysWrap" class="hidden-tool">
+            <div class="k-sub" style="margin-bottom:7px">Repeat on</div>
+            <div class="repeat-days" id="plannerRepeatDays">
+              <label class="repeat-day"><input type="checkbox" value="1">Mon</label>
+              <label class="repeat-day"><input type="checkbox" value="2">Tue</label>
+              <label class="repeat-day"><input type="checkbox" value="3">Wed</label>
+              <label class="repeat-day"><input type="checkbox" value="4">Thu</label>
+              <label class="repeat-day"><input type="checkbox" value="5">Fri</label>
+              <label class="repeat-day"><input type="checkbox" value="6">Sat</label>
+              <label class="repeat-day"><input type="checkbox" value="0">Sun</label>
+            </div>
+          </div>
+
+          <label>Notes
+            <textarea id="plannerNotes" maxlength="500" placeholder="Location, preparation, travel information, deadline details…"></textarea>
+          </label>
+
+          <div class="planner-conflict-note hidden" id="plannerConflictNote"></div>
+
+          <div class="planner-actions">
+            <button class="btn primary" type="submit" id="plannerSaveBtn">Add to Planner</button>
+            <button class="btn" type="button" id="plannerClearBtn">Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <div>
+        <div class="box glass">
+          <div class="planner-date-head">
+            <div>
+              <div class="planner-date-title" id="plannerSelectedTitle">Selected day</div>
+              <div class="box-sub" id="plannerSelectedSubtitle">Tasks and time blocks</div>
+            </div>
+            <input id="plannerViewDate" type="date" style="width:auto">
+          </div>
+
+          <div class="planner-summary">
+            <div class="planner-summary-card"><strong id="plannerTaskCount">0</strong><span>Total items</span></div>
+            <div class="planner-summary-card"><strong id="plannerFixedHours">0h</strong><span>Fixed commitments</span></div>
+            <div class="planner-summary-card"><strong id="plannerFlexibleTime">0m</strong><span>Flexible work</span></div>
+            <div class="planner-summary-card"><strong id="plannerFreeTime">—</strong><span>Usable time remaining</span></div>
+          </div>
+
+          <div class="planner-list" id="plannerList"></div>
+        </div>
+
+        <div class="box glass" style="margin-top:13px">
+          <h3>Upcoming 7 Days</h3>
+          <div class="box-sub">A quick view of commitments that will shape future routines.</div>
+          <div class="planner-upcoming" id="plannerUpcoming" style="margin-top:12px"></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section id="calendar" class="panel">
@@ -408,7 +767,7 @@ textarea{min-height:95px;resize:vertical}
     <div class="table-wrap" id="calendarTableWrap">
       <table class="calendar-table">
         <thead><tr>
-          <th>Date</th><th>Day</th><th>German</th><th>Habib</th><th>Soumi</th><th>Self study</th><th>English</th><th>Self-improvement</th><th>Porn-free</th><th>Social</th><th>Diet</th><th>Sleep</th><th>Wake</th><th>Duration</th><th>Status</th><th>Notes</th><th>Points</th><th>Completion</th><th>Mission</th><th>Streak</th><th>Reward</th>
+          <th>Date</th><th>Day</th><th data-goal-th="german">Primary Focus</th><th data-goal-th="habib">Practice</th><th data-goal-th="soumi">Secondary Focus</th><th data-goal-th="selfStudy">Personal Project</th><th data-goal-th="english">Reading</th><th data-goal-th="selfImprovement">Growth</th><th data-goal-th="pornFree">Boundary</th><th data-goal-th="social">Digital Balance</th><th data-goal-th="diet">Nutrition</th><th>Sleep</th><th>Wake</th><th>Duration</th><th>Status</th><th>Notes</th><th>Points</th><th>Completion</th><th>Mission</th><th>Streak</th><th>Reward</th>
         </tr></thead>
         <tbody id="dataBody"></tbody>
       </table>
@@ -432,7 +791,7 @@ textarea{min-height:95px;resize:vertical}
       <div class="routine-stats">
         <div class="routine-stat"><strong id="routineWake">07:00</strong><span>Suggested wake</span></div>
         <div class="routine-stat"><strong id="routineFocusTotal">—</strong><span>Planned focused study</span></div>
-        <div class="routine-stat"><strong id="routinePriority">German</strong><span>Current priority</span></div>
+        <div class="routine-stat"><strong id="routinePriority">Primary Focus</strong><span>Current priority</span></div>
         <div class="routine-stat"><strong id="routineSleep">23:00</strong><span>Target sleep</span></div>
       </div>
     </div>
@@ -527,6 +886,8 @@ textarea{min-height:95px;resize:vertical}
     <div class="settings-grid">
       <div class="box glass"><h3>Identity & experience</h3>
         <div class="setting-row"><label>Your name</label><input id="userName" type="text"></div>
+        <div class="setting-row"><label>Starter template</label><select id="profileTemplate"><option value="balanced">Balanced Life</option><option value="student">Student</option><option value="professional">Professional</option><option value="language">Language Learner</option><option value="wellness">Wellness</option></select></div>
+        <button class="btn" id="applyProfileTemplateBtn" style="width:100%;margin-bottom:10px">Apply Starter Template</button>
         <div class="setting-row"><label>Monthly point target</label><input id="monthlyTarget" type="number" min="100" max="3000" step="50"></div>
         <div class="toggle"><div><strong>Celebration effects</strong><div class="k-sub">Confetti on mission wins</div></div><div class="switch" id="celebrationToggle"></div></div>
         <div class="toggle"><div><strong>Smart coach</strong><div class="k-sub">Pattern-based priorities</div></div><div class="switch" id="coachToggle"></div></div>
@@ -539,11 +900,15 @@ textarea{min-height:95px;resize:vertical}
         <div class="setting-row"><label>Preferred wake</label><input id="preferredWake" type="time"></div>
         <div class="setting-row"><label>Timing tolerance</label><input id="tolerance" type="number" min="0" max="360" step="15"></div>
       </div>
-      <div class="box glass"><h3>Study targets</h3>
-        <div class="setting-row"><label>German target</label><input id="germanTarget" type="number" min="5" max="240" step="5"></div>
-        <div class="setting-row"><label>Study with Soumi target</label><input id="soumiTarget" type="number" min="5" max="240" step="5"></div>
-        <div class="setting-row"><label>Self-study target</label><input id="selfStudyTarget" type="number" min="5" max="300" step="5"></div>
+      <div class="box glass"><h3>Core focus targets</h3>
+        <div class="setting-row"><label><span id="targetLabelGerman">Primary Focus target</span></label><input id="germanTarget" type="number" min="5" max="240" step="5"></div>
+        <div class="setting-row"><label><span id="targetLabelSoumi">Secondary Focus target</span></label><input id="soumiTarget" type="number" min="5" max="240" step="5"></div>
+        <div class="setting-row"><label><span id="targetLabelSelfStudy">Personal Project target</span></label><input id="selfStudyTarget" type="number" min="5" max="300" step="5"></div>
         <div class="setting-row"><label>Mission completion threshold</label><input id="missionThreshold" type="number" min="40" max="100" step="5"></div>
+      </div>
+      <div class="box glass"><h3>Customize daily goals</h3>
+        <div class="box-sub">Rename every built-in goal and change its emoji. Your data remains connected to the same goal slot.</div>
+        <div class="goal-config-grid" id="goalConfigSettings" style="margin-top:12px"></div>
       </div>
       <div class="box glass"><h3>Point weights</h3><div id="weightSettings"></div></div>
     </div>
@@ -562,7 +927,7 @@ textarea{min-height:95px;resize:vertical}
     </div>
   </section>
 
-  <footer class="footer">Pratik´s Progress Plan (PPP) • Progress is a system, not a mood.</footer>
+  <footer class="footer">Personal Progress Planner (PPP) • Progress is a system, not a mood.</footer>
 </div>
 
 <div id="quickModal" class="modal-backdrop hidden">
@@ -570,7 +935,7 @@ textarea{min-height:95px;resize:vertical}
     <div class="modal-head"><h2>⚡ Quick Check-in</h2><button class="icon-btn" id="closeQuick">✕</button></div>
     <p class="k-sub">Choose a mode. You can refine details in Today's Check-in.</p>
     <div class="quick-grid" style="grid-template-columns:repeat(2,1fr)">
-      <button class="input-card glass btn" data-quick="minimum"><strong>Minimum Beast Day</strong><div class="k-sub">German 20m, focused study 20m, protect discipline.</div></button>
+      <button class="input-card glass btn" data-quick="minimum"><strong>Minimum Momentum Day</strong><div class="k-sub">German 20m, focused study 20m, protect discipline.</div></button>
       <button class="input-card glass btn" data-quick="solid"><strong>Solid Day</strong><div class="k-sub">German 45m, study 45m, supportive habits done.</div></button>
       <button class="input-card glass btn" data-quick="full"><strong>Full Mission Day</strong><div class="k-sub">Targets complete, discipline habits done.</div></button>
       <button class="input-card glass btn" data-quick="recovery"><strong>Recovery Day</strong><div class="k-sub">Small study, diet, sleep and digital control.</div></button>
@@ -589,27 +954,46 @@ textarea{min-height:95px;resize:vertical}
 <div class="toast" id="toast"></div>
 
 <script>
-const APP_KEY="pratiksProgressPlan_v3";
-const LEGACY_KEYS=["momentumOS_v2","pratiksPathBeast_v2"];
+const APP_KEY="personalProgressPlanner_v1";
+const LEGACY_KEYS=["pratiksProgressPlan_v3","momentumOS_v2","pratiksPathBeast_v2"];
 const STATUS=["","Done","Partial","Missed"];
 const BINARY=["","Done","Missed"];
-const WEIGHT_LABELS={german:"German",habib:"German with Habib",soumi:"Study with Soumi",selfStudy:"Self Study",english:"English Reading",selfImprovement:"Self-improvement",pornFree:"Porn-free",social:"Social Control",diet:"Diet"};
+const GOAL_KEYS=["german","habib","soumi","selfStudy","english","selfImprovement","pornFree","social","diet"];
+const MINUTE_GOALS=["german","soumi","selfStudy"];
+const DEFAULT_GOAL_CONFIG={
+  german:{label:"Primary Focus",icon:"🎯"},
+  habib:{label:"Practice / Connection",icon:"🤝"},
+  soumi:{label:"Secondary Focus",icon:"📘"},
+  selfStudy:{label:"Personal Project",icon:"🌱"},
+  english:{label:"Reading",icon:"📖"},
+  selfImprovement:{label:"Growth / Reflection",icon:"🧠"},
+  pornFree:{label:"Personal Boundary",icon:"🛡"},
+  social:{label:"Digital Balance",icon:"📵"},
+  diet:{label:"Nutrition",icon:"🥗"}
+};
+const TEMPLATE_PACKS={
+  balanced:{name:"Balanced Life",goals:{german:["Primary Focus","🎯"],habib:["Connection","🤝"],soumi:["Secondary Focus","📘"],selfStudy:["Personal Project","🌱"],english:["Reading","📖"],selfImprovement:["Reflection","🧠"],pornFree:["Personal Boundary","🛡"],social:["Digital Balance","📵"],diet:["Nutrition","🥗"]},targets:[60,45,45]},
+  student:{name:"Student",goals:{german:["Main Study","🎓"],habib:["Class / Study Partner","👥"],soumi:["Coursework","📚"],selfStudy:["Revision / Assignment","✍️"],english:["Reading","📖"],selfImprovement:["Skill Growth","🧠"],pornFree:["Personal Boundary","🛡"],social:["Distraction Control","📵"],diet:["Meals / Nutrition","🥗"]},targets:[60,60,60]},
+  professional:{name:"Professional",goals:{german:["Deep Work","💼"],habib:["Communication","🤝"],soumi:["Priority Project","🚀"],selfStudy:["Skill Building","🧩"],english:["Professional Reading","📖"],selfImprovement:["Reflection","🧠"],pornFree:["Personal Boundary","🛡"],social:["Digital Balance","📵"],diet:["Energy / Nutrition","🥗"]},targets:[90,60,45]},
+  language:{name:"Language Learner",goals:{german:["Language Practice","🗣"],habib:["Conversation Practice","💬"],soumi:["Guided Learning","📘"],selfStudy:["Independent Study","📝"],english:["Reading / Listening","🎧"],selfImprovement:["Vocabulary Review","🧠"],pornFree:["Personal Boundary","🛡"],social:["Digital Balance","📵"],diet:["Nutrition","🥗"]},targets:[60,30,45]},
+  wellness:{name:"Wellness",goals:{german:["Movement","🏃"],habib:["Connection","🫶"],soumi:["Mindfulness","🧘"],selfStudy:["Personal Project","🌿"],english:["Reading","📖"],selfImprovement:["Journal / Reflection","✍️"],pornFree:["Personal Boundary","🛡"],social:["Digital Balance","📵"],diet:["Nutrition","🥗"]},targets:[45,20,30]}
+};
 const DEFAULTS={
-  profile:{name:"Pratik",theme:"dark",celebrations:true,coach:true,monthlyTarget:1000,routineMode:"balanced"},
-  settings:{targetSleep:8,shortBelow:7,longAbove:9,preferredSleep:"23:00",preferredWake:"07:00",tolerance:90,germanTarget:60,soumiTarget:60,selfStudyTarget:60,missionThreshold:70},
-  weights:{german:5,habib:4,soumi:4,selfStudy:4,english:2,selfImprovement:2,pornFree:5,social:4,diet:3},
-  months:{}
+  profile:{name:"Friend",theme:"dark",celebrations:true,coach:true,monthlyTarget:1000,routineMode:"balanced",onboarded:false,template:"balanced"},
+  settings:{targetSleep:8,shortBelow:7,longAbove:9,preferredSleep:"23:00",preferredWake:"07:00",tolerance:90,germanTarget:60,soumiTarget:45,selfStudyTarget:45,missionThreshold:70},
+  weights:{german:5,habib:3,soumi:4,selfStudy:4,english:2,selfImprovement:2,pornFree:3,social:3,diet:3},
+  goalConfig:DEFAULT_GOAL_CONFIG,
+  months:{},
+  planner:[]
 };
 const blankDay=()=>({german:0,habib:"",soumi:0,selfStudy:0,english:"",selfImprovement:"",pornFree:"",social:"",diet:"",sleep:"",wake:"",notes:""});
 let state=loadState();
-let currentMonth="2026-08";
+const _nowForMonth=new Date();
+let currentMonth=`${_nowForMonth.getFullYear()}-${String(_nowForMonth.getMonth()+1).padStart(2,"0")}`;
 const FOCUS_TIMER_KEY="pppFlexibleFocusTimer_v1";
 function loadFocusTimer(){
   const fallback={mode:"stopwatch",elapsed:0,duration:1500,running:false,startedAt:null,focus:"german",sessionFocus:null};
-  try{
-    const saved=JSON.parse(localStorage.getItem(FOCUS_TIMER_KEY));
-    if(saved)return {...fallback,...saved,interval:null};
-  }catch(e){}
+  try{const saved=JSON.parse(localStorage.getItem(FOCUS_TIMER_KEY));if(saved)return {...fallback,...saved,interval:null}}catch(e){}
   return fallback;
 }
 let timer=loadFocusTimer();
@@ -617,18 +1001,23 @@ let timer=loadFocusTimer();
 function clone(v){return JSON.parse(JSON.stringify(v))}
 function loadState(){
   try{
-    let raw=localStorage.getItem(APP_KEY);
+    let raw=localStorage.getItem(APP_KEY),usedLegacy=false;
     if(!raw){
-      for(const key of LEGACY_KEYS){
-        raw=localStorage.getItem(key);
-        if(raw)break;
-      }
+      for(const key of LEGACY_KEYS){raw=localStorage.getItem(key);if(raw){usedLegacy=true;break}}
     }
     const s=raw?JSON.parse(raw):null;
     if(s){
-      const migrated={profile:{...DEFAULTS.profile,...s.profile},settings:{...DEFAULTS.settings,...s.settings},weights:{...DEFAULTS.weights,...s.weights},months:s.months||{}};
-      localStorage.setItem(APP_KEY,JSON.stringify(migrated));
-      return migrated;
+      const mergedGoalConfig={};
+      GOAL_KEYS.forEach(key=>mergedGoalConfig[key]={...DEFAULT_GOAL_CONFIG[key],...(s.goalConfig?.[key]||{})});
+      const migrated={
+        profile:{...DEFAULTS.profile,...s.profile,onboarded:usedLegacy?true:Boolean(s.profile?.onboarded)},
+        settings:{...DEFAULTS.settings,...s.settings},
+        weights:{...DEFAULTS.weights,...s.weights},
+        goalConfig:mergedGoalConfig,
+        months:s.months||{},
+        planner:Array.isArray(s.planner)?s.planner:[]
+      };
+      localStorage.setItem(APP_KEY,JSON.stringify(migrated));return migrated;
     }
   }catch(e){}
   return clone(DEFAULTS);
@@ -638,6 +1027,78 @@ function saveFocusTimer(){
   const safe={mode:timer.mode,elapsed:timer.elapsed,duration:timer.duration,running:timer.running,startedAt:timer.startedAt,focus:timer.focus,sessionFocus:timer.sessionFocus};
   localStorage.setItem(FOCUS_TIMER_KEY,JSON.stringify(safe));
 }
+
+function goalMeta(key){return state.goalConfig?.[key]||DEFAULT_GOAL_CONFIG[key]||{label:key,icon:"✅"}}
+function goalLabel(key){return goalMeta(key).label}
+function goalIcon(key){return goalMeta(key).icon}
+function goalTarget(key){return key==="german"?state.settings.germanTarget:key==="soumi"?state.settings.soumiTarget:key==="selfStudy"?state.settings.selfStudyTarget:1}
+function dynamicWeightLabels(){return Object.fromEntries(GOAL_KEYS.map(key=>[key,goalLabel(key)]))}
+function applyTemplatePack(key,announce=true){
+  const pack=TEMPLATE_PACKS[key]||TEMPLATE_PACKS.balanced;
+  GOAL_KEYS.forEach(goal=>{const [label,icon]=pack.goals[goal];state.goalConfig[goal]={label,icon}});
+  [state.settings.germanTarget,state.settings.soumiTarget,state.settings.selfStudyTarget]=pack.targets;
+  state.profile.template=key;save();renderAll();
+  if(announce)showToast(`${pack.name} template applied ✨`);
+}
+function renderGoalLabels(){
+  document.querySelectorAll("[data-goal-title]").forEach(el=>{
+    const key=el.dataset.goalTitle;el.textContent=`${goalIcon(key)} ${goalLabel(key)}${MINUTE_GOALS.includes(key)?" minutes":""}`;
+  });
+  document.querySelectorAll("[data-goal-th]").forEach(el=>el.textContent=goalLabel(el.dataset.goalTh));
+  const targetLabels={german:"targetLabelGerman",soumi:"targetLabelSoumi",selfStudy:"targetLabelSelfStudy"};
+  Object.entries(targetLabels).forEach(([key,id])=>setText(id,`${goalLabel(key)} target`));
+  const greeting=document.getElementById("heroGreeting");
+  if(greeting)greeting.textContent=`Hello, ${state.profile.name||"friend"} 👋 Ready for one useful next step?`;
+}
+function renderGoalConfigSettings(){
+  const root=document.getElementById("goalConfigSettings");if(!root)return;
+  root.innerHTML=GOAL_KEYS.map(key=>`<div class="goal-config-row">
+    <input aria-label="${key} icon" maxlength="4" value="${escapeHtml(goalIcon(key))}" data-goal-icon="${key}">
+    <input aria-label="${key} label" maxlength="50" value="${escapeHtml(goalLabel(key))}" data-goal-label="${key}">
+    <span class="goal-key">${MINUTE_GOALS.includes(key)?"minutes":"status"}</span>
+  </div>`).join("");
+}
+function finishOnboarding(useSelection=true){
+  const name=document.getElementById("onboardingName").value.trim();if(name)state.profile.name=name;
+  const selected=document.querySelector("[data-onboard-template].selected")?.dataset.onboardTemplate||"balanced";
+  if(useSelection)applyTemplatePack(selected,false);
+  state.profile.onboarded=true;save();document.getElementById("onboarding").classList.remove("open");renderAll();
+  showToast(`Welcome, ${state.profile.name||"friend"}! Let’s make today useful 🌟`);
+  playfulSparks(window.innerWidth/2,window.innerHeight/2,14);
+}
+function showOnboarding(){
+  if(!state.profile.onboarded){
+    document.getElementById("onboarding").classList.add("open");
+    document.querySelector('[data-onboard-template="balanced"]')?.classList.add("selected");
+  }
+}
+const MOTIVATION_LINES=[
+  ["Tiny counts.","Five honest minutes beat sixty imaginary ones. 😄"],
+  ["Plan B is still a plan.","Adjusting is not failing—it is steering."],
+  ["Done is a lovely color.","Perfect is usually still loading."],
+  ["Your future self called.","They said thanks for starting now."],
+  ["Rest is part of the system.","Even phones need charging, and they do much less than you."],
+  ["One task, please.","Your brain is not a browser with 47 tabs. Close one."],
+  ["Restart without drama.","No speech. No guilt. Just the next useful action."],
+  ["Protect the basics.","Food, movement, focus and sleep are surprisingly powerful software."]
+];
+let motivationIndex=Math.floor(Date.now()/86400000)%MOTIVATION_LINES.length;
+function rotateMotivation(){
+  motivationIndex=(motivationIndex+1)%MOTIVATION_LINES.length;
+  const [title,text]=MOTIVATION_LINES[motivationIndex],bubble=document.getElementById("mascotBubble");
+  if(bubble)bubble.innerHTML=`<strong>${title}</strong> ${text}`;
+}
+function playfulSparks(x,y,count=8){
+  if(!state.profile.celebrations)return;
+  const chars=["✨","⭐","🌈","💫","🎉"];
+  for(let i=0;i<count;i++){
+    const spark=document.createElement("span");spark.className="fun-spark";spark.textContent=chars[i%chars.length];
+    spark.style.left=`${x}px`;spark.style.top=`${y}px`;
+    spark.style.setProperty("--dx",`${(Math.random()-.5)*190}px`);spark.style.setProperty("--dy",`${-50-Math.random()*150}px`);
+    document.body.appendChild(spark);setTimeout(()=>spark.remove(),1000);
+  }
+}
+
 function monthDays(key){const [y,m]=key.split("-").map(Number);return new Date(y,m,0).getDate()}
 function ensureMonth(key=currentMonth){
   const n=monthDays(key);
@@ -690,7 +1151,7 @@ function currentData(){return calcMonth()}
 function recentLogged(data,n=7){return data.filter(x=>x.logged).slice(-n)}
 function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
 function rewardLevel(points){
-  const levels=[[1000,"August Champion"],[850,"Strong Mind"],[600,"Disciplined"],[350,"Focused"],[150,"Momentum"],[0,"Starter"]];
+  const levels=[[1000,"Progress Legend"],[850,"Strong Mind"],[600,"Disciplined"],[350,"Focused"],[150,"Momentum"],[0,"Starter"]];
   return levels.find(([p])=>points>=p)[1];
 }
 function changeMonth(delta){
@@ -723,17 +1184,17 @@ function smartMetrics(data=currentData()){
   return {logged,recent,completion,recentCompletion,prevCompletion,avgSleep,sleepScore,current,best,discipline,readiness,total,projection};
 }
 function habitScores(data=currentData()){
-  const logged=data.filter(x=>x.logged),n=logged.length||1,t=state.settings;
+  const logged=data.filter(x=>x.logged),t=state.settings;
   return [
-    ["German",avg(logged.map(x=>Math.min(x.german/t.germanTarget,1)))],
-    ["German with Habib",avg(logged.map(x=>mult(x.habib)))],
-    ["Study with Soumi",avg(logged.map(x=>Math.min(x.soumi/t.soumiTarget,1)))],
-    ["Self Study",avg(logged.map(x=>Math.min(x.selfStudy/t.selfStudyTarget,1)))],
-    ["English Reading",avg(logged.map(x=>mult(x.english)))],
-    ["Self-improvement",avg(logged.map(x=>mult(x.selfImprovement)))],
-    ["Porn-free",avg(logged.map(x=>x.pornFree==="Done"?1:0))],
-    ["Social Control",avg(logged.map(x=>mult(x.social)))],
-    ["Diet",avg(logged.map(x=>mult(x.diet)))]
+    [goalLabel("german"),avg(logged.map(x=>Math.min(x.german/t.germanTarget,1)))],
+    [goalLabel("habib"),avg(logged.map(x=>mult(x.habib)))],
+    [goalLabel("soumi"),avg(logged.map(x=>Math.min(x.soumi/t.soumiTarget,1)))],
+    [goalLabel("selfStudy"),avg(logged.map(x=>Math.min(x.selfStudy/t.selfStudyTarget,1)))],
+    [goalLabel("english"),avg(logged.map(x=>mult(x.english)))],
+    [goalLabel("selfImprovement"),avg(logged.map(x=>mult(x.selfImprovement)))],
+    [goalLabel("pornFree"),avg(logged.map(x=>x.pornFree==="Done"?1:0))],
+    [goalLabel("social"),avg(logged.map(x=>mult(x.social)))],
+    [goalLabel("diet"),avg(logged.map(x=>mult(x.diet)))]
   ];
 }
 function coachData(data=currentData()){
@@ -741,18 +1202,18 @@ function coachData(data=currentData()){
   if(!state.profile.coach)return {headline:"Smart Coach is paused in Settings.",items:[]};
   if(!m.logged.length){
     return {headline:`${state.profile.name}, do not build the perfect plan. Build the first completed day.`,items:[
-      ["Start the identity vote","Do 20 German minutes now. Action creates motivation."],
-      ["Protect the baseline","Mark Porn-Free and control social media today."],
+      ["Start the identity vote","Do 20 minutes of your primary focus now. Action creates motivation."],
+      ["Protect the baseline","Protect one personal boundary and keep digital use intentional today."],
       ["Close the day well","Choose a realistic sleep and wake time."]
     ]};
   }
   const weak=scores[0],second=scores[1];
-  if(today&&!today.logged)items.push(["Win today before it becomes urgent",`Start with ${Math.min(20,state.settings.germanTarget)} German minutes and one focused study block.`]);
+  if(today&&!today.logged)items.push(["Win today before it becomes urgent",`Start with ${Math.min(20,state.settings.germanTarget)} minutes of ${goalLabel("german")} and one useful focus block.`]);
   if(weak[1]<.65)items.push([`Repair ${weak[0]}`,`It is your lowest recent consistency area at ${Math.round(weak[1]*100)}%. Make the next action very small.`]);
   if(second[1]<.7)items.push([`Support ${second[0]}`,`Pair it with an existing routine instead of relying on motivation.`]);
   if(m.avgSleep!=null&&m.avgSleep<state.settings.shortBelow)items.push(["Recover your sleep debt",`Your average is ${m.avgSleep.toFixed(1)}h. Move bedtime 30 minutes earlier tonight.`]);
   else if(m.avgSleep!=null&&m.avgSleep>state.settings.longAbove)items.push(["Stabilize wake time",`Your average is ${m.avgSleep.toFixed(1)}h. Keep wake time consistent before changing duration.`]);
-  if(m.current===0)items.push(["Restart the streak","A minimum mission day today is more valuable than a perfect plan tomorrow."]);
+  if(m.current===0)items.push(["Restart the streak","A minimum momentum day today is more valuable than a perfect plan tomorrow."]);
   else if(m.current>=5)items.push(["Protect the streak",`${m.current} days is real momentum. Prepare tomorrow's first task tonight.`]);
   while(items.length<3)items.push(["Use the two-minute rule","Open the material and do the first two minutes. Starting is the highest-friction step."]);
   const headline=m.recentCompletion>=.85?`You are operating at a high level. Now protect recovery and consistency.`:
@@ -888,8 +1349,8 @@ function renderInsights(data=currentData()){
   const m=smartMetrics(data),scores=habitScores(data).sort((a,b)=>a[1]-b[1]),review=[],optimizer=[],plan=[];
   if(!m.logged.length){
     review.push(["No data yet","Complete your first check-in. Insights become smarter after 3–7 logged days."]);
-    optimizer.push(["Start with the core","German, Porn-Free, and one study block create the mission-day foundation."]);
-    plan.push(["Day 1 plan","20 German minutes, 20 focused study minutes, social control, and a planned bedtime."]);
+    optimizer.push(["Start with the core","Your primary focus, one boundary and one useful work block create the momentum foundation."]);
+    plan.push(["Day 1 plan","20 primary-focus minutes, one useful work block, digital balance and a planned bedtime."]);
   }else{
     review.push(["Strongest habit",`${scores[scores.length-1][0]} is leading at ${Math.round(scores[scores.length-1][1]*100)}%. Use it as an anchor routine.`]);
     review.push(["Weakest habit",`${scores[0][0]} is lowest at ${Math.round(scores[0][1]*100)}%. Reduce the starting step instead of avoiding it.`]);
@@ -912,6 +1373,688 @@ function minutesToClock(total){
   const h=Math.floor(total/60),m=total%60;
   return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
 }
+
+function actualMonthKey(date=new Date()){
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`;
+}
+function actualTodayContext(){
+  const now=new Date(),key=actualMonthKey(now),index=now.getDate()-1;
+  const raw=ensureMonth(key)[index];
+  const calculated=calcMonth(key)[index];
+  return {now,key,index,raw,calculated};
+}
+function switchToActualToday(){
+  const key=actualMonthKey();
+  if(currentMonth!==key){
+    currentMonth=key;
+    ensureMonth();
+    renderAll();
+  }
+}
+function compactMinutes(minutes){
+  minutes=Math.max(0,Math.round(minutes||0));
+  if(minutes>=60){
+    const h=Math.floor(minutes/60),m=minutes%60;
+    return m?`${h}h ${m}m`:`${h}h`;
+  }
+  return `${minutes}m`;
+}
+function nowClockFromMinutes(total){
+  total=((Math.round(total)%1440)+1440)%1440;
+  return `${String(Math.floor(total/60)).padStart(2,"0")}:${String(total%60).padStart(2,"0")}`;
+}
+function sleepWindowState(nowMin,wake,sleep){
+  if(sleep===wake)return false;
+  return sleep<wake?(nowMin>=sleep||nowMin<wake):(nowMin>=sleep&&nowMin<wake);
+}
+function getNowPhase(nowMin,wake,sleep){
+  const sleeping=sleepWindowState(nowMin,wake,sleep);
+  const sinceWake=(nowMin-wake+1440)%1440;
+  const untilSleep=(sleep-nowMin+1440)%1440;
+  if(sleeping)return {key:"sleep",label:"Sleep window",untilSleep:0,sinceWake};
+  if(untilSleep<=45)return {key:"shutdown",label:"Shutdown window",untilSleep,sinceWake};
+  if(untilSleep<=120)return {key:"late",label:"Late evening",untilSleep,sinceWake};
+  if(sinceWake<180)return {key:"morning",label:"Morning focus",untilSleep,sinceWake};
+  if(sinceWake<420)return {key:"midday",label:"Midday",untilSleep,sinceWake};
+  if(untilSleep>300)return {key:"afternoon",label:"Afternoon",untilSleep,sinceWake};
+  return {key:"evening",label:"Evening",untilSleep,sinceWake};
+}
+function todayTaskCatalog(ctx){
+  const d=ctx.raw,t=state.settings;
+  const core=[
+    {key:"german",focus:"german",current:Number(d.german)||0,target:Number(t.germanTarget)||60},
+    {key:"soumi",focus:"soumi",current:Number(d.soumi)||0,target:Number(t.soumiTarget)||45},
+    {key:"selfStudy",focus:"selfStudy",current:Number(d.selfStudy)||0,target:Number(t.selfStudyTarget)||45}
+  ].map(x=>({...x,title:goalLabel(x.key),icon:goalIcon(x.key),remaining:Math.max(0,x.target-x.current),progress:x.target?Math.min(1,x.current/x.target):1,done:x.current>=x.target,partial:x.current>0&&x.current<x.target,type:"focus"}));
+  const details={habib:"Complete the practice, connection or accountability step.",english:"Give this goal a small, honest block.",selfImprovement:"Reflect, learn or write one useful idea.",pornFree:"Protect the boundary you chose for yourself.",social:"Keep digital use intentional.",diet:"Choose the next supportive meal or nutrition action."};
+  const habits=["habib","english","selfImprovement","pornFree","social","diet"].map(key=>({key,title:goalLabel(key),icon:goalIcon(key),value:d[key],detail:details[key],done:d[key]==="Done",partial:d[key]==="Partial",progress:d[key]==="Done"?1:d[key]==="Partial"?.5:0,type:"habit"}));
+  return {core,habits,all:[...core,...habits]};
+}
+function chooseNowCoreTask(core,phase,ctx){
+  const weak=habitScores(calcMonth(ctx.key)).sort((a,b)=>a[1]-b[1])[0]?.[0]||"";
+  return core.filter(x=>!x.done).map(x=>{
+    let score=(1-x.progress)*100;
+    if(x.key==="german"&&phase.key==="morning")score+=26;
+    if(x.key==="german"&&x.current<Math.min(45,x.target))score+=18;
+    if(x.key==="selfStudy"&&["afternoon","evening"].includes(phase.key))score+=13;
+    if(x.key==="soumi"&&["midday","afternoon"].includes(phase.key))score+=11;
+    if(weak.toLowerCase().includes(x.title.toLowerCase().split(" ")[0].toLowerCase()))score+=10;
+    return {...x,score};
+  }).sort((a,b)=>b.score-a.score)[0]||null;
+}
+function focusChunkForNow(task,phase){
+  if(!task)return 0;
+  let cap=35;
+  if(phase.key==="morning")cap=45;
+  if(phase.key==="midday"||phase.key==="afternoon")cap=35;
+  if(phase.key==="evening")cap=25;
+  if(phase.key==="late")cap=10;
+  return Math.max(5,Math.min(task.remaining,cap));
+}
+function firstOpenHabit(habits,phase){
+  const priorityByPhase={
+    morning:["diet","habib","social","pornFree","english","selfImprovement"],
+    midday:["diet","habib","social","pornFree","english","selfImprovement"],
+    afternoon:["habib","diet","english","social","pornFree","selfImprovement"],
+    evening:["diet","english","selfImprovement","social","pornFree","habib"],
+    late:["social","pornFree","selfImprovement","english","diet","habib"]
+  };
+  const order=priorityByPhase[phase.key]||["social","pornFree","diet","english","selfImprovement","habib"];
+  return order.map(key=>habits.find(x=>x.key===key&&!x.done)).find(Boolean)||habits.find(x=>!x.done)||null;
+}
+function buildNowPlan(){
+  const ctx=actualTodayContext(),now=ctx.now,d=ctx.raw,t=state.settings;
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const wake=parseTime(t.preferredWake)??420,sleep=parseTime(t.preferredSleep)??1380;
+  const phase=getNowPhase(nowMin,wake,sleep);
+  const tasks=todayTaskCatalog(ctx);
+  const doneCount=tasks.all.filter(x=>x.done).length;
+  const partialCount=tasks.all.filter(x=>x.partial).length;
+  const coreRemaining=tasks.core.reduce((sum,x)=>sum+x.remaining,0);
+  const completion=Math.round((ctx.calculated?.completion||0)*100);
+  const distractionSeconds=extensionActivity?.today?.distractingSeconds||0;
+  const highDistraction=distractionSeconds>=2700&&d.social!=="Done";
+  const plannedToday=plannerItemsForDate(localDateKey(now),false);
+  const fixedToday=plannerFixedBlocks(localDateKey(now),false);
+  const activePlanned=fixedToday.find(item=>nowMin>=item.startMin&&nowMin<item.endMin);
+  const upcomingPlanned=fixedToday.filter(item=>item.blockStart>nowMin).sort((a,b)=>a.blockStart-b.blockStart)[0]||null;
+  const priorityRank={high:0,medium:1,low:2};
+  const flexiblePlanned=plannedToday.filter(item=>item.mode==="flexible"&&!item.done).sort((a,b)=>priorityRank[a.priority]-priorityRank[b.priority])[0]||null;
+  const minutesBeforeNextBlock=upcomingPlanned?Math.max(0,upcomingPlanned.blockStart-nowMin):null;
+  let primary,backup,sequence=[],urgency={text:"Balanced",cls:"go"};
+
+  if(activePlanned){
+    const remaining=Math.max(1,activePlanned.endMin-nowMin);
+    primary={
+      icon:plannerCategory(activePlanned).icon,
+      title:`Continue: ${activePlanned.title}`,
+      detail:`This fixed commitment is active now and has about ${compactMinutes(remaining)} remaining.${activePlanned.notes?` ${activePlanned.notes}`:""}`,
+      reason:"A scheduled real-life commitment overrides optional study blocks while its time window is active.",
+      action:{type:"planner",id:activePlanned.id},button:"Open Planner",duration:remaining
+    };
+    backup={
+      title:"Update the commitment honestly",
+      detail:"When it finishes, mark it complete or edit the time if the real schedule changed.",
+      action:{type:"planner",id:activePlanned.id},button:"Open Planner"
+    };
+    sequence=[
+      {time:nowMin,icon:plannerCategory(activePlanned).icon,title:activePlanned.title,detail:`Continue until ${activePlanned.end}.`},
+      {time:activePlanned.endMin,icon:"✅",title:"Close and update",detail:"Mark the item complete and recalculate the Now Plan."}
+    ];
+    urgency={text:"Scheduled now",cls:"urgent"};
+  }else if(timer.running||timer.elapsed>0){
+    const focus=timer.sessionFocus||timer.focus;
+    const elapsed=Math.floor(currentTimerSeconds()/60);
+    primary={
+      icon:"⏱",title:`Continue the ${focusLabel(focus)} session`,
+      detail:`Your focus timer is ${timer.running?"running":"paused"}${elapsed?` at ${elapsed} full minute${elapsed===1?"":"s"}`:""}. Finish this open loop before starting something else.`,
+      reason:"A task already in progress has lower restart friction than a new task.",
+      action:{type:"focus",focus},button:timer.running?"Return to Running Timer":"Resume Focus Timer",duration:Math.max(5,20-elapsed)
+    };
+    backup={
+      title:"Finish a five-minute closing block",
+      detail:"Resume briefly, produce one visible result, then Finish & Save.",
+      action:{type:"focus",focus},button:"Open Current Timer"
+    };
+    sequence=[
+      {time:nowMin,icon:"⏱",title:"Continue current session",detail:`Stay with ${focusLabel(focus)} until a clear stopping point.`},
+      {time:nowMin+Math.max(5,20-elapsed),icon:"✅",title:"Finish & save",detail:"Record the real focused minutes in today’s progress."},
+      {time:nowMin+Math.max(15,30-elapsed),icon:"🧭",title:"Recalculate",detail:"Return to Now Plan for the next decision."}
+    ];
+    urgency={text:"In progress",cls:"go"};
+  }else if(upcomingPlanned&&minutesBeforeNextBlock<=20){
+    primary={
+      icon:plannerCategory(upcomingPlanned).icon,
+      title:`Prepare for ${upcomingPlanned.title}`,
+      detail:`Its protected block begins at ${plannerClock(upcomingPlanned.blockStart)}${upcomingPlanned.buffer?`, including the ${upcomingPlanned.buffer}-minute buffer`:""}.${upcomingPlanned.notes?` ${upcomingPlanned.notes}`:""}`,
+      reason:"There is not enough safe time for a meaningful new focus block before this commitment.",
+      action:{type:"planner",id:upcomingPlanned.id},button:"Open Planner",duration:minutesBeforeNextBlock
+    };
+    backup={
+      title:"Use the waiting time intentionally",
+      detail:"Prepare materials, travel, drink water, or do a two-minute check-in instead of opening social media.",
+      action:{type:"today"},button:"Open Today’s Check-in"
+    };
+    sequence=[
+      {time:nowMin,icon:"🎒",title:"Prepare",detail:`Get ready for ${upcomingPlanned.title}.`},
+      {time:upcomingPlanned.startMin,icon:plannerCategory(upcomingPlanned).icon,title:upcomingPlanned.title,detail:`Fixed block until ${upcomingPlanned.end}.`}
+    ];
+    urgency={text:"Commitment soon",cls:"protect"};
+  }else if(phase.key==="sleep"){
+    const passed=(nowMin-sleep+1440)%1440;
+    primary={
+      icon:"🌙",title:"Close the day and sleep now",
+      detail:passed<480
+        ?`Your ${t.preferredSleep} sleep target has passed by ${compactMinutes(passed)}. Do not turn unfinished tasks into a late-night punishment.`
+        :`You are inside your normal sleep window. Recovery is the highest-value action now.`,
+      reason:"At this hour, protecting tomorrow’s energy is more useful than forcing a low-quality study block.",
+      action:{type:"today"},button:"Do a 2-Minute Check-in",duration:2
+    };
+    backup={
+      title:"No catch-up study",
+      detail:"Prepare the first German or study material for tomorrow, put the phone away, and sleep.",
+      action:{type:"today"},button:"Open Today’s Check-in"
+    };
+    sequence=[
+      {time:nowMin,icon:"✅",title:"Two-minute check-in",detail:"Record what is honestly done, partial, or missed."},
+      {time:nowMin+2,icon:"📝",title:"Prepare tomorrow’s first action",detail:"Open the material or leave one clear note for the morning."},
+      {time:nowMin+7,icon:"📵",title:"Phone away",detail:"Stop browsing and lower stimulation."},
+      {time:nowMin+12,icon:"😴",title:"Sleep",detail:"The plan resumes after recovery."}
+    ];
+    urgency={text:"Protect recovery",cls:"urgent"};
+  }else if(phase.key==="shutdown"){
+    primary={
+      icon:"📵",title:"Begin shutdown—do not start a major task",
+      detail:`Only ${compactMinutes(phase.untilSleep)} remain until your ${t.preferredSleep} sleep target. Close open loops and prepare tomorrow.`,
+      reason:"Starting a large task now would either damage sleep or create an unfinished session.",
+      action:{type:"today"},button:"Update Today’s Check-in",duration:5
+    };
+    backup={
+      title:"One tiny win only",
+      detail:"Do five easy German review minutes, but stop before the sleep target.",
+      action:{type:"focus",focus:"german"},button:"Open German Timer"
+    };
+    sequence=[
+      {time:nowMin,icon:"✅",title:"Update the day",detail:"Mark tasks done, partial, or missed without exaggerating."},
+      {time:nowMin+5,icon:"📝",title:"Set tomorrow’s first task",detail:"Prepare one clear German or university starting point."},
+      {time:Math.max(nowMin+10,sleep-25),icon:"🌙",title:"Wind down",detail:"Low light, hygiene, and no demanding work."},
+      {time:sleep,icon:"😴",title:"Sleep target",detail:"Protect the next day."}
+    ];
+    urgency={text:"Shutdown",cls:"protect"};
+  }else{
+    const coreTask=chooseNowCoreTask(tasks.core,phase,ctx);
+    const allCoreDone=tasks.core.every(x=>x.done);
+    const openHabit=firstOpenHabit(tasks.habits,phase);
+
+    if(flexiblePlanned&&(flexiblePlanned.priority==="high"||tasks.core.every(x=>x.done))){
+      const available=minutesBeforeNextBlock==null?plannerDurationMinutes(flexiblePlanned):Math.max(5,minutesBeforeNextBlock-10);
+      const duration=Math.min(plannerDurationMinutes(flexiblePlanned),available);
+      primary={
+        icon:plannerCategory(flexiblePlanned).icon,
+        title:`Work on ${flexiblePlanned.title}`,
+        detail:`Use about ${compactMinutes(duration)} now.${flexiblePlanned.notes?` ${flexiblePlanned.notes}`:""}`,
+        reason:`This is a ${flexiblePlanned.priority}-priority flexible planner item and it fits the current available window.`,
+        action:{type:"planner",id:flexiblePlanned.id},button:"Open Planner",duration
+      };
+      backup={
+        title:"Do the ten-minute starter",
+        detail:"Create one visible result, then decide whether to continue.",
+        action:{type:"planner",id:flexiblePlanned.id},button:"Open Planner"
+      };
+      sequence=[
+        {time:nowMin,icon:plannerCategory(flexiblePlanned).icon,title:flexiblePlanned.title,detail:`Flexible block for about ${compactMinutes(duration)}.`},
+        {time:nowMin+duration,icon:"✅",title:"Update planner",detail:"Mark complete or edit the remaining estimate."}
+      ];
+      urgency={text:"Planner priority",cls:"go"};
+    }else if(coreTask){
+      let chunk=focusChunkForNow(coreTask,phase);
+      if(minutesBeforeNextBlock!=null)chunk=Math.max(5,Math.min(chunk,Math.max(5,minutesBeforeNextBlock-10)));
+      let reason=`${coreTask.title} is at ${Math.round(coreTask.progress*100)}% of today’s target with ${coreTask.remaining} minutes remaining.`;
+      if(coreTask.key==="german"&&coreTask.current<Math.min(45,coreTask.target))reason+=" German also supports the mission-day foundation.";
+      if(highDistraction)reason+=` You have ${formatActivityTime(distractionSeconds)} of social/entertainment browsing today, so a protected offline or full-screen block has extra value.`;
+      primary={
+        icon:coreTask.icon,
+        title:`Do ${chunk} minutes of ${coreTask.title}`,
+        detail:`Start a count-up focus timer now. Stop after a useful result rather than waiting for perfect motivation.`,
+        reason,
+        action:{type:"focus",focus:coreTask.focus},button:`Open ${coreTask.title} Timer`,duration:chunk
+      };
+      const mini=Math.max(5,Math.min(10,coreTask.remaining));
+      backup={
+        title:`Do the ${mini}-minute minimum`,
+        detail:`Open ${coreTask.title}, complete one tiny visible piece, and save the actual time.`,
+        action:{type:"focus",focus:coreTask.focus},button:`Open ${mini}-Minute Minimum`
+      };
+
+      const nextCore=tasks.core.filter(x=>!x.done&&x.key!==coreTask.key).sort((a,b)=>a.progress-b.progress)[0];
+      sequence=[
+        {time:nowMin,icon:coreTask.icon,title:`${coreTask.title} focus block`,detail:`Aim for ${chunk} useful minutes.`},
+        {time:nowMin+chunk,icon:"🚶",title:"Real break",detail:"Move, drink water, and avoid automatic scrolling for 10 minutes."}
+      ];
+      if(nextCore&&phase.untilSleep>chunk+50){
+        const nextChunk=Math.max(10,Math.min(25,nextCore.remaining));
+        sequence.push({time:nowMin+chunk+10,icon:nextCore.icon,title:`${nextCore.title} — ${nextChunk} min`,detail:"Use the second block only after the first block is saved."});
+      }else if(openHabit){
+        sequence.push({time:nowMin+chunk+10,icon:openHabit.icon,title:openHabit.title,detail:openHabit.detail});
+      }
+      if(phase.untilSleep<300){
+        sequence.push({time:Math.max(nowMin+chunk+25,sleep-45),icon:"🌙",title:"Evening shutdown",detail:"Record the day and protect the sleep target."});
+      }
+      urgency={text:phase.key==="late"?"Small block":"Act now",cls:phase.key==="late"?"protect":"go"};
+    }else if(openHabit){
+      primary={
+        icon:openHabit.icon,title:allCoreDone?`${openHabit.title} is the next unfinished item`:`Complete ${openHabit.title}`,
+        detail:openHabit.detail+". Keep it simple and update the check-in immediately afterward.",
+        reason:allCoreDone?"All three core study targets are complete, so the next value comes from closing a smaller open loop.":"No unfinished core study task needs priority right now.",
+        action:{type:"today"},button:"Open Today’s Check-in",duration:10
+      };
+      backup={
+        title:"Protect the commitment",
+        detail:"At minimum, avoid making the habit worse and mark the honest status before sleep.",
+        action:{type:"today"},button:"Update Status"
+      };
+      sequence=[
+        {time:nowMin,icon:openHabit.icon,title:openHabit.title,detail:openHabit.detail},
+        {time:nowMin+10,icon:"✅",title:"Update the check-in",detail:"Mark Done or Partial immediately."},
+        {time:Math.max(nowMin+20,sleep-45),icon:"🌙",title:"Prepare tomorrow",detail:"Set one clear first action and shut down on time."}
+      ];
+      urgency={text:"Close loops",cls:"go"};
+    }else{
+      primary={
+        icon:"🏆",title:"Today’s core plan is complete",
+        detail:"Do not invent extra work just to feel productive. Recover, connect with someone, move, and protect sleep.",
+        reason:"Repeatable completion is more valuable than exhausting yourself after the important work is already done.",
+        action:{type:"today"},button:"Review Today’s Wins",duration:10
+      };
+      backup={
+        title:"Prepare tomorrow in five minutes",
+        detail:"Choose the first German task and the first academic task, then stop.",
+        action:{type:"today"},button:"Open Reflection"
+      };
+      sequence=[
+        {time:nowMin,icon:"🚶",title:"Recover",detail:"Walk, stretch, eat, or have a real conversation."},
+        {time:Math.max(nowMin+30,sleep-60),icon:"📝",title:"Prepare tomorrow",detail:"Set the first two actions and materials."},
+        {time:sleep,icon:"😴",title:"Sleep on time",detail:"Protect the system that produced today’s result."}
+      ];
+      urgency={text:"Maintain",cls:"go"};
+    }
+  }
+
+  const scheduledSequence=fixedToday
+    .filter(item=>item.startMin>=nowMin&&!sequence.some(step=>step.title===item.title))
+    .slice(0,3)
+    .map(item=>({time:item.startMin,icon:plannerCategory(item).icon,title:item.title,detail:`Fixed ${plannerCategory(item).label.toLowerCase()} block, ${item.start}–${item.end}.`}));
+  sequence=[...sequence,...scheduledSequence].sort((a,b)=>a.time-b.time).slice(0,6);
+
+  const remainingCards=tasks.all.map(x=>{
+    let status,progress;
+    if(x.type==="focus"){
+      status=x.done?"Target complete":`${x.remaining} min remaining`;
+      progress=Math.round(x.progress*100);
+    }else{
+      status=x.done?"Done":x.partial?"Partial":"Not completed";
+      progress=Math.round(x.progress*100);
+    }
+    return {...x,status,progress};
+  });
+
+  return {
+    ctx,phase,tasks,doneCount,partialCount,coreRemaining,completion,
+    sleepCountdown:phase.key==="sleep"?"Sleep now":compactMinutes(phase.untilSleep),
+    primary,backup,sequence,urgency,remainingCards
+  };
+}
+let nowPlanPrimaryAction=null,nowPlanBackupAction=null;
+function renderNowPlan(){
+  const root=document.getElementById("nowplan");
+  if(!root)return;
+  const plan=buildNowPlan(),now=plan.ctx.now;
+  setText("nowPlanClock",now.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}));
+  setText("nowPlanDate",now.toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"}));
+  setText("nowPlanPhase",plan.phase.label);
+  const urgency=document.getElementById("nowPlanUrgency");
+  urgency.textContent=plan.urgency.text;
+  urgency.className=`now-pill ${plan.urgency.cls}`;
+  setText("nowPlanDoneCount",`${plan.doneCount} / ${plan.tasks.all.length}`);
+  setText("nowPlanCoreRemaining",`${plan.coreRemaining} min`);
+  setText("nowPlanCompletion",`${plan.completion}%`);
+  setText("nowPlanSleepCountdown",plan.sleepCountdown);
+  setText("nowPlanIcon",plan.primary.icon);
+  setText("nowPlanTitle",plan.primary.title);
+  setText("nowPlanDetail",plan.primary.detail);
+  setText("nowPlanReason",plan.primary.reason);
+  setText("nowPlanBackupTitle",plan.backup.title);
+  setText("nowPlanBackupDetail",plan.backup.detail);
+  document.getElementById("nowPlanActionBtn").textContent=plan.primary.button;
+  document.getElementById("nowPlanBackupBtn").textContent=plan.backup.button;
+  nowPlanPrimaryAction=plan.primary.action;
+  nowPlanBackupAction=plan.backup.action;
+
+  document.getElementById("nowPlanSequence").innerHTML=plan.sequence.map(step=>`
+    <div class="now-step">
+      <div class="now-step-time">${nowClockFromMinutes(step.time)}</div>
+      <div class="now-step-icon">${step.icon}</div>
+      <div><strong>${escapeHtml(step.title)}</strong><span>${escapeHtml(step.detail)}</span></div>
+    </div>`).join("");
+
+  document.getElementById("nowPlanTasks").innerHTML=plan.remainingCards.map(task=>`
+    <div class="now-task ${task.done?"done":""}">
+      <strong>${task.icon} ${escapeHtml(task.title)}</strong>
+      <span>${escapeHtml(task.status)}</span>
+      <div class="now-progress-track"><div class="now-progress-fill" style="width:${task.progress}%"></div></div>
+    </div>`).join("");
+}
+function openNowPlanAction(action){
+  if(!action)return;
+  switchToActualToday();
+  if(action.type==="focus"){
+    if(timer.running||timer.elapsed>0){
+      const active=timer.sessionFocus||timer.focus;
+      if(active!==action.focus){
+        showToast(`Finish or reset the current ${focusLabel(active)} session first`);
+      }
+      openFocusTimer();
+      return;
+    }
+    timer.focus=action.focus;
+    saveFocusTimer();
+    renderFocus();
+    openFocusTimer();
+    return;
+  }
+  if(action.type==="activity"){
+    showTab("activity");
+    return;
+  }
+  if(action.type==="planner"){
+    showTab("planner");
+    selectPlannerDate(localDateKey());
+    if(action.id)setTimeout(()=>document.querySelector(`[data-planner-id="${action.id}"]`)?.closest(".planner-item")?.scrollIntoView({behavior:"smooth",block:"center"}),80);
+    return;
+  }
+  showTab("today");
+  setTimeout(()=>document.getElementById("today")?.scrollIntoView({behavior:"smooth",block:"start"}),50);
+}
+
+
+const PLANNER_CATEGORIES={
+  work:{label:"Work",icon:"💼"},appointment:{label:"Appointment",icon:"📅"},
+  study:{label:"Study",icon:"📚"},errand:{label:"Errand",icon:"🛒"},
+  health:{label:"Health",icon:"❤️"},personal:{label:"Personal",icon:"🏠"}
+};
+const PLANNER_TEMPLATES={
+  work:{label:"Work / Shift",icon:"💼",mode:"fixed",category:"work",duration:60,priority:"high"},
+  meeting:{label:"Meeting",icon:"🗓",mode:"fixed",category:"work",duration:45,priority:"high"},
+  appointment:{label:"Appointment",icon:"📅",mode:"fixed",category:"appointment",duration:60,priority:"high"},
+  class:{label:"Class / Course",icon:"🎓",mode:"fixed",category:"study",duration:90,priority:"high"},
+  deepwork:{label:"Deep Work",icon:"🧠",mode:"flexible",category:"work",duration:60,priority:"high"},
+  study:{label:"Study Session",icon:"📚",mode:"flexible",category:"study",duration:45,priority:"medium"},
+  exercise:{label:"Exercise",icon:"🏃",mode:"flexible",category:"health",duration:30,priority:"medium"},
+  errand:{label:"Errand",icon:"🛒",mode:"flexible",category:"errand",duration:30,priority:"medium"},
+  meal:{label:"Meal Prep",icon:"🥗",mode:"flexible",category:"health",duration:40,priority:"medium"},
+  custom:{label:"Custom",icon:"✨",mode:"flexible",category:"personal",duration:30,priority:"medium"}
+};
+let plannerSelectedDate=localDateKey(new Date());
+
+function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`}
+function dateFromKey(key){const [y,m,d]=String(key).split("-").map(Number);return new Date(y,m-1,d,12,0,0,0)}
+function addDaysKey(key,days){const date=dateFromKey(key);date.setDate(date.getDate()+days);return localDateKey(date)}
+function plannerTomorrowKey(){return addDaysKey(localDateKey(),1)}
+function plannerTime(value){if(!value)return null;const [h,m]=value.split(":").map(Number);return Number.isFinite(h)&&Number.isFinite(m)?h*60+m:null}
+function plannerClock(minutes){minutes=((Math.round(minutes)%1440)+1440)%1440;return `${String(Math.floor(minutes/60)).padStart(2,"0")}:${String(minutes%60).padStart(2,"0")}`}
+function plannerDurationMinutes(item){
+  if(item.mode==="flexible")return Math.max(5,Number(item.duration)||30);
+  const start=plannerTime(item.start),end=plannerTime(item.end);if(start==null||end==null)return 0;
+  return Math.max(0,(end<=start?end+1440:end)-start);
+}
+function defaultRepeatDays(item){
+  const day=dateFromKey(item.date||localDateKey()).getDay();
+  if(item.repeat==="weekdays")return [1,2,3,4,5];
+  if(item.repeat==="weekends")return [0,6];
+  if(item.repeat==="weekly")return [day];
+  return Array.isArray(item.repeatDays)?item.repeatDays.map(Number):[];
+}
+function normalizePlannerItem(item){
+  const repeat=["none","daily","weekdays","weekends","weekly","custom"].includes(item.repeat)?item.repeat:"none";
+  const normalized={
+    id:item.id||`plan-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+    title:String(item.title||"Untitled task").slice(0,120),date:item.date||localDateKey(),
+    mode:item.mode==="flexible"?"flexible":"fixed",start:item.start||"09:00",end:item.end||"10:00",
+    duration:Math.max(5,Number(item.duration)||30),
+    preferred:["morning","afternoon","evening","any"].includes(item.preferred)?item.preferred:"any",
+    buffer:Math.max(0,Number(item.buffer)||0),category:PLANNER_CATEGORIES[item.category]?item.category:"personal",
+    priority:["high","medium","low"].includes(item.priority)?item.priority:"medium",
+    notes:String(item.notes||"").slice(0,500),repeat,repeatUntil:item.repeatUntil||"",
+    repeatDays:Array.isArray(item.repeatDays)?item.repeatDays.map(Number):[],
+    completedDates:Array.isArray(item.completedDates)?item.completedDates:[],
+    done:Boolean(item.done),createdAt:item.createdAt||new Date().toISOString(),updatedAt:item.updatedAt||new Date().toISOString()
+  };
+  normalized.repeatDays=defaultRepeatDays(normalized);return normalized;
+}
+function normalizePlanner(){state.planner=Array.isArray(state.planner)?state.planner.map(normalizePlannerItem):[]}
+function plannerIsRepeating(item){return item.repeat&&item.repeat!=="none"}
+function plannerOccursOn(item,date){
+  if(date<item.date)return false;if(item.repeatUntil&&date>item.repeatUntil)return false;
+  if(item.repeat==="none")return date===item.date;
+  const day=dateFromKey(date).getDay();
+  if(item.repeat==="daily")return true;
+  if(item.repeat==="weekdays")return day>=1&&day<=5;
+  if(item.repeat==="weekends")return day===0||day===6;
+  if(item.repeat==="weekly")return day===dateFromKey(item.date).getDay();
+  if(item.repeat==="custom")return item.repeatDays.includes(day);
+  return false;
+}
+function plannerIsDone(item,date){return plannerIsRepeating(item)?item.completedDates.includes(date):Boolean(item.done)}
+function plannerItemsForDate(date,includeDone=true){
+  normalizePlanner();
+  return state.planner.filter(item=>plannerOccursOn(item,date)).map(item=>({...item,occurrenceDate:date,done:plannerIsDone(item,date)}))
+    .filter(item=>includeDone||!item.done).sort((a,b)=>{
+      if(a.mode!==b.mode)return a.mode==="fixed"?-1:1;
+      if(a.mode==="fixed")return (plannerTime(a.start)||0)-(plannerTime(b.start)||0);
+      const rank={high:0,medium:1,low:2};return rank[a.priority]-rank[b.priority]||a.createdAt.localeCompare(b.createdAt);
+    });
+}
+function plannerFixedBlocks(date,includeDone=false){
+  return plannerItemsForDate(date,true).filter(item=>item.mode==="fixed"&&(includeDone||!item.done)).map(item=>{
+    const start=plannerTime(item.start),rawEnd=plannerTime(item.end);if(start==null||rawEnd==null)return null;
+    const end=rawEnd<=start?rawEnd+1440:rawEnd;
+    return {...item,startMin:start,endMin:end,blockStart:Math.max(0,start-item.buffer),blockEnd:end+item.buffer};
+  }).filter(Boolean);
+}
+function recurrenceSampleDates(item,days=56){
+  const result=[];for(let i=0;i<days;i++){const date=addDaysKey(item.date,i);if(item.repeatUntil&&date>item.repeatUntil)break;if(plannerOccursOn(item,date))result.push(date)}
+  return result.length?result:[item.date];
+}
+function plannerConflictsFor(candidate){
+  if(candidate.mode!=="fixed")return [];
+  const conflicts=new Map();
+  recurrenceSampleDates(candidate).forEach(date=>{
+    const start=plannerTime(candidate.start),rawEnd=plannerTime(candidate.end);if(start==null||rawEnd==null)return;
+    const end=rawEnd<=start?rawEnd+1440:rawEnd,aStart=Math.max(0,start-candidate.buffer),aEnd=end+candidate.buffer;
+    plannerFixedBlocks(date,true).forEach(item=>{if(item.id!==candidate.id&&aStart<item.blockEnd&&aEnd>item.blockStart)conflicts.set(item.id,item)});
+  });
+  return [...conflicts.values()];
+}
+function repeatLabel(item){
+  if(item.repeat==="none")return "One time";if(item.repeat==="daily")return "Every day";
+  if(item.repeat==="weekdays")return "Weekdays";if(item.repeat==="weekends")return "Weekends";
+  if(item.repeat==="weekly")return "Weekly";
+  if(item.repeat==="custom"){const names=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];return item.repeatDays.map(d=>names[d]).join(", ")}
+  return "Repeating";
+}
+function plannerCategory(item){return PLANNER_CATEGORIES[item.category]||PLANNER_CATEGORIES.personal}
+function plannerHumanDate(key){return dateFromKey(key).toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+function plannerUsableMinutes(date){
+  const wake=plannerTime(state.settings.preferredWake)??420;let sleep=plannerTime(state.settings.preferredSleep)??1380;if(sleep<=wake)sleep+=1440;
+  let occupied=0;plannerFixedBlocks(date,false).forEach(block=>{const start=Math.max(wake,block.blockStart),end=Math.min(sleep,block.blockEnd);if(end>start)occupied+=end-start});
+  const flexible=plannerItemsForDate(date,false).filter(x=>x.mode==="flexible").reduce((s,x)=>s+plannerDurationMinutes(x),0);
+  return Math.max(0,sleep-wake-occupied-flexible);
+}
+function renderPlannerTemplates(){
+  const root=document.getElementById("plannerTemplates");
+  if(root)root.innerHTML=Object.entries(PLANNER_TEMPLATES).map(([key,t])=>`<button type="button" class="planner-template-btn" data-planner-template="${key}">${t.icon} ${t.label}</button>`).join("");
+}
+function applyPlannerTemplate(key){
+  const t=PLANNER_TEMPLATES[key];if(!t)return;
+  document.getElementById("plannerTitle").value=t.label==="Custom"?"":t.label;
+  document.getElementById("plannerMode").value=t.mode;document.getElementById("plannerCategory").value=t.category;
+  document.getElementById("plannerPriority").value=t.priority;document.getElementById("plannerDuration").value=t.duration;
+  if(t.mode==="fixed"){const start=plannerTime(document.getElementById("plannerStart").value)||540;document.getElementById("plannerEnd").value=plannerClock(start+t.duration)}
+  plannerModeChanged();if(key==="custom")document.getElementById("plannerTitle").focus();
+}
+function plannerRepeatChanged(){
+  const repeat=document.getElementById("plannerRepeat").value;
+  document.getElementById("plannerRepeatDaysWrap").classList.toggle("hidden-tool",repeat!=="custom");
+  if(repeat==="weekly"){
+    const day=dateFromKey(document.getElementById("plannerDate").value||localDateKey()).getDay();
+    document.querySelectorAll("#plannerRepeatDays input").forEach(cb=>cb.checked=Number(cb.value)===day);
+  }
+  previewPlannerConflict();
+}
+function plannerModeChanged(){
+  const flexible=document.getElementById("plannerMode").value==="flexible";
+  document.getElementById("plannerFixedFields").classList.toggle("hidden-tool",flexible);
+  document.getElementById("plannerFlexFields").classList.toggle("hidden-tool",!flexible);previewPlannerConflict();
+}
+function selectedRepeatDays(){return [...document.querySelectorAll("#plannerRepeatDays input:checked")].map(x=>Number(x.value))}
+function plannerFormCandidate(){
+  return normalizePlannerItem({
+    id:document.getElementById("plannerEditId").value||undefined,title:document.getElementById("plannerTitle").value.trim(),
+    date:document.getElementById("plannerDate").value,mode:document.getElementById("plannerMode").value,
+    start:document.getElementById("plannerStart").value,end:document.getElementById("plannerEnd").value,
+    duration:Number(document.getElementById("plannerDuration").value)||30,preferred:document.getElementById("plannerPreferred").value,
+    buffer:Number(document.getElementById("plannerBuffer").value)||0,category:document.getElementById("plannerCategory").value,
+    priority:document.getElementById("plannerPriority").value,repeat:document.getElementById("plannerRepeat").value,
+    repeatUntil:document.getElementById("plannerRepeatUntil").value,repeatDays:selectedRepeatDays(),
+    notes:document.getElementById("plannerNotes").value.trim()
+  });
+}
+function previewPlannerConflict(){
+  const note=document.getElementById("plannerConflictNote");if(!note)return;
+  const candidate=plannerFormCandidate(),conflicts=plannerConflictsFor(candidate);
+  note.classList.toggle("hidden",!conflicts.length);
+  note.textContent=conflicts.length?`Time conflict with: ${conflicts.map(x=>x.title).join(", ")}. Change the time, buffer or repeat pattern.`:"";
+}
+function clearPlannerForm(date=plannerSelectedDate){
+  document.getElementById("plannerEditId").value="";document.getElementById("plannerFormTitle").textContent="Add a task or appointment";
+  document.getElementById("plannerSaveBtn").textContent="Add to Planner";document.getElementById("plannerTitle").value="";
+  document.getElementById("plannerDate").value=date;document.getElementById("plannerMode").value="fixed";
+  document.getElementById("plannerStart").value="09:00";document.getElementById("plannerEnd").value="10:00";
+  document.getElementById("plannerBuffer").value="15";document.getElementById("plannerDuration").value="30";
+  document.getElementById("plannerPreferred").value="any";document.getElementById("plannerCategory").value="work";
+  document.getElementById("plannerPriority").value="medium";document.getElementById("plannerRepeat").value="none";
+  document.getElementById("plannerRepeatUntil").value="";document.getElementById("plannerNotes").value="";
+  document.querySelectorAll("#plannerRepeatDays input").forEach(cb=>cb.checked=false);plannerModeChanged();plannerRepeatChanged();
+}
+function savePlannerForm(event){
+  event.preventDefault();const candidate=plannerFormCandidate();
+  if(!candidate.title||!candidate.date){showToast("Add a title and date");return}
+  if(candidate.repeat==="custom"&&!candidate.repeatDays.length){showToast("Choose at least one repeat day");return}
+  if(candidate.repeatUntil&&candidate.repeatUntil<candidate.date){showToast("Repeat-until date must be after the start date");return}
+  if(candidate.mode==="fixed"){
+    if(!candidate.start||!candidate.end||candidate.start===candidate.end){showToast("Choose a valid start and end time");return}
+    const conflicts=plannerConflictsFor(candidate);if(conflicts.length){previewPlannerConflict();showToast("Resolve the time conflict before saving");return}
+  }
+  const existingIndex=state.planner.findIndex(x=>x.id===candidate.id);
+  if(existingIndex>=0){
+    const existing=state.planner[existingIndex];
+    state.planner[existingIndex]={...candidate,done:existing.done,completedDates:existing.completedDates||[],createdAt:existing.createdAt,updatedAt:new Date().toISOString()};
+    showToast("Planner series updated");
+  }else{
+    state.planner.push({...candidate,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    showToast(plannerIsRepeating(candidate)?"Repeating task added ✨":"Added to planner");
+  }
+  plannerSelectedDate=candidate.date;save();clearPlannerForm(plannerSelectedDate);renderAll();
+}
+function editPlannerItem(id){
+  normalizePlanner();const item=state.planner.find(x=>x.id===id);if(!item)return;
+  plannerSelectedDate=item.date;document.getElementById("plannerEditId").value=item.id;
+  document.getElementById("plannerFormTitle").textContent=plannerIsRepeating(item)?"Update repeating series":"Update planner item";
+  document.getElementById("plannerSaveBtn").textContent="Save Changes";
+  document.getElementById("plannerTitle").value=item.title;document.getElementById("plannerDate").value=item.date;
+  document.getElementById("plannerMode").value=item.mode;document.getElementById("plannerStart").value=item.start;
+  document.getElementById("plannerEnd").value=item.end;document.getElementById("plannerBuffer").value=String(item.buffer);
+  document.getElementById("plannerDuration").value=String(item.duration);document.getElementById("plannerPreferred").value=item.preferred;
+  document.getElementById("plannerCategory").value=item.category;document.getElementById("plannerPriority").value=item.priority;
+  document.getElementById("plannerRepeat").value=item.repeat;document.getElementById("plannerRepeatUntil").value=item.repeatUntil||"";
+  document.getElementById("plannerNotes").value=item.notes;
+  document.querySelectorAll("#plannerRepeatDays input").forEach(cb=>cb.checked=item.repeatDays.includes(Number(cb.value)));
+  document.getElementById("plannerViewDate").value=plannerSelectedDate;plannerModeChanged();plannerRepeatChanged();renderPlanner();
+  document.getElementById("plannerTitle").focus();document.getElementById("plannerForm").scrollIntoView({behavior:"smooth",block:"center"});
+}
+function deletePlannerItem(id){
+  const item=state.planner.find(x=>x.id===id);if(!item)return;
+  if(!confirm(`Delete "${item.title}"${plannerIsRepeating(item)?" and its repeating series":""}?`))return;
+  state.planner=state.planner.filter(x=>x.id!==id);save();clearPlannerForm(plannerSelectedDate);renderAll();showToast("Planner item deleted");
+}
+function togglePlannerItem(id,date=plannerSelectedDate){
+  const item=state.planner.find(x=>x.id===id);if(!item)return;
+  if(plannerIsRepeating(item)){const set=new Set(item.completedDates||[]);set.has(date)?set.delete(date):set.add(date);item.completedDates=[...set].sort()}
+  else item.done=!item.done;
+  item.updatedAt=new Date().toISOString();save();renderAll();showToast(plannerIsDone(item,date)?"Occurrence completed ✓":"Occurrence reopened");
+}
+function selectPlannerDate(date,focusTitle=false){
+  plannerSelectedDate=date;document.getElementById("plannerViewDate").value=date;document.getElementById("plannerDate").value=date;
+  renderPlanner();if(focusTitle)document.getElementById("plannerTitle").focus();
+}
+function renderPlanner(){
+  const root=document.getElementById("planner");if(!root)return;
+  normalizePlanner();renderPlannerTemplates();if(!plannerSelectedDate)plannerSelectedDate=localDateKey();
+  const items=plannerItemsForDate(plannerSelectedDate,true),fixed=items.filter(x=>x.mode==="fixed"),flexible=items.filter(x=>x.mode==="flexible");
+  const fixedMinutes=fixed.filter(x=>!x.done).reduce((s,x)=>s+plannerDurationMinutes(x)+x.buffer*2,0);
+  const flexibleMinutes=flexible.filter(x=>!x.done).reduce((s,x)=>s+plannerDurationMinutes(x),0);
+  setText("plannerSelectedTitle",plannerHumanDate(plannerSelectedDate));
+  setText("plannerSelectedSubtitle",`${items.filter(x=>!x.done).length} open • ${items.filter(x=>x.done).length} completed`);
+  document.getElementById("plannerViewDate").value=plannerSelectedDate;
+  setText("plannerTaskCount",items.length);setText("plannerFixedHours",compactMinutes(fixedMinutes));
+  setText("plannerFlexibleTime",compactMinutes(flexibleMinutes));setText("plannerFreeTime",compactMinutes(plannerUsableMinutes(plannerSelectedDate)));
+  const conflicts=new Set();fixed.forEach(item=>{if(plannerConflictsFor(item).length)conflicts.add(item.id)});
+  document.getElementById("plannerList").innerHTML=items.length?items.map(item=>{
+    const category=plannerCategory(item),timing=item.mode==="fixed"?`${item.start}<br>${item.end}`:`${item.duration}<br>min`;
+    const detail=item.mode==="fixed"?`${category.label} • ${plannerDurationMinutes(item)} min${item.buffer?` + ${item.buffer} min buffer`:""}`:`${category.label} • Flexible • ${item.preferred==="any"?"any time":item.preferred}`;
+    return `<div class="planner-item ${item.done?"done":""} ${conflicts.has(item.id)?"conflict":""}">
+      <div class="planner-time">${timing}</div><div class="planner-main"><strong>${category.icon} ${escapeHtml(item.title)}</strong>
+      <p>${escapeHtml(detail)}${item.notes?`<br>${escapeHtml(item.notes)}`:""}</p><div class="planner-meta">
+      <span class="planner-tag ${item.priority}">${item.priority.toUpperCase()}</span><span class="planner-tag">${item.mode==="fixed"?"Fixed block":"Flexible"}</span>
+      <span class="planner-tag">${repeatLabel(item)}</span>${conflicts.has(item.id)?'<span class="planner-tag high">TIME CONFLICT</span>':""}</div></div>
+      <div class="planner-item-actions"><button class="planner-mini-btn" data-planner-action="toggle" data-planner-id="${item.id}" data-planner-date="${plannerSelectedDate}">${item.done?"Reopen":"Complete"}</button>
+      <button class="planner-mini-btn" data-planner-action="edit" data-planner-id="${item.id}">Edit${plannerIsRepeating(item)?" series":""}</button>
+      <button class="planner-mini-btn danger" data-planner-action="delete" data-planner-id="${item.id}">Delete</button></div></div>`;
+  }).join(""):`<div class="planner-empty">No items for this date. Try a template or add something wonderfully specific. ✨</div>`;
+  const today=localDateKey(),days=[];
+  for(let i=0;i<7;i++){
+    const key=addDaysKey(today,i),dayItems=plannerItemsForDate(key,false);
+    if(dayItems.length)days.push(`<div class="planner-upcoming-day"><strong>${plannerHumanDate(key)}</strong><span>${dayItems.map(x=>`${plannerCategory(x).icon} ${escapeHtml(x.title)}${x.mode==="fixed"?` (${x.start})`:""}${plannerIsRepeating(x)?" ↻":""}`).join(" • ")}</span></div>`);
+  }
+  document.getElementById("plannerUpcoming").innerHTML=days.length?days.join(""):`<div class="planner-empty">No upcoming items. Your calendar is suspiciously peaceful. 😄</div>`;
+}
+function plannerRoutineItemDuration(item){const match=String(item.title||"").match(/(\d+)\s*(?:-|–)?\s*min/i);return match?Number(match[1]):30}
+function overlapsPlannerBlock(start,duration,block){return start<block.blockEnd&&(start+duration)>block.blockStart}
+function nextAvailablePlannerSlot(start,duration,blocks,latest=1439){
+  let candidate=start,guard=0;
+  while(guard++<20){const conflict=blocks.find(block=>overlapsPlannerBlock(candidate,duration,block));if(!conflict)return candidate<=latest?candidate:null;candidate=conflict.blockEnd+10}
+  return null;
+}
+function mergePlannerIntoRoutine(items,dateKey){
+  const plannerItems=plannerItemsForDate(dateKey,true),fixed=plannerFixedBlocks(dateKey,true),flexible=plannerItems.filter(x=>x.mode==="flexible"&&!x.done);
+  let sleepTarget=plannerTime(state.settings.preferredSleep)??1380;const wakeTarget=plannerTime(state.settings.preferredWake)??420;if(sleepTarget<=wakeTarget)sleepTarget+=1440;
+  const shifted=items.map(item=>{
+    if(item.title==="Sleep"||item.title==="Sleep on time")return item;
+    const duration=plannerRoutineItemDuration(item),slot=nextAvailablePlannerSlot(item.minute,duration,fixed,sleepTarget-20);
+    return {...item,minute:slot==null?item.minute:slot,shifted:slot!=null&&slot!==item.minute};
+  });
+  const fixedItems=fixed.map(item=>({minute:item.startMin,icon:plannerCategory(item).icon,title:item.title,detail:`Fixed ${plannerCategory(item).label.toLowerCase()} block, ${item.start}–${item.end}${item.buffer?` with ${item.buffer}-minute buffer`:""}.${item.notes?` ${item.notes}`:""}`,planner:true,plannerDone:item.done,priority:item.priority==="high"}));
+  const occupied=[...fixed],flexibleItems=[],preferredStart={morning:540,afternoon:780,evening:1080,any:600};
+  flexible.forEach(item=>{
+    const duration=plannerDurationMinutes(item),start=Math.max(preferredStart[item.preferred]||600,wakeTarget),slot=nextAvailablePlannerSlot(start,duration,occupied,sleepTarget-30);
+    if(slot!=null){
+      flexibleItems.push({minute:slot,icon:plannerCategory(item).icon,title:item.title,detail:`Flexible ${plannerCategory(item).label.toLowerCase()} task, estimated ${duration} minutes.${item.notes?` ${item.notes}`:""}`,planner:true,plannerDone:false,priority:item.priority==="high"});
+      occupied.push({...item,blockStart:slot,blockEnd:slot+duration,startMin:slot,endMin:slot+duration});occupied.sort((a,b)=>a.blockStart-b.blockStart);
+    }
+  });
+  return [...shifted,...fixedItems,...flexibleItems].sort((a,b)=>a.minute-b.minute);
+}
+
 function routineModeInfo(mode){
   return {
     balanced:{headline:"A balanced day that is ambitious but still livable.",description:"Use full study targets with real breaks, movement, food, and an evening shutdown."},
@@ -925,68 +2068,69 @@ function routineWeakPriority(){
 }
 function buildRoutine(mode=state.profile.routineMode||"balanced"){
   const wake=parseTime(state.settings.preferredWake)||420;
-  let sleep=parseTime(state.settings.preferredSleep);
-  if(sleep==null)sleep=1380;
-  if(sleep<=wake)sleep+=1440;
-  const weak=routineWeakPriority();
-  const t=state.settings;
-  const items=[];
+  let sleep=parseTime(state.settings.preferredSleep);if(sleep==null)sleep=1380;if(sleep<=wake)sleep+=1440;
+  const weak=routineWeakPriority(),t=state.settings,items=[];
   const add=(offset,icon,title,detail,focus=null,priority=false)=>items.push({minute:wake+offset,icon,title,detail,focus,priority});
+  const g1=goalLabel("german"),g2=goalLabel("soumi"),g3=goalLabel("selfStudy");
   if(mode==="balanced"){
-    add(0,"☀️","Wake, water, sunlight","Keep the first 20 minutes phone-free. Wash, hydrate, and let your body wake up.");
-    add(30,"🥗","Breakfast and daily plan","Eat something supportive and choose only three important outcomes.");
-    add(70,"🇩🇪",`German deep block — ${Math.max(30,Math.round(t.germanTarget*.6))} min`,"Start with the hardest language task before attention becomes fragmented.","german",weak==="German");
-    add(155,"🧍","Break and movement","Walk, stretch, shower, or handle practical life tasks for 20–30 minutes.");
-    add(240,"🧑‍💻","University, work, or essential responsibilities","Use 50–90 minute work cycles. Do not try to track every minute.");
-    add(390,"🍲","Lunch and real rest","Eat away from the desk. A short walk is better than endless scrolling.");
-    add(470,"👥",`Study with Soumi — ${t.soumiTarget} min`,"Collaborative block: clear goal, visible output, and a short recap.","soumi",weak==="Study with Soumi");
-    add(570,"📚",`Self-study — ${t.selfStudyTarget} min`,"One focused block on the highest-priority academic task.","selfStudy",weak==="Self Study");
-    add(680,"🗣","German with Habib or English reading","Use 20–30 minutes for speaking, listening, or relaxed English reading.");
-    add(760,"🏃","Movement and dinner","Exercise or walk for 20–30 minutes, then eat a normal balanced dinner.");
-    items.push({minute:sleep-105,icon:"🧠",title:"Self-improvement reading — 10–20 min",detail:"Read something useful, then write one sentence you can apply.",priority:weak==="Self-improvement"});
-    items.push({minute:sleep-60,icon:"📵",title:"Digital shutdown",detail:"Social media off. Prepare tomorrow’s first material and tidy the environment."});
-    items.push({minute:sleep-25,icon:"🌙",title:"Wind-down routine",detail:"Low light, hygiene, calm breathing, and no demanding work."});
-    items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"Protect the rhythm. A useful tomorrow starts tonight."});
+    add(0,"☀️","Wake, water, daylight","Keep the first 20 minutes gentle and mostly phone-free.");
+    add(30,"🥗","Breakfast and three outcomes","Choose three useful outcomes—not seventeen heroic fantasies.");
+    add(70,goalIcon("german"),`${g1} — ${Math.max(25,Math.round(t.germanTarget*.65))} min`,"Use the freshest attention on the most important focus goal.","german",weak===g1);
+    add(155,"🧍","Move and reset","Walk, stretch, shower or handle a practical task.");
+    add(240,"💼","Work, study or essential responsibilities","Use focused cycles and leave breathing room.");
+    add(390,"🍲","Lunch and real rest","Eat away from the desk when possible.");
+    add(470,goalIcon("soumi"),`${g2} — ${t.soumiTarget} min`,"Use a clear outcome and stop after a visible result.","soumi",weak===g2);
+    add(570,goalIcon("selfStudy"),`${g3} — ${t.selfStudyTarget} min`,"One protected block for the next meaningful step.","selfStudy",weak===g3);
+    add(680,goalIcon("habib"),`${goalLabel("habib")} or ${goalLabel("english")}`,"Use a smaller connection, practice or reading block.");
+    add(760,"🏃","Movement, dinner and people","Move your body, eat normally and connect with someone.");
+    items.push({minute:sleep-105,icon:goalIcon("selfImprovement"),title:`${goalLabel("selfImprovement")} — 10–20 min`,detail:"Reflect, learn or write one useful sentence.",priority:weak===goalLabel("selfImprovement")});
+    items.push({minute:sleep-60,icon:"📵",title:"Digital shutdown",detail:"Reduce stimulation and prepare tomorrow’s first action."});
+    items.push({minute:sleep-25,icon:"🌙",title:"Wind-down",detail:"Low light, hygiene and no dramatic productivity comeback."});
+    items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"A useful tomorrow starts with recovery."});
   }else if(mode==="busy"){
-    add(0,"☀️","Wake and orient","Water, light, and no social media for the first 15 minutes.");
-    add(25,"🇩🇪","German minimum — 20 min","Do one meaningful language task. Stop before it becomes easy to skip.","german",true);
+    add(0,"☀️","Wake and orient","Water, light and a simple plan.");
+    add(25,goalIcon("german"),`${g1} minimum — 20 min`,"Keep the identity alive with one meaningful block.","german",true);
     add(70,"🥗","Breakfast and essentials","Choose one major work outcome and one personal outcome.");
-    add(180,"🧑‍💻","Main responsibilities","Work or university. Use short phone-free windows whenever possible.");
-    add(390,"🚶","Lunch and 15-minute walk","Movement protects energy even on a crowded day.");
-    add(470,"📚","Focused study — 25 min",`Choose ${weak.includes("Soumi")?"Study with Soumi":"Self Study"} because it currently needs support.`,weak.includes("Soumi")?"soumi":"selfStudy",true);
-    add(560,"📖","Reading — 10 min","English or self-improvement reading is enough today.");
-    add(650,"🥗","Dinner and social connection","Eat normally and speak with someone instead of only consuming content.");
-    items.push({minute:sleep-60,icon:"📵",title:"Protect the evening",detail:"Porn-free, social media controlled, tomorrow prepared."});
-    items.push({minute:sleep-20,icon:"🌙",title:"Wind down",detail:"No guilt-based catch-up. Close the day calmly."});
+    add(180,"💼","Main responsibilities","Protect short phone-free windows.");
+    add(390,"🚶","Lunch and a short walk","Busy does not mean motionless.");
+    const selected=weak===g2?"soumi":"selfStudy";
+    add(470,goalIcon(selected),`${goalLabel(selected)} — 25 min`,"Support the weakest core goal with a small block.",selected,true);
+    add(560,goalIcon("english"),`${goalLabel("english")} — 10 min`,"A short version is completely legal.");
+    add(650,"🥗","Dinner and connection","Eat and speak with a human if available.");
+    items.push({minute:sleep-60,icon:"📵",title:"Protect the evening",detail:`Keep ${goalLabel("social")} and ${goalLabel("pornFree")} aligned with your intentions.`});
+    items.push({minute:sleep-20,icon:"🌙",title:"Wind down",detail:"No guilt-based catch-up."});
     items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"Consistency beats late-night heroics."});
   }else{
-    add(0,"☀️","Gentle wake-up","Water, daylight, hygiene, and a slow start without scrolling.");
-    add(40,"🍳","Simple breakfast","Eat something nourishing and lower the expectations for today.");
-    add(90,"🇩🇪","German identity block — 10–15 min","Keep the habit alive with an easy review, listening, or vocabulary.","german",true);
-    add(180,"🚶","Walk or light movement","20 minutes outside if possible. Recovery still needs circulation.");
-    add(300,"🧑‍💻","One essential responsibility","Complete the single task that prevents tomorrow from becoming harder.");
-    add(430,"📚","One gentle focus block — 20 min","Choose one small academic task and stop after a clear result.",weak.includes("Soumi")?"soumi":"selfStudy",true);
-    add(550,"🫶","Rest, connection, and normal food","Recover without turning the day into uncontrolled screen time.");
-    items.push({minute:sleep-90,icon:"📝",title:"Reset tomorrow",detail:"Write tomorrow’s first action and prepare the material."});
-    items.push({minute:sleep-50,icon:"📵",title:"Early digital shutdown",detail:"Reduce stimulation and protect sleep quality."});
-    items.push({minute:sleep,icon:"😴",title:"Sleep on time",detail:"Recovery is productive when it restores the next day."});
+    add(0,"☀️","Gentle wake-up","Water, daylight and a low-pressure start.");
+    add(40,"🍳","Simple breakfast","Support the body before negotiating with motivation.");
+    add(90,goalIcon("german"),`${g1} identity block — 10–15 min`,"Keep the habit alive with an easy version.","german",true);
+    add(180,"🚶","Light movement","A short walk or stretch is enough.");
+    add(300,"🧰","One essential responsibility","Complete the one task that makes tomorrow easier.");
+    add(430,goalIcon("selfStudy"),`${g3} — 20 gentle minutes`,"Choose one small task and stop after a clear result.","selfStudy",true);
+    add(550,"🫶","Rest, food and connection","Recover without falling into uncontrolled scrolling.");
+    items.push({minute:sleep-90,icon:"📝",title:"Reset tomorrow",detail:"Prepare the first action and material."});
+    items.push({minute:sleep-50,icon:"📵",title:"Early digital shutdown",detail:"Reduce stimulation and protect sleep."});
+    items.push({minute:sleep,icon:"😴",title:"Sleep on time",detail:"Recovery is part of progress."});
   }
-  return items.sort((a,b)=>a.minute-b.minute);
+  return mergePlannerIntoRoutine(items.sort((a,b)=>a.minute-b.minute),localDateKey(new Date()));
 }
 function incompleteTasks(){
-  const d=currentData()[todayIndex()],t=state.settings,items=[];
-  if(d.german<t.germanTarget)items.push({title:"German",detail:`${Math.max(0,t.germanTarget-d.german)} minutes remaining`,focus:"german",score:d.german/t.germanTarget});
-  if(d.soumi<t.soumiTarget)items.push({title:"Study with Soumi",detail:`${Math.max(0,t.soumiTarget-d.soumi)} minutes remaining`,focus:"soumi",score:d.soumi/t.soumiTarget});
-  if(d.selfStudy<t.selfStudyTarget)items.push({title:"Self Study",detail:`${Math.max(0,t.selfStudyTarget-d.selfStudy)} minutes remaining`,focus:"selfStudy",score:d.selfStudy/t.selfStudyTarget});
-  [["pornFree","Porn-free","Protect the clean-day commitment"],["social","Social media control","Keep intentional limits"],["diet","Diet","Choose the next supportive meal"],["english","English reading","A short reading block is enough"],["selfImprovement","Self-improvement","Read and apply one useful idea"],["habib","German with Habib","Practice speaking or arrange the session"]].forEach(([f,title,detail])=>{
-    if(d[f]!=="Done")items.push({title,detail,focus:null,score:mult(d[f])});
+  const d=currentData()[todayIndex()],items=[];
+  MINUTE_GOALS.forEach(key=>{
+    const target=goalTarget(key),current=Number(d[key])||0;
+    if(current<target)items.push({title:goalLabel(key),detail:`${target-current} minutes remaining`,focus:key,score:current/target});
+  });
+  const details={pornFree:"Protect your chosen boundary",social:"Keep digital use intentional",diet:"Choose the next supportive nutrition action",english:"Use a short reading or learning block",selfImprovement:"Reflect or learn one useful idea",habib:"Complete the connection or practice step"};
+  ["pornFree","social","diet","english","selfImprovement","habib"].forEach(key=>{
+    if(d[key]!=="Done")items.push({title:goalLabel(key),detail:details[key],focus:null,score:mult(d[key])});
   });
   return items.sort((a,b)=>a.score-b.score);
 }
 let routineNextFocus=null;
 function renderRoutine(){
   const mode=state.profile.routineMode||"balanced",info=routineModeInfo(mode),routine=buildRoutine(mode),now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),todaySame=dayDate(todayIndex()).toDateString()===now.toDateString();
-  setText("routineHeadline",info.headline);setText("routineDescription",info.description);
+  const plannedCount=plannerItemsForDate(localDateKey(),false).length;
+  setText("routineHeadline",info.headline);setText("routineDescription",plannedCount?`${info.description} ${plannedCount} planner item${plannedCount===1?"":"s"} have been fitted into today’s timeline.`:info.description);
   document.querySelectorAll("[data-routine-mode]").forEach(b=>b.classList.toggle("active",b.dataset.routineMode===mode));
   setText("routineWake",state.settings.preferredWake);setText("routineSleep",state.settings.preferredSleep);
   const focusTotal=mode==="balanced"?state.settings.germanTarget+state.settings.soumiTarget+state.settings.selfStudyTarget:mode==="busy"?55:35;
@@ -995,7 +2139,7 @@ function renderRoutine(){
   if(nextIndex<0)nextIndex=routine.length-1;
   document.getElementById("routineTimeline").innerHTML=routine.map((x,i)=>{
     const clock=((x.minute%1440)+1440)%1440,done=todaySame&&clock<nowMin-15,nowClass=todaySame&&i===nextIndex;
-    return `<div class="routine-step ${done?"done":""} ${nowClass?"now":""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${x.title}</strong><span>${x.detail}</span>${x.priority?'<span class="routine-badge">Current weak-link priority</span>':""}</div></div>`;
+    return `<div class="routine-step ${(done||x.plannerDone)?"done":""} ${nowClass?"now":""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.detail)}</span>${x.planner?'<span class="routine-badge">Planner commitment</span>':x.priority?'<span class="routine-badge">Current weak-link priority</span>':""}</div></div>`;
   }).join("");
   const remaining=incompleteTasks(),hour=now.getHours();
   document.getElementById("remainingPlan").innerHTML=remaining.length?remaining.slice(0,6).map((x,i)=>`<div class="remaining-item"><div class="remaining-check">${i+1}</div><div><strong>${x.title}</strong><span>${x.detail}</span></div></div>`).join(""):`<div class="empty">Core goals are complete. Protect the evening and sleep well.</div>`;
@@ -1193,12 +2337,15 @@ window.addEventListener("message",event=>{
 function renderSettings(){
   setText("monthLabel",monthLabel());document.documentElement.dataset.theme=state.profile.theme;
   document.getElementById("userName").value=state.profile.name;document.getElementById("monthlyTarget").value=state.profile.monthlyTarget;
+  document.getElementById("profileTemplate").value=state.profile.template||"balanced";
   ["targetSleep","shortBelow","longAbove","preferredSleep","preferredWake","tolerance","germanTarget","soumiTarget","selfStudyTarget","missionThreshold"].forEach(id=>document.getElementById(id).value=state.settings[id]);
   document.getElementById("celebrationToggle").classList.toggle("on",state.profile.celebrations);document.getElementById("coachToggle").classList.toggle("on",state.profile.coach);
-  document.getElementById("weightSettings").innerHTML=Object.entries(WEIGHT_LABELS).map(([k,label])=>`<div class="setting-row"><label>${label}</label><input type="number" min="0" max="20" step=".5" value="${state.weights[k]}" data-weight="${k}"></div>`).join("");
-  document.querySelector(".brand>div:last-child>div").textContent=`Pratik´s Progress Plan`;
+  const labels=dynamicWeightLabels();
+  document.getElementById("weightSettings").innerHTML=GOAL_KEYS.map(k=>`<div class="setting-row"><label>${goalIcon(k)} ${escapeHtml(labels[k])}</label><input type="number" min="0" max="20" step=".5" value="${state.weights[k]}" data-weight="${k}"></div>`).join("");
+  document.querySelector(".brand>div:last-child>div").textContent="Personal Progress Planner";
+  renderGoalConfigSettings();renderGoalLabels();
 }
-function focusLabel(key){return {german:"German",soumi:"Study with Soumi",selfStudy:"Self Study"}[key]||"Study"}
+function focusLabel(key){return goalLabel(key)||"Focus"}
 function currentTimerSeconds(){
   if(timer.running&&timer.startedAt){
     timer.elapsed=Math.max(0,Math.floor((Date.now()-timer.startedAt)/1000));
@@ -1206,8 +2353,8 @@ function currentTimerSeconds(){
   return timer.mode==="countdown"?Math.max(0,timer.duration-timer.elapsed):timer.elapsed;
 }
 function renderFocus(){
-  document.getElementById("focusSelect").innerHTML=[["german","German"],["soumi","Study with Soumi"],["selfStudy","Self Study"]]
-    .map(([k,n])=>`<button class="chip ${timer.focus===k?"active":""}" data-focus="${k}">${n}</button>`).join("");
+  document.getElementById("focusSelect").innerHTML=MINUTE_GOALS
+    .map(k=>`<button class="chip ${timer.focus===k?"active":""}" data-focus="${k}">${goalIcon(k)} ${goalLabel(k)}</button>`).join("");
   document.querySelectorAll("[data-timer-mode]").forEach(b=>b.classList.toggle("active",b.dataset.timerMode===timer.mode));
   document.getElementById("durationTools").classList.toggle("hidden-tool",timer.mode!=="countdown");
   const mins=[15,25,45,60,90];
@@ -1244,13 +2391,15 @@ function renderTimer(){
   }
   saveFocusTimer();
 }
-function renderAll(){ensureMonth();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();renderRoutine();renderActivity();save()}
+function renderAll(){ensureMonth();renderGoalLabels();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();renderPlanner();renderNowPlan();renderRoutine();renderActivity();save()}
 function setSaveStatus(t){const e=document.getElementById("saveStatus");if(e)e.textContent=t}
 function showTab(id){
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
   document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id));
   if(id==="command"||id==="insights")setTimeout(()=>renderDashboard(),30);
   if(id==="routine")setTimeout(()=>renderRoutine(),20);
+  if(id==="nowplan")setTimeout(()=>renderNowPlan(),20);
+  if(id==="planner")setTimeout(()=>renderPlanner(),20);
   if(id==="activity")setTimeout(()=>requestActivity(false),20);
   if(id==="calendar")setTimeout(()=>{
     const wrap=document.getElementById("calendarTableWrap");
@@ -1399,7 +2548,7 @@ function attachEvents(){
   document.getElementById("prevMonth").onclick=()=>changeMonth(-1);document.getElementById("nextMonth").onclick=()=>changeMonth(1);
   document.getElementById("quickBtn").onclick=()=>showModal("quickModal");document.getElementById("closeQuick").onclick=()=>hideModal("quickModal");document.getElementById("openDetailed").onclick=()=>{hideModal("quickModal");showTab("today")};
   document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>applyQuick(b.dataset.quick));
-  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=openFocusTimer;
+  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=openFocusTimer;document.getElementById("nowHeroBtn").onclick=()=>showTab("nowplan");
   document.getElementById("autoSuggestBtn").onclick=smartMinimum;document.getElementById("completeTodayBtn").onclick=completeToday;document.getElementById("tableStartBtn").onclick=()=>{
     const wrap=document.getElementById("calendarTableWrap");
     if(wrap)wrap.scrollTo({left:0,behavior:"smooth"});
@@ -1411,13 +2560,30 @@ function attachEvents(){
   document.getElementById("activityTrackingBtn").onclick=toggleActivityTracking;
   document.getElementById("activityInstallHelpBtn").onclick=showActivityInstallGuide;
   document.getElementById("activityIdleSelect").onchange=e=>updateActivityIdle(e.target.value);
+  document.getElementById("applyProfileTemplateBtn").onclick=()=>applyTemplatePack(document.getElementById("profileTemplate").value);
+  document.getElementById("finishOnboardingBtn").onclick=()=>finishOnboarding(true);
+  document.getElementById("skipOnboardingBtn").onclick=()=>finishOnboarding(false);
+  document.getElementById("mascotBtn").onclick=e=>{rotateMotivation();playfulSparks(e.clientX,e.clientY,6)};
+  document.getElementById("plannerForm").onsubmit=savePlannerForm;
+  document.getElementById("plannerClearBtn").onclick=()=>clearPlannerForm(plannerSelectedDate);
+  document.getElementById("plannerMode").onchange=plannerModeChanged;
+  document.getElementById("plannerRepeat").onchange=plannerRepeatChanged;
+  document.querySelectorAll("#plannerRepeatDays input").forEach(cb=>cb.addEventListener("change",previewPlannerConflict));
+  ["plannerStart","plannerEnd","plannerBuffer","plannerDate"].forEach(id=>document.getElementById(id).addEventListener("change",previewPlannerConflict));
+  document.getElementById("plannerTodayBtn").onclick=()=>selectPlannerDate(localDateKey(),true);
+  document.getElementById("plannerTomorrowBtn").onclick=()=>selectPlannerDate(plannerTomorrowKey(),true);
+  document.getElementById("plannerViewDate").onchange=e=>selectPlannerDate(e.target.value);
+  document.getElementById("refreshNowPlanBtn").onclick=()=>{renderNowPlan();showToast("Now Plan recalculated")};
+  document.getElementById("nowPlanActionBtn").onclick=()=>openNowPlanAction(nowPlanPrimaryAction);
+  document.getElementById("nowPlanBackupBtn").onclick=()=>openNowPlanAction(nowPlanBackupAction);
+  document.getElementById("nowPlanCheckinBtn").onclick=()=>openNowPlanAction({type:"today"});
   document.getElementById("refreshRoutineBtn").onclick=()=>{renderRoutine();showToast("Routine refreshed from your latest progress")};
   document.getElementById("routineNextBtn").onclick=openRoutineNext;
   document.getElementById("themeBtn").onclick=()=>{state.profile.theme=state.profile.theme==="dark"?"light":"dark";save();renderAll()};
   document.getElementById("menuBtn").onclick=()=>showModal("toolsMenu");document.getElementById("closeTools").onclick=()=>hideModal("toolsMenu");document.getElementById("menuExport").onclick=exportBackup;document.getElementById("menuCsv").onclick=exportCsv;document.getElementById("menuSettings").onclick=()=>{hideModal("toolsMenu");showTab("settings")};
   document.getElementById("exportBtn").onclick=exportBackup;document.getElementById("csvBtn").onclick=exportCsv;document.getElementById("printBtn").onclick=()=>window.print();document.getElementById("resetMonthBtn").onclick=resetMonth;
   document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
-  document.getElementById("importFile").onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!x.months)throw 0;state={profile:{...DEFAULTS.profile,...x.profile},settings:{...DEFAULTS.settings,...x.settings},weights:{...DEFAULTS.weights,...x.weights},months:x.months};save();renderAll();showToast("Backup restored")}catch(err){alert("Invalid backup file.")}e.target.value=""};
+  document.getElementById("importFile").onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!x.months)throw 0;state={profile:{...DEFAULTS.profile,...x.profile},settings:{...DEFAULTS.settings,...x.settings},weights:{...DEFAULTS.weights,...x.weights},months:x.months,planner:Array.isArray(x.planner)?x.planner:[]};save();renderAll();showToast("Backup restored")}catch(err){alert("Invalid backup file.")}e.target.value=""};
   document.getElementById("celebrationToggle").onclick=()=>{state.profile.celebrations=!state.profile.celebrations;save();renderSettings()};
   document.getElementById("coachToggle").onclick=()=>{state.profile.coach=!state.profile.coach;save();renderAll()};
   document.addEventListener("click",e=>{
@@ -1429,6 +2595,19 @@ function attachEvents(){
       state.profile.routineMode=e.target.dataset.routineMode;
       save();
       renderRoutine();
+    }
+    const templateBtn=e.target.closest("[data-planner-template]");
+    if(templateBtn)applyPlannerTemplate(templateBtn.dataset.plannerTemplate);
+    const onboardBtn=e.target.closest("[data-onboard-template]");
+    if(onboardBtn){
+      document.querySelectorAll("[data-onboard-template]").forEach(b=>b.classList.remove("selected"));
+      onboardBtn.classList.add("selected");
+    }
+    if(e.target.dataset.plannerAction){
+      const id=e.target.dataset.plannerId;
+      if(e.target.dataset.plannerAction==="toggle")togglePlannerItem(id,e.target.dataset.plannerDate||plannerSelectedDate);
+      if(e.target.dataset.plannerAction==="edit")editPlannerItem(id);
+      if(e.target.dataset.plannerAction==="delete")deletePlannerItem(id);
     }
     if(e.target.dataset.focus){
       if(timer.running||timer.elapsed>0){
@@ -1450,6 +2629,16 @@ function attachEvents(){
   document.addEventListener("change",e=>{
     const el=e.target;
     if(el.dataset.activityDomain)updateActivityCategory(el.dataset.activityDomain,el.value);
+    if(el.dataset.goalLabel){
+      const key=el.dataset.goalLabel,value=el.value.trim();
+      if(value)state.goalConfig[key].label=value.slice(0,50);
+      save();renderAll();
+    }
+    if(el.dataset.goalIcon){
+      const key=el.dataset.goalIcon,value=el.value.trim();
+      if(value)state.goalConfig[key].icon=value.slice(0,4);
+      save();renderAll();
+    }
     if(el.id==="customDuration")setTimerDuration(Number(el.value));
     if(el.dataset.weight){state.weights[el.dataset.weight]=Number(el.value)||0;save();renderAll()}
     if(["targetSleep","shortBelow","longAbove","preferredSleep","preferredWake","tolerance","germanTarget","soumiTarget","selfStudyTarget","missionThreshold"].includes(el.id)){state.settings[el.id]=el.type==="number"?Number(el.value):el.value;save();renderAll()}
@@ -1459,9 +2648,37 @@ function attachEvents(){
   window.addEventListener("resize",()=>{clearTimeout(window.__r);window.__r=setTimeout(()=>{renderDashboard()},100)});
 }
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
-ensureMonth();attachEvents();renderAll();restoreRunningTimer();
+ensureMonth();attachEvents();clearPlannerForm(localDateKey());renderAll();restoreRunningTimer();rotateMotivation();setTimeout(showOnboarding,350);
 setTimeout(()=>requestActivity(false),700);
 setInterval(()=>{if(document.getElementById("activity")?.classList.contains("active"))requestActivity(false)},30000);
+setInterval(()=>renderNowPlan(),60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)renderNowPlan()});
 </script>
+
+  <div class="onboarding" id="onboarding">
+    <div class="onboarding-card">
+      <div class="eyebrow">🎉 Welcome to Personal Progress Planner</div>
+      <h2>Make it yours in 30 seconds.</h2>
+      <p>Choose a starter setup. You can rename every daily goal, add unlimited tasks, and change the plan whenever life changes.</p>
+      <div class="setting-row"><label>What should we call you?</label><input id="onboardingName" type="text" placeholder="Your name or nickname"></div>
+      <div class="template-pack-grid" id="onboardingTemplates">
+        <button class="template-pack" data-onboard-template="balanced"><strong>🌈 Balanced Life</strong><span>Focus, learning, movement, reading, digital balance and nutrition.</span></button>
+        <button class="template-pack" data-onboard-template="student"><strong>🎓 Student</strong><span>Main study, coursework, revision, reading and healthy routines.</span></button>
+        <button class="template-pack" data-onboard-template="professional"><strong>💼 Professional</strong><span>Deep work, priority projects, skill growth and sustainable energy.</span></button>
+        <button class="template-pack" data-onboard-template="language"><strong>🗣 Language Learner</strong><span>Language focus, conversation, self-study and daily exposure.</span></button>
+        <button class="template-pack" data-onboard-template="wellness"><strong>🌿 Wellness</strong><span>Movement, mindfulness, recovery, nutrition and calmer digital habits.</span></button>
+      </div>
+      <div class="onboarding-actions">
+        <button class="btn" id="skipOnboardingBtn">Start with defaults</button>
+        <button class="btn primary" id="finishOnboardingBtn">Start Planning ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mascot" id="mascot">
+    <div class="mascot-bubble" id="mascotBubble"><strong>Hey!</strong> Click me whenever your plan feels dramatic. 😄</div>
+    <button class="mascot-btn" id="mascotBtn" title="Motivation boost">🌟</button>
+  </div>
+
 </body>
 </html>
