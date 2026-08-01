@@ -1,0 +1,40 @@
+  <section id="settings" class="panel">
+    <div class="section-head"><div><h2>Settings & Data</h2><p>Customize the system without touching code.</p></div></div>
+    <div class="settings-grid">
+      <div class="box glass"><h3>Identity & experience</h3>
+        <div class="setting-row"><label>Your name</label><input id="userName" type="text"></div>
+        <div class="setting-row"><label>Monthly point target</label><input id="monthlyTarget" type="number" min="100" max="3000" step="50"></div>
+        <div class="toggle"><div><strong>Celebration effects</strong><div class="k-sub">Confetti on mission wins</div></div><div class="switch" id="celebrationToggle"></div></div>
+        <div class="toggle"><div><strong>Smart coach</strong><div class="k-sub">Pattern-based priorities</div></div><div class="switch" id="coachToggle"></div></div>
+      </div>
+      <div class="box glass"><h3>Sleep settings</h3>
+        <div class="setting-row"><label>Target hours</label><input id="targetSleep" type="number" min="1" max="14" step=".5"></div>
+        <div class="setting-row"><label>Short below</label><input id="shortBelow" type="number" min="1" max="14" step=".5"></div>
+        <div class="setting-row"><label>Long above</label><input id="longAbove" type="number" min="1" max="16" step=".5"></div>
+        <div class="setting-row"><label>Preferred sleep</label><input id="preferredSleep" type="time"></div>
+        <div class="setting-row"><label>Preferred wake</label><input id="preferredWake" type="time"></div>
+        <div class="setting-row"><label>Timing tolerance</label><input id="tolerance" type="number" min="0" max="360" step="15"></div>
+      </div>
+      <div class="box glass"><h3>Daily goal targets</h3><div id="goalTargetSettings"></div>
+        <div class="setting-row"><label>Mission completion threshold</label><input id="missionThreshold" type="number" min="40" max="100" step="5"></div>
+      </div>
+      <div class="box glass"><h3>Point weights</h3><div id="weightSettings"></div></div>
+      <div class="box glass"><h3>Shared booking connection</h3><div class="box-sub">Connect the Google Apps Script booking service. The admin key stays in this browser.</div>
+        <div class="booking-setup-grid"><label>Web app URL<input id="sharedBookingUrl" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label><label>Admin key<input id="sharedBookingKey" type="password" placeholder="Private admin key"></label></div>
+        <div class="hero-actions" style="margin-top:10px"><button class="btn primary" id="saveSharedBookingBtn" type="button">Save Connection</button><button class="btn" id="testSharedBookingBtn" type="button">Test</button></div><div class="k-sub" id="sharedBookingStatus" style="margin-top:9px">Not connected yet.</div>
+      </div>
+    </div>
+
+    <div class="box glass" style="margin-top:13px">
+      <h3>Backup, transfer & deployment</h3>
+      <div class="hero-actions">
+        <button class="btn primary" id="exportBtn">Export Full Backup</button>
+        <button class="btn" id="importBtn">Import Backup</button>
+        <button class="btn" id="csvBtn">Export Current Month CSV</button>
+        <button class="btn" id="printBtn">Print Dashboard</button>
+        <button class="btn danger" id="resetMonthBtn">Reset Current Month</button>
+      </div>
+      <input type="file" id="importFile" accept=".json" hidden>
+      <p class="k-sub" style="margin-top:12px">Data is stored privately in this browser. Export a backup before switching devices or clearing browser data.</p>
+    </div>
+  </section>

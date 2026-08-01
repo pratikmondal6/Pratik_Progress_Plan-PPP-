@@ -1,0 +1,79 @@
+<section id="diary" class="panel">
+  <div class="section-head">
+    <div><h2>My Diary</h2><p>Capture thoughts, plans, tasks, summaries, and moments. You decide whether each entry is kept or expires.</p></div>
+    <div class="diary-retention">🔒 Private on this device</div>
+  </div>
+
+  <div class="diary-layout">
+    <div class="box glass diary-composer">
+      <div class="diary-current-time"><span>Entry date and time</span><strong id="diaryCurrentDateTime">—</strong></div>
+      <div class="diary-composer-head">
+        <div><h3>Write something</h3><div class="box-sub">What is on your mind right now?</div></div>
+        <select id="diaryType" aria-label="Entry type">
+          <option value="thought">Thought</option>
+          <option value="task">Task or plan</option>
+          <option value="summary">Daily summary</option>
+          <option value="win">Win or achievement</option>
+          <option value="note">Quick note</option>
+        </select>
+      </div>
+      <input id="diaryTitle" type="text" maxlength="120" placeholder="Title (optional)" aria-label="Entry title">
+      <textarea id="diaryText" maxlength="10000" placeholder="Write freely here…" aria-label="Diary entry"></textarea>
+      <div class="diary-attachment-tools">
+        <input id="diaryImageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+        <button class="btn diary-image-button" type="button" id="diaryImageButton">🖼 Add Image</button>
+        <span>JPG, PNG, WebP, or GIF · automatically optimized</span>
+      </div>
+      <div class="diary-image-preview hidden" id="diaryImagePreview">
+        <img id="diaryImagePreviewImg" alt="Selected diary attachment">
+        <div><strong id="diaryImagePreviewName">Image selected</strong><span id="diaryImagePreviewSize"></span></div>
+        <button type="button" id="diaryImageRemove" aria-label="Remove selected image">✕</button>
+      </div>
+      <label class="diary-auto-delete">
+        <input id="diaryAutoDelete" type="checkbox">
+        <span><strong>Delete this entry automatically after 7 days</strong><small>Leave this unchecked to keep the entry until you delete it yourself.</small></span>
+      </label>
+      <div class="diary-compose-footer">
+        <span id="diaryCharacterCount" class="k-sub">0 / 10,000</span>
+        <button class="btn primary" id="saveDiaryEntry">Save Entry</button>
+      </div>
+      <p class="diary-hint">Tip: press Ctrl + Enter to save. Entries are stored only in this browser.</p>
+      <p class="diary-hint">✦ Smart analysis updates the planner only when your writing contains a confident habit result, duration, or day plan.</p>
+    </div>
+
+    <aside class="box glass diary-about">
+      <h3>This week at a glance</h3>
+      <div class="diary-stats">
+        <div><strong id="diaryEntryCount">0</strong><span>active entries</span></div>
+        <div><strong id="diaryWordCount">0</strong><span>words written</span></div>
+      </div>
+      <div class="diary-rule"></div>
+      <p>Entries are kept by default. When saving, you can optionally make an entry disappear seven days later.</p>
+      <button class="btn danger" id="clearDiaryEntries">Delete All Entries</button>
+    </aside>
+  </div>
+
+  <section class="box glass diary-review" id="diaryDailyReview">
+    <div class="diary-review-head"><div><div class="diary-review-kicker">✦ Private local intelligence</div><h3>Today’s Review</h3><p>Built from today’s diary entries without sending your writing anywhere.</p></div><button class="btn" id="refreshDiaryReview">Refresh Review</button></div>
+    <div id="diaryReviewContent"></div>
+  </section>
+
+  <div class="diary-toolbar">
+    <div>
+      <h3>Your recent entries</h3>
+      <p class="k-sub">Newest first</p>
+    </div>
+    <div class="diary-filters">
+      <input id="diarySearch" type="search" placeholder="Search entries…" aria-label="Search diary">
+      <select id="diaryFilter" aria-label="Filter diary by type">
+        <option value="all">All types</option>
+        <option value="thought">Thoughts</option>
+        <option value="task">Tasks and plans</option>
+        <option value="summary">Daily summaries</option>
+        <option value="win">Wins</option>
+        <option value="note">Quick notes</option>
+      </select>
+    </div>
+  </div>
+  <div id="diaryEntries" class="diary-entries"></div>
+</section>

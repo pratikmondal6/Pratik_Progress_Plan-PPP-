@@ -1,0 +1,82 @@
+  <section id="command" class="panel active">
+    <div class="section-head"><div><h2>Command Center</h2><p>Live view of momentum, health, focus, and risk.</p></div></div>
+    <div class="cards">
+      <div class="card glass" style="--accent:var(--gold)"><div class="k-label">Total points</div><div class="k-value" id="totalPoints">0</div><div class="k-sub" id="rewardLevel">Starter</div><span class="trend flat" id="pointsTrend">No trend yet</span></div>
+      <div class="card glass" style="--accent:var(--teal)"><div class="k-label">Completion</div><div class="k-value" id="completion">0%</div><div class="k-sub">Across logged days</div><span class="trend flat" id="completionTrend">No trend yet</span></div>
+      <div class="card glass" style="--accent:var(--purple)"><div class="k-label">Current streak</div><div class="k-value" id="currentStreak">0</div><div class="k-sub">Mission days</div><span class="trend flat" id="streakStatus">Ready to start</span></div>
+      <div class="card glass" style="--accent:var(--cyan)"><div class="k-label">Sleep average</div><div class="k-value" id="avgSleep">—</div><div class="k-sub">Hours per logged night</div><span class="trend flat" id="sleepTrend">No sleep data</span></div>
+      <div class="card glass" style="--accent:var(--green)"><div class="k-label">Career readiness</div><div class="k-value" id="disciplineScore">0</div><div class="k-sub">Audi + System Design + Coursera ML</div><span class="trend flat" id="disciplineTrend">Build the baseline</span></div>
+    </div>
+
+    <div class="grid3" style="margin-top:13px">
+      <div class="box glass ai-box">
+        <div class="ai-head"><h3>Smart Coach</h3><span class="ai-pill">✦ Local pattern engine</span></div>
+        <div class="ai-message" id="coachHeadline">Your system is ready. Start with one honest day.</div>
+        <div class="ai-list" id="coachPriorities"></div>
+      </div>
+      <div class="box glass">
+        <h3>Monthly forecast</h3><div class="box-sub">Projected from your current pace</div>
+        <div class="k-value" id="forecastPoints">0</div><div class="k-sub">projected points</div>
+        <div style="margin-top:14px"><div class="track"><div class="fill" id="forecastBar"></div></div></div>
+        <div class="k-sub" id="forecastText" style="margin-top:9px">Log a few days to generate a forecast.</div>
+      </div>
+      <div class="box glass">
+        <h3>Mission risk</h3><div class="box-sub">Smart warning before momentum breaks</div>
+        <div class="k-value" id="riskLevel">Low</div>
+        <div class="k-sub" id="riskText">No risk detected.</div>
+        <div class="badges" id="achievementMini" style="margin-top:14px"></div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass"><h3>Weekly momentum</h3><canvas class="chart" id="weeklyChart"></canvas></div>
+      <div class="box glass"><h3>Habit completion</h3><div class="progress-list" id="habitBars"></div></div>
+      <div class="box glass"><h3>Sleep duration & target</h3><canvas class="chart" id="sleepChart"></canvas></div>
+      <div class="box glass"><h3>Consistency heatmap</h3><div class="heatmap" id="heatmap"></div><div class="box-sub" style="margin-top:10px">Darker days = stronger completion.</div></div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass">
+        <h3>Achievements</h3><div class="box-sub">Milestones unlock automatically.</div><div class="badges" id="achievements"></div>
+      </div>
+      <div class="box glass focus-card" id="focusSprintBox">
+        <div class="focus-card-head">
+          <div><div class="focus-eyebrow"><span></span> Deep work studio</div><h3>Flexible Focus Timer</h3><div class="box-sub">Choose one priority. Give it your full attention.</div></div>
+          <div class="timer-mode" id="timerModes">
+            <button class="mode-btn active" data-timer-mode="stopwatch">↗ Count Up</button>
+            <button class="mode-btn" data-timer-mode="countdown">◷ Countdown</button>
+          </div>
+        </div>
+        <div class="focus-panel">
+          <div class="timer-stage">
+            <div class="timer-orbit"><div class="timer-orbit-inner"><div class="timer-label">FOCUS TIME</div><div class="timer" id="timerDisplay">00:00</div><div class="timer-focus-label" id="timerFocusLabel">Choose a focus</div></div></div>
+          </div>
+          <div class="focus-setup">
+            <div class="focus-step-label"><span>1</span> What are you focusing on?</div>
+            <div class="focus-select" id="focusSelect"></div>
+            <div class="duration-tools hidden-tool" id="durationTools">
+              <div class="focus-step-label"><span>2</span> Choose a target</div>
+              <div class="duration-options"><div id="durationPresets"></div><div class="duration-custom"><input id="customDuration" type="number" min="1" max="240" step="1" value="25" aria-label="Custom minutes"><span>min</span></div></div>
+            </div>
+            <div class="timer-controls">
+              <button class="btn primary timer-start" id="timerStart">▶ Start Focus</button>
+              <button class="btn" id="timerPause">Pause</button>
+              <button class="btn finish-btn" id="timerFinish">✓ Finish & Save</button>
+              <button class="btn timer-reset" id="timerReset" title="Reset timer">↻</button>
+            </div>
+            <div class="timer-status" id="timerStatus">Choose a study habit, press Start, and finish whenever your real focus session ends.</div>
+          </div>
+        </div>
+        <div class="focus-music" id="focusMusicPanel">
+          <div class="music-identity"><div class="music-art">♫</div><div><div class="focus-music-title">Built-in Focus Sound</div><div class="focus-music-sub">Ambient audio generated inside PPP—no account, link, or internet connection required.</div></div></div>
+          <div class="music-settings">
+            <select id="musicPreset" aria-label="Focus sound"><option value="deep">Deep Focus</option><option value="brown">Brown Noise</option><option value="rain">Soft Rain</option></select>
+            <button class="btn music-play" id="musicPlayPause">▶ Play Sound</button>
+            <label class="music-volume"><span>Volume</span><input id="musicVolume" type="range" min="0" max="100" value="35"><strong id="musicVolumeValue">35%</strong></label>
+          </div>
+          <div class="music-footer"><label class="music-toggle"><input type="checkbox" id="musicWithTimer" checked><span>Follow timer automatically</span></label><div class="music-status" id="musicStatus">Choose a sound, press Play, or start the focus timer.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+

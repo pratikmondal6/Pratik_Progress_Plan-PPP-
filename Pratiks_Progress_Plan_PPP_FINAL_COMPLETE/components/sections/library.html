@@ -1,0 +1,29 @@
+<section id="library" class="panel">
+  <div class="section-head library-heading">
+    <div><h2>📚 My Library</h2><p>Keep your books, links, notes, and reading progress together.</p></div>
+    <div class="library-head-actions"><button class="btn" id="libraryContinueBtn">Continue Reading</button><button class="btn primary" id="libraryAddBtn">+ Add Book</button></div>
+  </div>
+  <div class="box glass library-hero">
+    <div class="library-summary" id="librarySummary"></div>
+    <div class="library-filter" id="libraryFilter">
+      <button class="active" data-library-filter="all">All books</button><button data-library-filter="german">🇩🇪 German</button><button data-library-filter="english">🇬🇧 English</button><button data-library-filter="growth">🧠 Growth</button><button data-library-filter="technical">💻 Technical</button><button data-library-filter="other">Other</button><button data-library-filter="reading">Currently reading</button>
+    </div>
+  </div>
+  <div class="library-grid" id="libraryGrid"></div>
+
+  <div class="modal-backdrop hidden" id="bookEditorModal">
+    <form class="modal glass library-editor" id="bookEditorForm">
+      <div class="modal-head"><h2 id="bookEditorTitle">Add Book</h2><button type="button" class="icon-btn" id="bookEditorClose" aria-label="Close">✕</button></div>
+      <input type="hidden" id="bookEditId">
+      <div class="library-form-grid">
+        <label class="library-field wide"><span>Title *</span><input id="bookTitle" maxlength="160" required></label>
+        <label class="library-field"><span>Author</span><input id="bookAuthor" maxlength="120"></label>
+        <label class="library-field"><span>Category</span><select id="bookCategory"><option value="german">German</option><option value="english">English</option><option value="growth">Personal Growth</option><option value="technical">Technical</option><option value="other">Other</option></select></label>
+        <label class="library-field"><span>Icon</span><input id="bookIcon" maxlength="12" placeholder="📘"></label>
+        <label class="library-field wide"><span>Book or resource URL</span><input id="bookUrl" type="url" placeholder="https://…"></label>
+        <label class="library-field wide"><span>Purpose / description</span><textarea id="bookPurpose" maxlength="600"></textarea></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn" id="bookEditorCancel">Cancel</button><button type="submit" class="btn primary">Save Book</button></div>
+    </form>
+  </div>
+</section>

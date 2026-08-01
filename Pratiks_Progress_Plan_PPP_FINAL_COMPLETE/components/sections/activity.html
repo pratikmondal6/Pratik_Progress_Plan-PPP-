@@ -1,0 +1,51 @@
+  <section id="activity" class="panel">
+    <div class="section-head">
+      <div><h2>Digital Activity</h2><p>Automatic active-tab timing from the private PPP Chrome extension.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="refreshActivityBtn">Refresh</button><button class="btn" id="exportActivityBtn">Export Activity</button></div>
+    </div>
+
+    <div class="activity-connect glass">
+      <div class="connection-left">
+        <div class="connection-dot waiting" id="activityConnectionDot"></div>
+        <div><strong id="activityConnectionTitle">Looking for the PPP Activity Tracker…</strong><div class="k-sub" id="activityConnectionText">Install the extension once; PPP itself does not need to stay open.</div></div>
+      </div>
+      <button class="btn primary" id="activityInstallHelpBtn">Installation Guide</button>
+    </div>
+
+    <div class="activity-cards">
+      <div class="card glass activity-card" style="--activity-accent:var(--blue)"><div class="k-label">Active browser time</div><div class="activity-value" id="activityTotal">—</div><div class="activity-sub">Today while Chrome was focused</div></div>
+      <div class="card glass activity-card" style="--activity-accent:var(--green)"><div class="k-label">Productive + study</div><div class="activity-value" id="activityProductive">—</div><div class="activity-sub">Focused digital work</div></div>
+      <div class="card glass activity-card" style="--activity-accent:var(--pink)"><div class="k-label">Social + entertainment</div><div class="activity-value" id="activityDistracting">—</div><div class="activity-sub">Potential distraction time</div></div>
+      <div class="card glass activity-card" style="--activity-accent:var(--cyan)"><div class="k-label">Digital focus ratio</div><div class="activity-value" id="activityFocusRatio">—</div><div class="activity-sub">Productive share of intentional time</div></div>
+      <div class="card glass activity-card" style="--activity-accent:var(--gold)"><div class="k-label">Websites visited</div><div class="activity-value" id="activityDomainCount">—</div><div class="activity-sub">Unique domains today</div></div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass"><h3>Last 7 days</h3><div class="box-sub">Total active browsing and productive time.</div><canvas class="chart" id="activityWeekChart"></canvas></div>
+      <div class="box glass"><h3>Today's categories</h3><div class="box-sub">You can recategorize any website below.</div><div class="activity-bars" id="activityCategoryBars" style="margin-top:16px"></div><div class="activity-legend" id="activityLegend"></div></div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass">
+        <h3>Top websites today</h3>
+        <div class="box-sub">Only the domain and active seconds are stored—never full URLs, page titles, or searches.</div>
+        <div style="overflow:auto;margin-top:10px">
+          <table class="activity-table"><thead><tr><th>Website</th><th>Active time</th><th>Share</th><th>Category</th></tr></thead><tbody id="activityDomainRows"></tbody></table>
+        </div>
+      </div>
+      <div>
+        <div class="box glass">
+          <h3>Live tracker</h3>
+          <div class="live-domain" style="margin-top:12px"><div class="live-pulse" id="activityLivePulse"></div><div><strong id="activityLiveDomain">Waiting for extension</strong><div class="k-sub" id="activityLiveStatus">Tracking begins automatically after installation.</div></div></div>
+          <div class="activity-controls" style="margin-top:13px">
+            <div class="control-row"><div><strong>Automatic tracking</strong><span>Pause without uninstalling the extension.</span></div><button class="btn" id="activityTrackingBtn">—</button></div>
+            <div class="control-row"><div><strong>Idle cutoff</strong><span>Stop counting after no keyboard or mouse activity.</span></div><select id="activityIdleSelect"><option value="30">30 sec</option><option value="60">60 sec</option><option value="120">2 min</option><option value="300">5 min</option></select></div>
+          </div>
+        </div>
+        <div class="privacy-note" style="margin-top:13px">
+          <strong style="color:var(--text)">Privacy design:</strong> all activity remains in <code>chrome.storage.local</code> on this Chrome profile. The extension does not use a database, does not read page content, and does not upload browsing data.
+        </div>
+      </div>
+    </div>
+  </section>
+

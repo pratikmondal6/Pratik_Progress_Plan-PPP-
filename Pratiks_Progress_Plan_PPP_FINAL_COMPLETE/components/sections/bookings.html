@@ -1,0 +1,9 @@
+<section id="bookings" class="panel">
+  <div class="section-head booking-dashboard-head"><div><h2>📅 Booking Dashboard</h2><p>Share your page, review incoming requests, and synchronize accepted appointments with My Day.</p></div><button class="btn primary" id="refreshBookingRequestsBtn">↻ Refresh Requests</button></div>
+  <div class="booking-dashboard-stats" id="bookingDashboardStats"></div>
+  <div class="box glass booking-share-card"><div><h3>Your public booking page</h3><p>Anyone with this link can request a time. Your PPP data and admin key are never shown.</p></div><div class="booking-share-bar"><input id="publicBookingLink" readonly placeholder="Connect the service in Settings"><button class="btn primary" id="copyBookingLinkBtn">Copy Link</button><button class="btn" id="openPublicBookingBtn">Open</button></div><div class="booking-connection-note" id="bookingConnectionNote">Connect the booking service in Settings first.</div></div>
+  <div class="section-head booking-subhead"><div><h2>Incoming requests</h2><p>Accept a request to add it to Bookings, Google Calendar, and your Daily Planner.</p></div></div>
+  <div class="box glass" id="bookingRequestList"><div class="booking-empty">Connect the booking service, then refresh.</div></div>
+  <div class="section-head booking-subhead"><div><h2>Accepted bookings</h2><p>Private feedback is stored only in this browser.</p></div></div>
+  <div id="bookingPanelList" class="booking-panel-list"></div>
+</section>

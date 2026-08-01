@@ -1,0 +1,15 @@
+  <section id="today" class="panel">
+    <div class="section-head"><div><h2>Today's Check-in</h2><p id="todaySubtitle">Fast, focused, and autosaved.</p></div><button class="btn gold" id="autoSuggestBtn">✦ Apply Smart Minimum</button></div>
+    <div class="quick-grid" id="goalCheckinGrid"></div>
+    <div class="quick-grid" style="margin-top:13px">
+      <div class="input-card glass">
+        <h3>🌙 Sleep rhythm</h3><div class="time-grid"><label>Sleep<input type="time" id="sleepTime"></label><label>Wake<input type="time" id="wakeTime"></label></div>
+        <div id="sleepPreview" class="k-sub" style="margin-top:10px">Enter both times to calculate duration.</div>
+      </div>
+      <div class="input-card glass" style="grid-column:span 2">
+        <h3>🏅 Win / reflection</h3><textarea id="notes" placeholder="What moved your life forward today?"></textarea>
+      </div>
+    </div>
+    <div class="save-bar glass"><div><strong id="todayScorePreview">0 points • 0% completion</strong><div class="save-status" id="saveStatus">Changes save automatically.</div></div><button class="btn green" id="completeTodayBtn">Complete Check-in ✓</button></div>
+  </section>
+

@@ -1,0 +1,56 @@
+  <section id="routine" class="panel">
+    <div class="section-head">
+      <div><h2>My Day Planner</h2><p>You do not need to choose. The planner creates one ordinary, achievable human day around your wake time and real priorities.</p></div>
+      <button class="btn primary" id="refreshRoutineBtn">Plan My Day</button>
+    </div>
+
+    <div class="box glass planner-setup">
+      <div><h3>Before I plan your day</h3><p>Wake-up and sleep times are optional. When provided, they take priority for this date.</p></div>
+      <div class="planner-inputs">
+        <label>Plan date<input id="routinePlanDate" type="date"></label>
+        <label>Wake-up time <span>optional</span><input id="routineWakeInput" type="time"></label>
+        <label>Sleep time <span>optional</span><input id="routineSleepInput" type="time"></label>
+        <button class="btn primary" id="applyPlannerTimes">Create My Plan</button>
+        <button class="btn" id="clearPlannerTimes">Use Default Times</button>
+      </div>
+      <div class="k-sub" id="plannerTimeSource">Leave both times empty to use diary preferences or your default Settings.</div>
+    </div>
+
+    <div class="box glass routine-hero">
+      <div class="ai-head"><div><h3 id="routineHeadline">Your realistic day is being prepared.</h3><div class="box-sub" id="routineDescription">The plan includes focused work, meals, breaks, movement, private time, and social life.</div></div><span class="ai-pill">✦ Planned for you</span></div>
+      <div class="routine-stats">
+        <div class="routine-stat"><strong id="routineWake">07:00</strong><span>Suggested wake</span></div>
+        <div class="routine-stat"><strong id="routineFocusTotal">—</strong><span>Planned focused study</span></div>
+        <div class="routine-stat"><strong id="routinePriority">—</strong><span>Today's main outcome</span></div>
+        <div class="routine-stat"><strong id="routineSleep">23:00</strong><span>Target sleep</span></div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass">
+        <h3>Today's Exact Schedule</h3>
+        <div class="box-sub">Generated from your awake window. Only three learning goals are selected.</div>
+        <div class="routine-timeline" id="routineTimeline"></div>
+      </div>
+      <div>
+        <div class="box glass next-action">
+          <h3>Best Next Action</h3>
+          <p id="routineNextText">The app will choose a realistic next step from your unfinished tasks.</p>
+          <button class="btn green" id="routineNextBtn">Start Recommended Action</button>
+        </div>
+        <div class="box glass" style="margin-top:13px">
+          <h3>Fixed commitments</h3>
+          <div class="remaining-list" id="routineCommitments"></div>
+        </div>
+        <div class="box glass" style="margin-top:13px">
+          <h3>Today's chosen goals</h3>
+          <div class="remaining-list" id="remainingPlan"></div>
+        </div>
+        <div class="routine-note" style="margin-top:13px">
+          This plan intentionally leaves goals out. A human day needs food, movement, relationships, privacy, rest, and unplanned space. Completing the chosen three learning blocks is enough.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
