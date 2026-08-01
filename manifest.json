@@ -1,0 +1,17 @@
+{
+  "name": "Pratik´s Progress Plan (PPP)",
+  "short_name": "PPP",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#050a12",
+  "theme_color": "#071426",
+  "description": "A privacy-first personal progress system for study, discipline, sleep and habits.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
