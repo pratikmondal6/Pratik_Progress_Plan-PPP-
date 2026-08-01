@@ -5,7 +5,7 @@
   "display": "standalone",
   "background_color": "#050a12",
   "theme_color": "#071426",
-  "description": "A privacy-first personal progress system for study, discipline, sleep and habits.",
+  "description": "A privacy-first personal progress system with flexible focus tracking and an adaptive daily routine.",
   "icons": [
     {
       "src": "icon.svg",

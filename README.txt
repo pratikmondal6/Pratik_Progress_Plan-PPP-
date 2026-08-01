@@ -1,28 +1,27 @@
-PRATIK´S PROGRESS PLAN (PPP)
+PRATIK´S PROGRESS PLAN (PPP) — FLEXIBLE FOCUS + DAILY ROUTINE
 
-A professional, installable personal progress web app for habits, study, discipline, sleep and long-term improvement.
+NEW FOCUS TIMER
+- Count Up mode starts at 00:00 and continues until you finish.
+- Finish & Save records the actual full focused minutes.
+- Countdown mode remains optional with 15, 25, 45, 60, 90 or custom minutes.
+- Start, pause, resume, finish and reset are supported.
+- Running timer state survives page refreshes.
+- Completed minutes are added to German, Study with Soumi or Self Study.
 
-FEATURES
-- Multi-month tracking
-- One-click quick check-ins
-- Smart local coaching and priorities
-- Study, discipline and sleep scoring
-- Readiness and risk indicators
-- Weekly charts, heatmap and achievements
-- Focus timer
-- JSON backup/import and CSV export
-- Dark/light mode
-- Mobile and desktop support
-- Offline installation support
+NEW DAILY ROUTINE
+- Balanced Day, Busy Day and Recovery Day plans.
+- Generated from preferred wake/sleep times and study targets.
+- Highlights the weakest habit as the current priority.
+- Shows a time-based ideal-day blueprint.
+- Shows unfinished tasks and the best next action.
+- Opens the recommended focus timer with one click.
+- Designed as a flexible human routine, not a rigid productivity schedule.
 
-DATA MIGRATION
-Existing saved data from Momentum OS and the earlier Pratik's Path version is migrated automatically.
+UPDATE GITHUB
+Replace index.html, manifest.json, sw.js, icon.svg and README.txt in the repository root.
+Run:
+  git add .
+  git commit -m "Add flexible timer and adaptive daily routine"
+  git push
 
-SMART COACH
-The coaching engine runs locally using pattern analysis, trend detection,
-weak-habit identification, sleep-performance comparison, risk signals and forecasts.
-No personal data is sent to an external AI service.
-
-DEPLOYMENT
-Unzip the package and upload the complete folder to Netlify Drop, Cloudflare Pages,
-Vercel or GitHub Pages. Open the resulting URL and choose Add to Home Screen.
+The app storage key is unchanged, so existing progress remains available at the same live URL.

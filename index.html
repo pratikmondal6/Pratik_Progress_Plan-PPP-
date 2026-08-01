@@ -112,6 +112,39 @@ linear-gradient(125deg,rgba(7,20,38,.95),rgba(21,52,87,.92) 55%,rgba(74,36,126,.
 .focus-select{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .chip{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:999px;padding:7px 10px;font-size:.78rem;font-weight:850}
 .chip.active{background:rgba(79,140,255,.18);color:#b9d1ff;border-color:rgba(79,140,255,.35)}
+.timer-mode{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px}
+.mode-btn{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:11px;padding:8px 11px;font-size:.78rem;font-weight:900}
+.mode-btn.active{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:#fff}
+.duration-tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.duration-tools.hidden-tool{display:none}
+.duration-preset{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:9px;padding:7px 9px;font-size:.74rem;font-weight:850}
+.duration-preset.active{background:rgba(39,214,232,.17);color:#8af2fb;border-color:rgba(39,214,232,.34)}
+.duration-custom{display:flex;align-items:center;gap:6px}
+.duration-custom input{width:82px;padding:7px}
+.finish-btn{background:linear-gradient(135deg,#14b86f,var(--green));border:0;color:#04170e}
+.routine-hero{background:linear-gradient(135deg,rgba(79,140,255,.13),rgba(39,214,232,.08),rgba(155,108,255,.13))}
+.routine-modes{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.routine-mode{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:999px;padding:8px 12px;font-size:.79rem;font-weight:900}
+.routine-mode.active{background:linear-gradient(135deg,var(--blue),var(--purple));border-color:transparent;color:#fff}
+.routine-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:16px}
+.routine-stat{padding:11px;border:1px solid var(--line);border-radius:14px;background:rgba(4,13,25,.16)}
+.routine-stat strong{display:block;font-size:1.05rem}.routine-stat span{font-size:.72rem;color:var(--muted)}
+.routine-timeline{display:grid;gap:9px}
+.routine-step{display:grid;grid-template-columns:72px 38px 1fr;gap:10px;align-items:start;padding:11px;border:1px solid var(--line);border-radius:14px;background:var(--panel2);transition:.18s transform,.18s border}
+.routine-step:hover{transform:translateX(3px)}
+.routine-step.now{border-color:rgba(39,214,232,.55);box-shadow:0 0 0 3px rgba(39,214,232,.08)}
+.routine-step.done{opacity:.58}
+.routine-time{font-size:.78rem;font-weight:900;color:#9fc0ef;padding-top:7px}
+.routine-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(79,140,255,.20),rgba(155,108,255,.20))}
+.routine-content strong{display:block;font-size:.88rem}.routine-content span{display:block;color:var(--muted);font-size:.78rem;line-height:1.45;margin-top:3px}
+.routine-badge{display:inline-flex!important;width:auto!important;margin-top:6px!important;padding:4px 7px;border-radius:999px;background:rgba(255,191,63,.12);color:#ffd16c!important;font-size:.68rem!important;font-weight:900}
+.routine-note{padding:13px;border-radius:14px;background:rgba(255,191,63,.08);border:1px solid rgba(255,191,63,.18);color:#e8d6a6;font-size:.82rem;line-height:1.55}
+.remaining-list{display:grid;gap:9px}
+.remaining-item{display:flex;gap:10px;align-items:center;padding:11px;border-radius:13px;background:var(--panel2);border:1px solid var(--line)}
+.remaining-check{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:rgba(79,140,255,.15);color:#b7d0ff;font-weight:950}
+.remaining-item strong{font-size:.86rem}.remaining-item span{display:block;color:var(--muted);font-size:.75rem;margin-top:2px}
+.next-action{padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(43,213,118,.12),rgba(39,214,232,.10));border:1px solid rgba(43,213,118,.22)}
+.next-action h3{margin:0 0 6px}.next-action p{color:var(--muted);font-size:.82rem;line-height:1.5}
 .quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .input-card{border-radius:18px;padding:15px}
 .input-card h3{margin:0 0 10px;font-size:.92rem}
@@ -161,7 +194,7 @@ td input[type=number]{min-width:74px}
 .footer{text-align:center;color:var(--muted);font-size:.78rem;padding:28px}
 .empty{color:var(--muted);text-align:center;padding:18px;font-size:.85rem}
 @media(max-width:1180px){.cards{grid-template-columns:repeat(3,1fr)}.grid3{grid-template-columns:1fr 1fr}.grid3>.box:first-child{grid-column:1/-1}.quick-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:820px){.hero-grid{grid-template-columns:1fr}.readiness{min-height:180px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3,.settings-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.topbar{position:relative;top:0;flex-wrap:wrap}.month-switch{order:3;width:100%;justify-content:center}.nav{top:8px}.focus-panel{grid-template-columns:1fr}.timer{font-size:2.5rem}}
+@media(max-width:820px){.routine-stats{grid-template-columns:repeat(2,1fr)}.hero-grid{grid-template-columns:1fr}.readiness{min-height:180px}.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3,.settings-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:1fr}.topbar{position:relative;top:0;flex-wrap:wrap}.month-switch{order:3;width:100%;justify-content:center}.nav{top:8px}.focus-panel{grid-template-columns:1fr}.timer{font-size:2.5rem}}
 @media(max-width:520px){.app{padding:9px}.hero{padding:20px;border-radius:20px}.hero h1{font-size:2.25rem}.cards{gap:8px}.card{padding:13px;min-height:115px}.k-value{font-size:1.75rem}.top-actions .hide-mobile{display:none}.progress-row{grid-template-columns:125px 1fr 42px}.save-bar{flex-direction:column;align-items:stretch}.modal{padding:15px}.ring{width:160px;height:160px}.ring-number{font-size:2.5rem}}
 </style>
 </head>
@@ -191,7 +224,7 @@ td input[type=number]{min-width:74px}
         <div class="hero-actions">
           <button class="btn green" id="todayHeroBtn">Complete Today's Check-in</button>
           <button class="btn gold" id="beastBtn">⚡ Minimum Beast Day</button>
-          <button class="btn" id="focusHeroBtn">Start Focus Sprint</button>
+          <button class="btn" id="focusHeroBtn">Open Focus Timer</button>
         </div>
       </div>
       <div class="readiness">
@@ -211,6 +244,7 @@ td input[type=number]{min-width:74px}
     <button class="active" data-tab="command">Command Center</button>
     <button data-tab="today">Today's Check-in</button>
     <button data-tab="calendar">Calendar & Data</button>
+    <button data-tab="routine">Daily Routine</button>
     <button data-tab="insights">Smart Insights</button>
     <button data-tab="settings">Settings</button>
   </nav>
@@ -256,11 +290,31 @@ td input[type=number]{min-width:74px}
       <div class="box glass">
         <h3>Achievements</h3><div class="box-sub">Milestones unlock automatically.</div><div class="badges" id="achievements"></div>
       </div>
-      <div class="box glass">
-        <h3>Focus Sprint</h3><div class="box-sub">A simple timer that adds completed minutes to today's selected study habit.</div>
+      <div class="box glass" id="focusSprintBox">
+        <h3>Flexible Focus Timer</h3><div class="box-sub">Start from 00:00 and save the actual time, or use an optional countdown target.</div>
         <div class="focus-panel">
-          <div><div class="timer" id="timerDisplay">25:00</div><div class="focus-select" id="focusSelect"></div></div>
-          <div class="timer-controls"><button class="btn primary" id="timerStart">Start</button><button class="btn" id="timerPause">Pause</button><button class="btn" id="timerReset">Reset</button></div>
+          <div>
+            <div class="timer-mode" id="timerModes">
+              <button class="mode-btn active" data-timer-mode="stopwatch">Count Up</button>
+              <button class="mode-btn" data-timer-mode="countdown">Countdown</button>
+            </div>
+            <div class="timer" id="timerDisplay">00:00</div>
+            <div class="focus-select" id="focusSelect"></div>
+            <div class="duration-tools hidden-tool" id="durationTools">
+              <span class="k-sub">Target:</span>
+              <div id="durationPresets"></div>
+              <div class="duration-custom"><input id="customDuration" type="number" min="1" max="240" step="1" value="25"><span class="k-sub">min</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="timer-controls">
+              <button class="btn primary" id="timerStart">Start Timer</button>
+              <button class="btn" id="timerPause">Pause</button>
+              <button class="btn finish-btn" id="timerFinish">Finish & Save</button>
+              <button class="btn" id="timerReset">Reset</button>
+            </div>
+            <div class="k-sub" id="timerStatus" style="margin-top:10px">Choose a study habit, press Start, and finish whenever your real focus session ends.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -300,6 +354,51 @@ td input[type=number]{min-width:74px}
         </tr></thead>
         <tbody id="dataBody"></tbody>
       </table>
+    </div>
+  </section>
+
+
+  <section id="routine" class="panel">
+    <div class="section-head">
+      <div><h2>Daily Routine</h2><p>A human, flexible day plan generated from your targets, sleep rhythm, weak habits, and current time.</p></div>
+      <button class="btn primary" id="refreshRoutineBtn">Refresh Plan</button>
+    </div>
+
+    <div class="box glass routine-hero">
+      <div class="ai-head"><div><h3 id="routineHeadline">A balanced day that is ambitious but still livable.</h3><div class="box-sub" id="routineDescription">This is a guide, not a prison. Move blocks around when real life happens.</div></div><span class="ai-pill">✦ Adaptive routine</span></div>
+      <div class="routine-modes">
+        <button class="routine-mode active" data-routine-mode="balanced">Balanced Day</button>
+        <button class="routine-mode" data-routine-mode="busy">Busy Day</button>
+        <button class="routine-mode" data-routine-mode="recovery">Recovery Day</button>
+      </div>
+      <div class="routine-stats">
+        <div class="routine-stat"><strong id="routineWake">07:00</strong><span>Suggested wake</span></div>
+        <div class="routine-stat"><strong id="routineFocusTotal">—</strong><span>Planned focused study</span></div>
+        <div class="routine-stat"><strong id="routinePriority">German</strong><span>Current priority</span></div>
+        <div class="routine-stat"><strong id="routineSleep">23:00</strong><span>Target sleep</span></div>
+      </div>
+    </div>
+
+    <div class="grid2" style="margin-top:13px">
+      <div class="box glass">
+        <h3>Ideal Day Blueprint</h3>
+        <div class="box-sub">Times adapt to your preferred wake and sleep settings.</div>
+        <div class="routine-timeline" id="routineTimeline"></div>
+      </div>
+      <div>
+        <div class="box glass next-action">
+          <h3>Best Next Action</h3>
+          <p id="routineNextText">The app will choose a realistic next step from your unfinished tasks.</p>
+          <button class="btn green" id="routineNextBtn">Open Recommended Action</button>
+        </div>
+        <div class="box glass" style="margin-top:13px">
+          <h3>What remains today</h3>
+          <div class="remaining-list" id="remainingPlan"></div>
+        </div>
+        <div class="routine-note" style="margin-top:13px">
+          A perfect day is not a day where every minute is optimized. It is a day with one serious learning block, protected discipline, movement, decent food, useful connection, and a calm shutdown. Aim for repeatable, not heroic.
+        </div>
+      </div>
     </div>
   </section>
 
@@ -386,7 +485,7 @@ const STATUS=["","Done","Partial","Missed"];
 const BINARY=["","Done","Missed"];
 const WEIGHT_LABELS={german:"German",habib:"German with Habib",soumi:"Study with Soumi",selfStudy:"Self Study",english:"English Reading",selfImprovement:"Self-improvement",pornFree:"Porn-free",social:"Social Control",diet:"Diet"};
 const DEFAULTS={
-  profile:{name:"Pratik",theme:"dark",celebrations:true,coach:true,monthlyTarget:1000},
+  profile:{name:"Pratik",theme:"dark",celebrations:true,coach:true,monthlyTarget:1000,routineMode:"balanced"},
   settings:{targetSleep:8,shortBelow:7,longAbove:9,preferredSleep:"23:00",preferredWake:"07:00",tolerance:90,germanTarget:60,soumiTarget:60,selfStudyTarget:60,missionThreshold:70},
   weights:{german:5,habib:4,soumi:4,selfStudy:4,english:2,selfImprovement:2,pornFree:5,social:4,diet:3},
   months:{}
@@ -394,7 +493,16 @@ const DEFAULTS={
 const blankDay=()=>({german:0,habib:"",soumi:0,selfStudy:0,english:"",selfImprovement:"",pornFree:"",social:"",diet:"",sleep:"",wake:"",notes:""});
 let state=loadState();
 let currentMonth="2026-08";
-let timer={seconds:1500,running:false,interval:null,focus:"german"};
+const FOCUS_TIMER_KEY="pppFlexibleFocusTimer_v1";
+function loadFocusTimer(){
+  const fallback={mode:"stopwatch",elapsed:0,duration:1500,running:false,startedAt:null,focus:"german",sessionFocus:null};
+  try{
+    const saved=JSON.parse(localStorage.getItem(FOCUS_TIMER_KEY));
+    if(saved)return {...fallback,...saved,interval:null};
+  }catch(e){}
+  return fallback;
+}
+let timer=loadFocusTimer();
 
 function clone(v){return JSON.parse(JSON.stringify(v))}
 function loadState(){
@@ -416,6 +524,10 @@ function loadState(){
   return clone(DEFAULTS);
 }
 function save(){localStorage.setItem(APP_KEY,JSON.stringify(state));setSaveStatus("Saved")}
+function saveFocusTimer(){
+  const safe={mode:timer.mode,elapsed:timer.elapsed,duration:timer.duration,running:timer.running,startedAt:timer.startedAt,focus:timer.focus,sessionFocus:timer.sessionFocus};
+  localStorage.setItem(FOCUS_TIMER_KEY,JSON.stringify(safe));
+}
 function monthDays(key){const [y,m]=key.split("-").map(Number);return new Date(y,m,0).getDate()}
 function ensureMonth(key=currentMonth){
   const n=monthDays(key);
@@ -685,6 +797,121 @@ function renderInsights(data=currentData()){
   drawSleepPerformance(data);
 }
 function insightsHtml(rows){return rows.map(x=>`<div class="insight"><strong>${x[0]}</strong><p>${x[1]}</p></div>`).join("")}
+function minutesToClock(total){
+  total=((Math.round(total)%1440)+1440)%1440;
+  const h=Math.floor(total/60),m=total%60;
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+}
+function routineModeInfo(mode){
+  return {
+    balanced:{headline:"A balanced day that is ambitious but still livable.",description:"Use full study targets with real breaks, movement, food, and an evening shutdown."},
+    busy:{headline:"A busy-day plan that protects momentum without pretending you have unlimited time.",description:"Keep the identity alive with shorter, high-value blocks and a clean evening."},
+    recovery:{headline:"A recovery day that prevents collapse and prepares a stronger tomorrow.",description:"Lower pressure, protect discipline, move gently, and prioritize sleep."}
+  }[mode];
+}
+function routineWeakPriority(){
+  const sorted=habitScores(currentData()).sort((a,b)=>a[1]-b[1]);
+  return sorted[0]?.[0]||"German";
+}
+function buildRoutine(mode=state.profile.routineMode||"balanced"){
+  const wake=parseTime(state.settings.preferredWake)||420;
+  let sleep=parseTime(state.settings.preferredSleep);
+  if(sleep==null)sleep=1380;
+  if(sleep<=wake)sleep+=1440;
+  const weak=routineWeakPriority();
+  const t=state.settings;
+  const items=[];
+  const add=(offset,icon,title,detail,focus=null,priority=false)=>items.push({minute:wake+offset,icon,title,detail,focus,priority});
+  if(mode==="balanced"){
+    add(0,"☀️","Wake, water, sunlight","Keep the first 20 minutes phone-free. Wash, hydrate, and let your body wake up.");
+    add(30,"🥗","Breakfast and daily plan","Eat something supportive and choose only three important outcomes.");
+    add(70,"🇩🇪",`German deep block — ${Math.max(30,Math.round(t.germanTarget*.6))} min`,"Start with the hardest language task before attention becomes fragmented.","german",weak==="German");
+    add(155,"🧍","Break and movement","Walk, stretch, shower, or handle practical life tasks for 20–30 minutes.");
+    add(240,"🧑‍💻","University, work, or essential responsibilities","Use 50–90 minute work cycles. Do not try to track every minute.");
+    add(390,"🍲","Lunch and real rest","Eat away from the desk. A short walk is better than endless scrolling.");
+    add(470,"👥",`Study with Soumi — ${t.soumiTarget} min`,"Collaborative block: clear goal, visible output, and a short recap.","soumi",weak==="Study with Soumi");
+    add(570,"📚",`Self-study — ${t.selfStudyTarget} min`,"One focused block on the highest-priority academic task.","selfStudy",weak==="Self Study");
+    add(680,"🗣","German with Habib or English reading","Use 20–30 minutes for speaking, listening, or relaxed English reading.");
+    add(760,"🏃","Movement and dinner","Exercise or walk for 20–30 minutes, then eat a normal balanced dinner.");
+    items.push({minute:sleep-105,icon:"🧠",title:"Self-improvement reading — 10–20 min",detail:"Read something useful, then write one sentence you can apply.",priority:weak==="Self-improvement"});
+    items.push({minute:sleep-60,icon:"📵",title:"Digital shutdown",detail:"Social media off. Prepare tomorrow’s first material and tidy the environment."});
+    items.push({minute:sleep-25,icon:"🌙",title:"Wind-down routine",detail:"Low light, hygiene, calm breathing, and no demanding work."});
+    items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"Protect the rhythm. A useful tomorrow starts tonight."});
+  }else if(mode==="busy"){
+    add(0,"☀️","Wake and orient","Water, light, and no social media for the first 15 minutes.");
+    add(25,"🇩🇪","German minimum — 20 min","Do one meaningful language task. Stop before it becomes easy to skip.","german",true);
+    add(70,"🥗","Breakfast and essentials","Choose one major work outcome and one personal outcome.");
+    add(180,"🧑‍💻","Main responsibilities","Work or university. Use short phone-free windows whenever possible.");
+    add(390,"🚶","Lunch and 15-minute walk","Movement protects energy even on a crowded day.");
+    add(470,"📚","Focused study — 25 min",`Choose ${weak.includes("Soumi")?"Study with Soumi":"Self Study"} because it currently needs support.`,weak.includes("Soumi")?"soumi":"selfStudy",true);
+    add(560,"📖","Reading — 10 min","English or self-improvement reading is enough today.");
+    add(650,"🥗","Dinner and social connection","Eat normally and speak with someone instead of only consuming content.");
+    items.push({minute:sleep-60,icon:"📵",title:"Protect the evening",detail:"Porn-free, social media controlled, tomorrow prepared."});
+    items.push({minute:sleep-20,icon:"🌙",title:"Wind down",detail:"No guilt-based catch-up. Close the day calmly."});
+    items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"Consistency beats late-night heroics."});
+  }else{
+    add(0,"☀️","Gentle wake-up","Water, daylight, hygiene, and a slow start without scrolling.");
+    add(40,"🍳","Simple breakfast","Eat something nourishing and lower the expectations for today.");
+    add(90,"🇩🇪","German identity block — 10–15 min","Keep the habit alive with an easy review, listening, or vocabulary.","german",true);
+    add(180,"🚶","Walk or light movement","20 minutes outside if possible. Recovery still needs circulation.");
+    add(300,"🧑‍💻","One essential responsibility","Complete the single task that prevents tomorrow from becoming harder.");
+    add(430,"📚","One gentle focus block — 20 min","Choose one small academic task and stop after a clear result.",weak.includes("Soumi")?"soumi":"selfStudy",true);
+    add(550,"🫶","Rest, connection, and normal food","Recover without turning the day into uncontrolled screen time.");
+    items.push({minute:sleep-90,icon:"📝",title:"Reset tomorrow",detail:"Write tomorrow’s first action and prepare the material."});
+    items.push({minute:sleep-50,icon:"📵",title:"Early digital shutdown",detail:"Reduce stimulation and protect sleep quality."});
+    items.push({minute:sleep,icon:"😴",title:"Sleep on time",detail:"Recovery is productive when it restores the next day."});
+  }
+  return items.sort((a,b)=>a.minute-b.minute);
+}
+function incompleteTasks(){
+  const d=currentData()[todayIndex()],t=state.settings,items=[];
+  if(d.german<t.germanTarget)items.push({title:"German",detail:`${Math.max(0,t.germanTarget-d.german)} minutes remaining`,focus:"german",score:d.german/t.germanTarget});
+  if(d.soumi<t.soumiTarget)items.push({title:"Study with Soumi",detail:`${Math.max(0,t.soumiTarget-d.soumi)} minutes remaining`,focus:"soumi",score:d.soumi/t.soumiTarget});
+  if(d.selfStudy<t.selfStudyTarget)items.push({title:"Self Study",detail:`${Math.max(0,t.selfStudyTarget-d.selfStudy)} minutes remaining`,focus:"selfStudy",score:d.selfStudy/t.selfStudyTarget});
+  [["pornFree","Porn-free","Protect the clean-day commitment"],["social","Social media control","Keep intentional limits"],["diet","Diet","Choose the next supportive meal"],["english","English reading","A short reading block is enough"],["selfImprovement","Self-improvement","Read and apply one useful idea"],["habib","German with Habib","Practice speaking or arrange the session"]].forEach(([f,title,detail])=>{
+    if(d[f]!=="Done")items.push({title,detail,focus:null,score:mult(d[f])});
+  });
+  return items.sort((a,b)=>a.score-b.score);
+}
+let routineNextFocus=null;
+function renderRoutine(){
+  const mode=state.profile.routineMode||"balanced",info=routineModeInfo(mode),routine=buildRoutine(mode),now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),todaySame=dayDate(todayIndex()).toDateString()===now.toDateString();
+  setText("routineHeadline",info.headline);setText("routineDescription",info.description);
+  document.querySelectorAll("[data-routine-mode]").forEach(b=>b.classList.toggle("active",b.dataset.routineMode===mode));
+  setText("routineWake",state.settings.preferredWake);setText("routineSleep",state.settings.preferredSleep);
+  const focusTotal=mode==="balanced"?state.settings.germanTarget+state.settings.soumiTarget+state.settings.selfStudyTarget:mode==="busy"?55:35;
+  setText("routineFocusTotal",`${focusTotal} min`);setText("routinePriority",routineWeakPriority());
+  let nextIndex=routine.findIndex(x=>((x.minute%1440)+1440)%1440>=nowMin);
+  if(nextIndex<0)nextIndex=routine.length-1;
+  document.getElementById("routineTimeline").innerHTML=routine.map((x,i)=>{
+    const clock=((x.minute%1440)+1440)%1440,done=todaySame&&clock<nowMin-15,nowClass=todaySame&&i===nextIndex;
+    return `<div class="routine-step ${done?"done":""} ${nowClass?"now":""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${x.title}</strong><span>${x.detail}</span>${x.priority?'<span class="routine-badge">Current weak-link priority</span>':""}</div></div>`;
+  }).join("");
+  const remaining=incompleteTasks(),hour=now.getHours();
+  document.getElementById("remainingPlan").innerHTML=remaining.length?remaining.slice(0,6).map((x,i)=>`<div class="remaining-item"><div class="remaining-check">${i+1}</div><div><strong>${x.title}</strong><span>${x.detail}</span></div></div>`).join(""):`<div class="empty">Core goals are complete. Protect the evening and sleep well.</div>`;
+  let next=remaining[0];
+  if(hour>=21){
+    next={title:"Close the day well",detail:"Stop chasing productivity. Record the day, prepare tomorrow, and begin the wind-down.",focus:null};
+  }else if(!next){
+    next={title:"Recovery and preparation",detail:"Take a walk, connect with someone, and prepare tomorrow's first task.",focus:null};
+  }
+  routineNextFocus=next.focus||null;
+  setText("routineNextText",`${next.title}: ${next.detail}`);
+  document.getElementById("routineNextBtn").textContent=routineNextFocus?`Open ${focusLabel(routineNextFocus)} Timer`:"Open Today's Check-in";
+}
+function openRoutineNext(){
+  if(routineNextFocus){
+    if(timer.running||timer.elapsed>0){
+      showToast("Finish or reset the current focus session first");
+      return;
+    }
+    timer.focus=routineNextFocus;
+    saveFocusTimer();
+    openFocusTimer();
+  }else{
+    showTab("today");
+  }
+}
 function renderSettings(){
   setText("monthLabel",monthLabel());document.documentElement.dataset.theme=state.profile.theme;
   document.getElementById("userName").value=state.profile.name;document.getElementById("monthlyTarget").value=state.profile.monthlyTarget;
@@ -693,13 +920,55 @@ function renderSettings(){
   document.getElementById("weightSettings").innerHTML=Object.entries(WEIGHT_LABELS).map(([k,label])=>`<div class="setting-row"><label>${label}</label><input type="number" min="0" max="20" step=".5" value="${state.weights[k]}" data-weight="${k}"></div>`).join("");
   document.querySelector(".brand>div:last-child>div").textContent=`Pratik´s Progress Plan`;
 }
-function renderFocus(){
-  document.getElementById("focusSelect").innerHTML=[["german","German"],["soumi","Study with Soumi"],["selfStudy","Self Study"]].map(([k,n])=>`<button class="chip ${timer.focus===k?"active":""}" data-focus="${k}">${n}</button>`).join("");renderTimer();
+function focusLabel(key){return {german:"German",soumi:"Study with Soumi",selfStudy:"Self Study"}[key]||"Study"}
+function currentTimerSeconds(){
+  if(timer.running&&timer.startedAt){
+    timer.elapsed=Math.max(0,Math.floor((Date.now()-timer.startedAt)/1000));
+  }
+  return timer.mode==="countdown"?Math.max(0,timer.duration-timer.elapsed):timer.elapsed;
 }
-function renderTimer(){const m=Math.floor(timer.seconds/60),s=timer.seconds%60;setText("timerDisplay",`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`)}
-function renderAll(){ensureMonth();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();save()}
+function renderFocus(){
+  document.getElementById("focusSelect").innerHTML=[["german","German"],["soumi","Study with Soumi"],["selfStudy","Self Study"]]
+    .map(([k,n])=>`<button class="chip ${timer.focus===k?"active":""}" data-focus="${k}">${n}</button>`).join("");
+  document.querySelectorAll("[data-timer-mode]").forEach(b=>b.classList.toggle("active",b.dataset.timerMode===timer.mode));
+  document.getElementById("durationTools").classList.toggle("hidden-tool",timer.mode!=="countdown");
+  const mins=[15,25,45,60,90];
+  document.getElementById("durationPresets").innerHTML=mins.map(v=>`<button class="duration-preset ${timer.duration===v*60?"active":""}" data-duration="${v}">${v}m</button>`).join("");
+  document.getElementById("customDuration").value=Math.round(timer.duration/60);
+  renderTimer();
+}
+function renderTimer(){
+  const seconds=currentTimerSeconds(),m=Math.floor(seconds/60),s=seconds%60;
+  setText("timerDisplay",`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`);
+  const start=document.getElementById("timerStart"),pause=document.getElementById("timerPause"),finish=document.getElementById("timerFinish"),status=document.getElementById("timerStatus");
+  const hasProgress=timer.elapsed>0;
+  if(start){
+    start.textContent=timer.running?"Timer Running…":hasProgress?"Resume Timer":"Start Timer";
+    start.disabled=timer.running;
+    start.style.opacity=timer.running?".72":"1";
+  }
+  if(pause)pause.disabled=!timer.running;
+  if(finish)finish.disabled=!hasProgress;
+  if(status){
+    const label=focusLabel(timer.sessionFocus||timer.focus);
+    if(timer.running){
+      status.textContent=timer.mode==="stopwatch"
+        ?`${label} stopwatch is running. Finish whenever the real session ends.`
+        :`${label} countdown is running toward ${Math.round(timer.duration/60)} minutes.`;
+    }else if(hasProgress){
+      const actual=Math.floor(timer.elapsed/60);
+      status.textContent=`Paused after ${actual} full minute${actual===1?"":"s"}. Resume, finish and save, or reset.`;
+    }else{
+      status.textContent=timer.mode==="stopwatch"
+        ?`Selected: ${label}. Press Start and the timer will count upward from 00:00.`
+        :`Selected: ${label}. Choose a target, then press Start.`;
+    }
+  }
+  saveFocusTimer();
+}
+function renderAll(){ensureMonth();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();renderRoutine();save()}
 function setSaveStatus(t){const e=document.getElementById("saveStatus");if(e)e.textContent=t}
-function showTab(id){document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id));if(id==="command"||id==="insights")setTimeout(()=>renderDashboard(),30)}
+function showTab(id){document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("active",p.id===id));if(id==="command"||id==="insights")setTimeout(()=>renderDashboard(),30);if(id==="routine")setTimeout(()=>renderRoutine(),20)}
 function applyQuick(mode){
   const d=ensureMonth()[todayIndex()],set=(f,v)=>d[f]=v;
   if(mode==="minimum"){set("german",20);set("selfStudy",20);set("pornFree","Done");set("social","Done");set("diet","Partial")}
@@ -719,11 +988,107 @@ function completeToday(){
   const c=currentData()[todayIndex()],wasMission=c.mission;save();renderAll();showToast(c.mission?"Mission day completed ✓":"Check-in saved — keep building");
   if(c.mission&&state.profile.celebrations)confetti();if(c.streak&&c.streak%7===0&&state.profile.celebrations)confetti(true);
 }
-function startTimer(){
-  if(timer.running)return;timer.running=true;timer.interval=setInterval(()=>{timer.seconds--;renderTimer();if(timer.seconds<=0){clearInterval(timer.interval);timer.running=false;const minutes=25,d=ensureMonth()[todayIndex()];d[timer.focus]=Number(d[timer.focus]||0)+minutes;save();renderAll();showToast(`${minutes} minutes added to ${timer.focus}`);if(state.profile.celebrations)confetti();timer.seconds=1500;renderTimer()}},1000)
+function runTimerLoop(){
+  clearInterval(timer.interval);
+  const tick=()=>{
+    if(!timer.running)return;
+    currentTimerSeconds();
+    renderTimer();
+    if(timer.mode==="countdown"&&timer.elapsed>=timer.duration)finishAndSaveTimer(true);
+  };
+  tick();
+  timer.interval=setInterval(tick,250);
 }
-function pauseTimer(){clearInterval(timer.interval);timer.running=false}
-function resetTimer(){pauseTimer();timer.seconds=1500;renderTimer()}
+function startTimer(){
+  if(timer.running)return false;
+  if(!timer.sessionFocus)timer.sessionFocus=timer.focus;
+  timer.running=true;
+  timer.startedAt=Date.now()-timer.elapsed*1000;
+  runTimerLoop();
+  saveFocusTimer();
+  return true;
+}
+function pauseTimer(){
+  if(!timer.running)return;
+  currentTimerSeconds();
+  clearInterval(timer.interval);
+  timer.interval=null;
+  timer.running=false;
+  timer.startedAt=null;
+  saveFocusTimer();
+  renderTimer();
+  showToast("Focus timer paused");
+}
+function finishAndSaveTimer(autoCompleted=false){
+  currentTimerSeconds();
+  const minutes=autoCompleted&&timer.mode==="countdown"?Math.round(timer.duration/60):Math.floor(timer.elapsed/60);
+  if(minutes<1){
+    showToast("Focus for at least one full minute before saving");
+    return false;
+  }
+  clearInterval(timer.interval);
+  timer.interval=null;
+  timer.running=false;
+  timer.startedAt=null;
+  const focus=timer.sessionFocus||timer.focus;
+  const d=ensureMonth()[todayIndex()];
+  d[focus]=Number(d[focus]||0)+minutes;
+  timer.elapsed=0;
+  timer.sessionFocus=null;
+  saveFocusTimer();
+  save();
+  renderAll();
+  showToast(`${minutes} focused minute${minutes===1?"":"s"} added to ${focusLabel(focus)} ✓`);
+  if(state.profile.celebrations)confetti();
+  return true;
+}
+function resetTimer(){
+  clearInterval(timer.interval);
+  timer.interval=null;
+  timer.running=false;
+  timer.startedAt=null;
+  timer.elapsed=0;
+  timer.sessionFocus=null;
+  saveFocusTimer();
+  renderFocus();
+  showToast("Focus timer reset");
+}
+function setTimerMode(mode){
+  if(timer.running||timer.elapsed>0){
+    showToast("Finish or reset the current session before changing timer mode");
+    return;
+  }
+  timer.mode=mode;
+  saveFocusTimer();
+  renderFocus();
+}
+function setTimerDuration(minutes){
+  if(timer.running||timer.elapsed>0){
+    showToast("Finish or reset the current session before changing the target");
+    return;
+  }
+  const safe=clamp(Number(minutes)||25,1,240);
+  timer.duration=safe*60;
+  saveFocusTimer();
+  renderFocus();
+}
+function openFocusTimer(){
+  showTab("command");
+  setTimeout(()=>{
+    const target=document.getElementById("focusSprintBox");
+    if(target)target.scrollIntoView({behavior:"smooth",block:"center"});
+    showToast("Choose a habit and press Start when you are ready");
+  },100);
+}
+function restoreRunningTimer(){
+  if(timer.running&&timer.startedAt){
+    runTimerLoop();
+  }else{
+    timer.running=false;
+    timer.startedAt=null;
+    renderFocus();
+  }
+}
 function confetti(big=false){
   const canvas=document.getElementById("confetti"),ctx=canvas.getContext("2d"),d=window.devicePixelRatio||1;canvas.width=innerWidth*d;canvas.height=innerHeight*d;ctx.scale(d,d);
   const colors=["#4f8cff","#27d6e8","#9b6cff","#ffbf3f","#2bd576","#ff5ca8"],pieces=Array.from({length:big?180:90},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.2,vx:(Math.random()-.5)*5,vy:2+Math.random()*5,r:3+Math.random()*5,c:colors[Math.floor(Math.random()*colors.length)],a:Math.random()*6}));
@@ -746,9 +1111,11 @@ function attachEvents(){
   document.getElementById("prevMonth").onclick=()=>changeMonth(-1);document.getElementById("nextMonth").onclick=()=>changeMonth(1);
   document.getElementById("quickBtn").onclick=()=>showModal("quickModal");document.getElementById("closeQuick").onclick=()=>hideModal("quickModal");document.getElementById("openDetailed").onclick=()=>{hideModal("quickModal");showTab("today")};
   document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>applyQuick(b.dataset.quick));
-  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=()=>document.getElementById("timerDisplay").scrollIntoView({behavior:"smooth",block:"center"});
+  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=openFocusTimer;
   document.getElementById("autoSuggestBtn").onclick=smartMinimum;document.getElementById("completeTodayBtn").onclick=completeToday;document.getElementById("jumpTodayBtn").onclick=jumpToday;
-  document.getElementById("timerStart").onclick=startTimer;document.getElementById("timerPause").onclick=pauseTimer;document.getElementById("timerReset").onclick=resetTimer;
+  document.getElementById("timerStart").onclick=()=>{if(startTimer())showToast("Focus timer started")};document.getElementById("timerPause").onclick=pauseTimer;document.getElementById("timerFinish").onclick=()=>finishAndSaveTimer(false);document.getElementById("timerReset").onclick=resetTimer;
+  document.getElementById("refreshRoutineBtn").onclick=()=>{renderRoutine();showToast("Routine refreshed from your latest progress")};
+  document.getElementById("routineNextBtn").onclick=openRoutineNext;
   document.getElementById("themeBtn").onclick=()=>{state.profile.theme=state.profile.theme==="dark"?"light":"dark";save();renderAll()};
   document.getElementById("menuBtn").onclick=()=>showModal("toolsMenu");document.getElementById("closeTools").onclick=()=>hideModal("toolsMenu");document.getElementById("menuExport").onclick=exportBackup;document.getElementById("menuCsv").onclick=exportCsv;document.getElementById("menuSettings").onclick=()=>{hideModal("toolsMenu");showTab("settings")};
   document.getElementById("exportBtn").onclick=exportBackup;document.getElementById("csvBtn").onclick=exportCsv;document.getElementById("printBtn").onclick=()=>window.print();document.getElementById("resetMonthBtn").onclick=resetMonth;
@@ -759,7 +1126,22 @@ function attachEvents(){
   document.addEventListener("click",e=>{
     if(e.target.classList.contains("preset"))setTodayField(e.target.dataset.field,Number(e.target.dataset.value));
     if(e.target.classList.contains("seg"))setTodayField(e.target.dataset.field,e.target.dataset.value);
-    if(e.target.dataset.focus){timer.focus=e.target.dataset.focus;renderFocus()}
+    if(e.target.dataset.timerMode)setTimerMode(e.target.dataset.timerMode);
+    if(e.target.dataset.duration)setTimerDuration(Number(e.target.dataset.duration));
+    if(e.target.dataset.routineMode){
+      state.profile.routineMode=e.target.dataset.routineMode;
+      save();
+      renderRoutine();
+    }
+    if(e.target.dataset.focus){
+      if(timer.running||timer.elapsed>0){
+        showToast("Finish or reset the current session before changing its study habit");
+      }else{
+        timer.focus=e.target.dataset.focus;
+        saveFocusTimer();
+        renderFocus();
+      }
+    }
     if(e.target.classList.contains("heat-day")&&e.target.dataset.day!==undefined){showTab("calendar");setTimeout(()=>document.getElementById(`row-${e.target.dataset.day}`)?.scrollIntoView({behavior:"smooth",block:"center"}),70)}
     if(e.target.classList.contains("modal-backdrop"))hideModal(e.target.id);
   });
@@ -770,6 +1152,7 @@ function attachEvents(){
   document.getElementById("dataBody").addEventListener("input",e=>{const el=e.target;if(el.dataset.i!==undefined&&el.dataset.f==="notes"){ensureMonth()[+el.dataset.i].notes=el.value;save()}});
   document.addEventListener("change",e=>{
     const el=e.target;
+    if(el.id==="customDuration")setTimerDuration(Number(el.value));
     if(el.dataset.weight){state.weights[el.dataset.weight]=Number(el.value)||0;save();renderAll()}
     if(["targetSleep","shortBelow","longAbove","preferredSleep","preferredWake","tolerance","germanTarget","soumiTarget","selfStudyTarget","missionThreshold"].includes(el.id)){state.settings[el.id]=el.type==="number"?Number(el.value):el.value;save();renderAll()}
     if(el.id==="userName"){state.profile.name=el.value||"Pratik";save();renderAll()}
@@ -778,7 +1161,7 @@ function attachEvents(){
   window.addEventListener("resize",()=>{clearTimeout(window.__r);window.__r=setTimeout(()=>{renderDashboard()},100)});
 }
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
-ensureMonth();attachEvents();renderAll();
+ensureMonth();attachEvents();renderAll();restoreRunningTimer();
 </script>
 </body>
 </html>
