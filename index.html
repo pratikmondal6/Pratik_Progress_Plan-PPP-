@@ -1330,7 +1330,7 @@ html[data-theme="light"]{color-scheme:light}
 
 
 <div id="bookingRequestsModal" class="modal-backdrop hidden">
-  <div class="modal glass" style="width:min(720px,100%)">
+  <div class="modal glass" style="width:min(900px,100%)">
     <div class="modal-head"><div><h2 style="margin:0">📅 Book / requests</h2><div class="k-sub" style="margin-top:4px">Share one link. Accept only the requests you want in your calendar and My Day.</div></div><button class="icon-btn" id="closeBookingRequestsBtn">✕</button></div>
     <div class="booking-share-bar" style="margin-top:15px">
       <input id="publicBookingLink" type="text" readonly placeholder="Connect the booking service once in Settings">
@@ -4153,17 +4153,57 @@ function syncAcceptedBookingRequests(items){
 }
 function renderBookingRequests(){
   const host=document.getElementById("bookingRequestList");if(!host)return;
-  const pending=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="pending");
-  if(!sharedBookingConfig().url){host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';return}
-  if(!pending.length){
-    const total=sharedBookingRequests.length;
-    const accepted=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="accepted").length;
-    host.innerHTML=`<div class="planner-empty">${total?`No pending requests. ${accepted?`${accepted} accepted booking${accepted===1?"":"s"} already synced to My Day.`:"All stored requests are already handled."}`:"No requests stored yet. Submit one from the public booking link, then press Refresh."}</div>`;
+  const all=sharedBookingRequests||[];
+  const pending=all.filter(r=>String(r.status).toLowerCase()==="pending");
+
+  if(!sharedBookingConfig().url){
+    host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';
     return;
   }
-  host.innerHTML=pending.map(r=>{
-    const timeLabel=bookingTimeDisplay(r.time),when=[r.date,timeLabel].filter(Boolean).join(" • "),duration=r.duration?`${r.duration} min`:"";
-    return `<div class="booking-request"><div><strong>${escapeHtml(requestTitleForPlanner(r))}</strong><div class="booking-request-meta">${escapeHtml(r.name||"Someone")} • ${escapeHtml(r.type||"Request")}${when?` • ${escapeHtml(when)}`:""}${duration?` • ${escapeHtml(duration)}`:""}</div>${r.note?`<div class="booking-request-note">${escapeHtml(r.note)}</div>`:""}</div><div class="booking-request-actions"><button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">Accept</button><button class="btn" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">Decline</button></div></div>`;
+
+  const source=pending.length?pending:all.slice(0,10);
+
+  if(!source.length){
+    host.innerHTML='<div class="planner-empty">No booking requests yet.</div>';
+    return;
+  }
+
+  host.innerHTML=source.map(r=>{
+    const status=String(r.status||"pending").toLowerCase();
+    const timeLabel=bookingTimeDisplay(r.time);
+    const timezone=r.timezone||r.userTimezone||"Local timezone";
+    const duration=r.duration?`${r.duration} min`:"";
+
+    return `
+    <div class="booking-request ${status}">
+      <div class="booking-request-main">
+        <div class="booking-request-title">
+          <strong>📅 ${escapeHtml(requestTitleForPlanner(r))}</strong>
+          <span class="booking-status ${status}">${escapeHtml(status)}</span>
+        </div>
+
+        <div class="booking-request-grid">
+          <div>👤 <b>Name</b><br>${escapeHtml(r.name||"Unknown")}</div>
+          <div>📌 <b>Type</b><br>${escapeHtml(r.type||"Request")}</div>
+          <div>📅 <b>Date</b><br>${escapeHtml(r.date||"")}</div>
+          <div>⏰ <b>Time</b><br>${escapeHtml(timeLabel||"")}</div>
+          <div>🌍 <b>Timezone</b><br>${escapeHtml(timezone)}</div>
+          <div>⏱ <b>Duration</b><br>${escapeHtml(duration)}</div>
+        </div>
+
+        ${r.note?`<div class="booking-request-note">📝 ${escapeHtml(r.note)}</div>`:""}
+
+        ${status==="accepted"?`
+          <div class="booking-sync-note">
+          ✅ Added to My Day / Planner automatically
+          </div>`:""}
+      </div>
+
+      <div class="booking-request-actions">
+        <button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">✓ Accept</button>
+        <button class="btn danger" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">✕ Delete / Decline</button>
+      </div>
+    </div>`;
   }).join("");
 }
 function refreshBookingRequests(silent=false){
@@ -4181,7 +4221,7 @@ function refreshBookingRequests(silent=false){
 function updateBookingRequest(id,action){
   bookingJsonp(action,{id},data=>{
     if(!data)return;
-    showToast(action==="accept"?"Accepted and added to Google Calendar":"Request declined");
+    showToast(action==="accept"?"Accepted → Google Calendar + My Day Planner":"Request declined/deleted");
     refreshBookingRequests(true);
   });
 }
