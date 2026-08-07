@@ -704,6 +704,18 @@ html[data-theme="light"]{color-scheme:light}
 .routine-badge.course{background:rgba(155,108,255,.12);color:#d3c0ff!important;border:1px solid rgba(155,108,255,.18)}
 @media(max-width:620px){.action-center-why{font-size:.69rem}.coach-momentum-tools .btn{white-space:normal}}
 
+
+/* ===== Simple shared booking requests ===== */
+.booking-share-bar{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:11px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.booking-share-bar input{min-width:0}
+.booking-request-list{display:grid;gap:9px;margin-top:12px}
+.booking-request{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.booking-request strong{display:block;font-size:.88rem}.booking-request-meta{color:var(--muted);font-size:.75rem;line-height:1.45;margin-top:4px}.booking-request-note{margin-top:6px;font-size:.74rem;color:#c9d8eb}
+.booking-request-actions{display:flex;gap:7px;flex-wrap:wrap}.booking-request-actions .btn{padding:8px 10px;font-size:.73rem}
+.booking-connection-note{margin-top:10px;color:var(--muted);font-size:.75rem;line-height:1.5}
+.booking-setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.booking-setup-grid label{font-size:.7rem;font-weight:850;color:var(--muted)}.booking-setup-grid input{margin-top:5px}
+@media(max-width:680px){.booking-share-bar{grid-template-columns:1fr 1fr}.booking-share-bar input{grid-column:1/-1}.booking-request{grid-template-columns:1fr}.booking-request-actions .btn{flex:1}.booking-setup-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -721,26 +733,15 @@ html[data-theme="light"]{color-scheme:light}
         <button class="btn more-menu-btn quick-actions-trigger" id="moreMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" title="Open quick actions and more sections">
           <span class="quick-actions-symbol" aria-hidden="true">⚡</span><span id="moreMenuLabel">Actions</span><span class="more-menu-chevron" aria-hidden="true">▾</span>
         </button>
-        <div class="more-menu glass hidden" id="moreMenu" role="menu" aria-label="PPP quick actions and sections">
+        <div class="more-menu glass hidden" id="moreMenu" role="menu" aria-label="PPP quick actions">
           <div class="more-menu-group quick-action-group">
             <div class="more-menu-heading">Quick actions</div>
-            <button type="button" role="menuitem" id="openBookingBtn"><span class="more-menu-icon">📅</span><span><strong>Study with Pratik</strong><small>Add a real study session to today or tomorrow</small></span></button>
-            <button type="button" role="menuitem" id="quickBtn"><span class="more-menu-icon">✅</span><span><strong>Quick check-in</strong><small>Log progress without opening the full form</small></span></button>
-            <button type="button" role="menuitem" id="themeBtn"><span class="more-menu-icon">◐</span><span><strong>Change appearance</strong><small>Switch between light and dark mode</small></span></button>
-          </div>
-          <div class="more-menu-group">
-            <div class="more-menu-heading">Planning &amp; progress</div>
-            <button type="button" role="menuitem" data-more-tab="calendar" data-menu-label="Calendar"><span class="more-menu-icon">📊</span><span><strong>Calendar &amp; Data</strong><small>Review daily records and progress</small></span></button>
-            <button type="button" role="menuitem" data-more-tab="courses" data-menu-label="Courses"><span class="more-menu-icon">🎓</span><span><strong>Course Deadlines</strong><small>Track study milestones</small></span></button>
-          </div>
-          <div class="more-menu-group">
-            <div class="more-menu-heading">Review &amp; control</div>
-            <button type="button" role="menuitem" data-more-tab="activity" data-menu-label="Activity"><span class="more-menu-icon">📵</span><span><strong>Digital Activity</strong><small>Review distraction patterns</small></span></button>
-            <button type="button" role="menuitem" data-more-tab="insights" data-menu-label="Insights"><span class="more-menu-icon">💡</span><span><strong>Smart Insights</strong><small>See patterns and guidance</small></span></button>
-            <button type="button" role="menuitem" data-more-tab="settings" data-menu-label="Settings"><span class="more-menu-icon">⚙️</span><span><strong>Settings</strong><small>Targets, preferences, and data</small></span></button>
+            <button type="button" role="menuitem" id="openMyDayBtn"><span class="more-menu-icon">🗓️</span><span><strong>My Day</strong><small>Today’s plan</small></span></button>
+            <button type="button" role="menuitem" id="addPlanItemBtn"><span class="more-menu-icon">➕</span><span><strong>Add task</strong><small>Task or appointment</small></span></button>
+            <button type="button" role="menuitem" id="openBookingRequestsBtn"><span class="more-menu-icon">📅</span><span><strong>Book / requests</strong><small>Share link or review requests</small></span></button>
           </div>
           <div class="more-menu-footer">
-            <button type="button" id="moreDataTools"><span class="more-menu-icon" aria-hidden="true">⋯</span><span><strong>Data &amp; backup</strong><small>Export, CSV, and backup tools</small></span></button>
+            <button type="button" id="moreDataTools"><span class="more-menu-icon" aria-hidden="true">⋯</span><span><strong>More</strong><small>Check-in, settings and tools</small></span></button>
           </div>
         </div>
       </div>
@@ -774,12 +775,12 @@ html[data-theme="light"]{color-scheme:light}
   </section>
 
   <nav class="nav glass" aria-label="Primary PPP sections">
-    <button class="active" data-tab="command" data-nav-group="daily" title="Command Center"><span class="nav-icon">🏠</span><span class="nav-label">Command</span></button>
-    <button data-tab="today" data-nav-group="daily" title="Today's Check-in"><span class="nav-icon">✅</span><span class="nav-label">Check-in</span></button>
-    <button data-tab="planner" data-nav-group="daily" title="Daily Planner"><span class="nav-icon">📝</span><span class="nav-label">Planner</span></button>
-    <button data-tab="routine" data-nav-group="daily" title="Daily Routine"><span class="nav-icon">🗓️</span><span class="nav-label">Routine</span></button>
-    <button data-tab="momentum" data-nav-group="growth" title="21-Day Momentum"><span class="nav-icon">🔥</span><span class="nav-label">21-Day</span></button>
+    <button class="active" data-tab="command" data-nav-group="daily" title="Overall dashboard and direction"><span class="nav-icon">🏠</span><span class="nav-label">Command</span></button>
+    <button data-tab="routine" data-nav-group="daily" title="My Day — today’s complete routine and commitments"><span class="nav-icon">🗓️</span><span class="nav-label">My Day</span></button>
+    <button data-tab="momentum" data-nav-group="growth" title="Goals and 21-Day Momentum"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></button>
+    <button data-tab="today" data-nav-group="daily" title="Record today’s progress"><span class="nav-icon">✅</span><span class="nav-label">Check-in</span></button>
     <button data-tab="library" data-nav-group="growth" title="Study Library"><span class="nav-icon">📚</span><span class="nav-label">Library</span></button>
+    <button data-tab="planner" data-nav-group="daily" title="Plan or schedule a specific day"><span class="nav-icon">📝</span><span class="nav-label">Plan</span></button>
   </nav>
 
   <section class="motivation-ribbon action-center-ribbon glass" aria-live="polite" aria-label="Your next useful action">
@@ -974,7 +975,7 @@ html[data-theme="light"]{color-scheme:light}
 
   <section id="routine" class="panel">
     <div class="section-head">
-      <div><h2>Daily Routine</h2><p>A sustainable sequence for German, MSc/technical work, Coursera progress, English, self-improvement, job preparation, LeetCode, health, attention, and sleep. The goal is continuity, not a perfect day.</p></div>
+      <div><h2 id="routineDayHeading">My Day</h2><p id="routineDaySubtitle">Your routine, tasks, and appointments combined into one realistic day plan.</p></div>
       <button class="btn" id="refreshRoutineBtn">↻ Recalculate</button>
     </div>
 
@@ -994,7 +995,7 @@ html[data-theme="light"]{color-scheme:light}
         <div class="routine-stat"><strong id="routinePriority">German + MSc</strong><span>Protected priorities</span></div>
         <div class="routine-stat"><strong id="routineSleep">00:30</strong><span>Your sleep target</span></div>
       </div>
-      <div class="routine-personal-note" id="routinePersonalNote">Booked sessions will appear in the timeline automatically. Partner study is never forced into every day.</div>
+      <div class="routine-personal-note" id="routinePersonalNote">Tasks and appointments for the selected date appear in this timeline automatically.</div>
       <div class="routine-personal-note" id="routineGrowthNote">PPP progression rule: show up first, stabilize the cue, then grow the normal version. A minimum day still protects continuity.</div>
     </div>
 
@@ -1018,8 +1019,8 @@ html[data-theme="light"]{color-scheme:light}
 
     <div class="grid2 routine-main-grid" style="margin-top:13px">
       <div class="box glass">
-        <h3>Today’s realistic sequence</h3>
-        <div class="box-sub">Times follow your 07:30–00:30 rhythm. Treat them as anchors, not strict deadlines.</div>
+        <h3 id="routineSequenceHeading">Today’s realistic sequence</h3>
+        <div class="box-sub" id="routineSequenceSubtitle">Times follow your 07:30–00:30 rhythm. Tasks and appointments are fitted around the routine instead of added on top.</div>
         <div class="routine-timeline" id="routineTimeline"></div>
       </div>
       <div>
@@ -1047,7 +1048,7 @@ html[data-theme="light"]{color-scheme:light}
 
   <section id="momentum" class="panel">
     <div class="section-head">
-      <div><h2>21-Day Momentum</h2><p>Build or continue a routine through one realistic 21-day consistency cycle.</p></div>
+      <div><h2>Goals &amp; 21-Day Momentum</h2><p>Keep your bigger goals visible, then turn one priority at a time into a realistic 21-day consistency cycle.</p></div>
       <div class="momentum-status" id="momentumActiveCount">0 active blocks</div>
     </div>
 
@@ -1124,8 +1125,8 @@ html[data-theme="light"]{color-scheme:light}
   <section id="planner" class="panel">
     <div class="section-head">
       <div>
-        <h2>Tomorrow Planner</h2>
-        <p>Fast, flexible planning without a long form. Tomorrow opens by default, but any date can be adjusted.</p>
+        <h2>Plan a Day</h2>
+        <p>Add tasks or appointments for any date. They automatically become part of that day’s My Day routine.</p>
       </div>
       <div class="planner-date-tools">
         <button class="icon-btn" id="plannerPrevDay" title="Previous day">‹</button>
@@ -1133,6 +1134,7 @@ html[data-theme="light"]{color-scheme:light}
         <button class="icon-btn" id="plannerNextDay" title="Next day">›</button>
         <button class="btn" id="plannerTodayBtn">Today</button>
         <button class="btn primary" id="plannerTomorrowBtn">Tomorrow</button>
+        <button class="btn green" id="plannerOpenMyDayBtn">Open My Day</button>
       </div>
     </div>
 
@@ -1271,6 +1273,15 @@ html[data-theme="light"]{color-scheme:light}
         <div class="setting-row"><label>MSc / technical target</label><input id="selfStudyTarget" type="number" min="5" max="300" step="5"></div>
         <div class="setting-row"><label>Core routine threshold</label><input id="missionThreshold" type="number" min="40" max="100" step="5"></div>
       </div>
+      <div class="box glass"><h3>Shared booking</h3>
+        <div class="box-sub">One-time connection for the public Book with me link.</div>
+        <div class="booking-setup-grid">
+          <label>Web app URL<input id="sharedBookingUrl" type="url" placeholder="https://script.google.com/macros/s/.../exec"></label>
+          <label>Admin key<input id="sharedBookingKey" type="password" placeholder="Your private admin key"></label>
+        </div>
+        <div class="hero-actions" style="margin-top:10px"><button class="btn green" id="saveSharedBookingBtn" type="button">Save connection</button><button class="btn" id="testSharedBookingBtn" type="button">Test</button></div>
+        <div class="k-sub" id="sharedBookingStatus" style="margin-top:9px">Not connected yet.</div>
+      </div>
       <div class="box glass"><h3>Point weights</h3><div id="weightSettings"></div><div class="score-rule-note"><strong>Daily scoring:</strong> this is feedback, not a moral grade.  Done earns the full task weight, Partial earns 25%, Missed deducts the full weight, and a zero-minute study target on a logged day deducts half of its weight. Planner tasks also count: Low priority = 1 point, Normal = 2, High = 3; Done earns the points, In Progress earns 25%, and Missed deducts them. The result is classified from the net daily score.</div></div>
     </div>
 
@@ -1307,20 +1318,17 @@ html[data-theme="light"]{color-scheme:light}
 
 
 
-<div id="studyBookingModal" class="modal-backdrop hidden">
-  <div class="modal glass" style="width:min(660px,100%)">
-    <div class="modal-head"><div><h2 style="margin:0">📅 Study with Pratik</h2><div class="k-sub" style="margin-top:4px">Plan a real study session and add it directly to PPP. No email or external calendar.</div></div><button class="icon-btn" id="closeBookingBtn">✕</button></div>
-    <div class="booking-grid" style="margin-top:15px">
-      <div class="booking-field"><label>Study partner</label><input id="bookingPerson" type="text" value="Soumi" placeholder="Name"></div>
-      <div class="booking-field"><label>Study topic or PPP task</label><select id="bookingTopic"></select></div>
-      <div class="booking-field"><label>Date</label><input id="bookingDate" type="date"></div>
-      <div class="booking-field"><label>Start time</label><input id="bookingStart" type="text" class="smart-time-input" data-smart-time="1" inputmode="numeric" enterkeyhint="done" maxlength="8" autocomplete="off" placeholder="19:00" title="24-hour time. Type 19 → 19:00 or 1930 → 19:30."></div>
-      <div class="booking-field wide"><label>Quick start</label><div class="booking-time-tools"><button class="booking-chip" type="button" data-booking-date="today">Today</button><button class="booking-chip" type="button" data-booking-date="tomorrow">Tomorrow</button><button class="booking-chip" type="button" data-booking-time="next15">Next 15 min</button><button class="booking-chip" type="button" data-booking-time="evening">19:00</button></div></div>
-      <div class="booking-field wide"><label>Duration</label><div class="booking-duration-tools"><button class="booking-chip" type="button" data-booking-duration="30">30 min</button><button class="booking-chip active" type="button" data-booking-duration="60">60 min</button><button class="booking-chip" type="button" data-booking-duration="90">90 min</button><button class="booking-chip" type="button" data-booking-duration="120">2 hours</button></div><input id="bookingDuration" type="hidden" value="60"></div>
-      <div class="booking-field wide"><label>Optional note</label><input id="bookingNote" type="text" placeholder="e.g. Chapter 3, German speaking practice, ML week 2"></div>
-      <div class="booking-field wide"><div class="booking-preview" id="bookingPreview">Choose a date and time to preview the booking.</div><div class="booking-note">Type <strong>730</strong> and choose 7:30 AM or 7:30 PM, or type <strong>1930</strong> for 19:30 directly. PPP stores a clean 24-hour value internally.</div></div>
+<div id="bookingRequestsModal" class="modal-backdrop hidden">
+  <div class="modal glass" style="width:min(720px,100%)">
+    <div class="modal-head"><div><h2 style="margin:0">📅 Book / requests</h2><div class="k-sub" style="margin-top:4px">Share one link. Accept only the requests you want in your calendar and My Day.</div></div><button class="icon-btn" id="closeBookingRequestsBtn">✕</button></div>
+    <div class="booking-share-bar" style="margin-top:15px">
+      <input id="publicBookingLink" type="text" readonly placeholder="Connect the booking service once in Settings">
+      <button class="btn primary" id="copyBookingLinkBtn" type="button">Copy link</button>
+      <button class="btn" id="openPublicBookingBtn" type="button">Open</button>
     </div>
-    <div class="modal-actions"><button class="btn" id="cancelBookingBtn">Cancel</button><button class="btn green" id="saveBookingBtn">Add Booking to PPP</button></div>
+    <div class="booking-connection-note" id="bookingConnectionNote">Your public link only shows the booking form. It never exposes your PPP data.</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px"><h3 style="margin:0">Incoming requests</h3><button class="btn" id="refreshBookingRequestsBtn" type="button">Refresh</button></div>
+    <div class="booking-request-list" id="bookingRequestList"><div class="planner-empty">Connect the booking service in Settings, then refresh.</div></div>
   </div>
 </div>
 
@@ -1344,9 +1352,19 @@ html[data-theme="light"]{color-scheme:light}
 </div>
 
 <div id="toolsMenu" class="modal-backdrop hidden">
-  <div class="modal glass" style="width:min(480px,100%)">
-    <div class="modal-head"><h2>Data Tools</h2><button class="icon-btn" id="closeTools">✕</button></div>
-    <div class="hero-actions"><button class="btn primary" id="menuExport">Export Backup</button><button class="btn" id="menuCsv">Export CSV</button><button class="btn" id="menuSettings">Settings</button></div>
+  <div class="modal glass" style="width:min(560px,100%)">
+    <div class="modal-head"><div><h2 style="margin:0">More</h2><div class="k-sub" style="margin-top:4px">Less-used PPP tools</div></div><button class="icon-btn" id="closeTools">✕</button></div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px">
+      <button class="btn" id="quickBtn">✅ Quick check-in</button>
+      <button class="btn" id="themeBtn">◐ Appearance</button>
+      <button class="btn" data-more-tab="calendar">📊 Calendar &amp; Data</button>
+      <button class="btn" data-more-tab="courses">🎓 Course Deadlines</button>
+      <button class="btn" data-more-tab="activity">📵 Digital Activity</button>
+      <button class="btn" data-more-tab="insights">💡 Smart Insights</button>
+      <button class="btn" id="menuSettings">⚙️ Settings</button>
+      <button class="btn primary" id="menuExport">Export Backup</button>
+      <button class="btn" id="menuCsv">Export CSV</button>
+    </div>
   </div>
 </div>
 
@@ -1731,7 +1749,7 @@ const COURSERA_COURSES=[
 let activeCourseSession=null;
 let activeMomentumFocusBlock=null;
 let librarySessionBook=null;
-let plannerDate=addDateDays(localDateKey(),1);
+let plannerDate=localDateKey();
 let smartNowOptions=[];
 let smartNowIndex=0;
 let smartNowCurrent=null;
@@ -1925,11 +1943,6 @@ function smartTimeRecommendation(input,candidates){
     const after=candidates.map(c=>({c,delta:(parseTime(c.value)-start+1440)%1440})).filter(x=>x.delta>0&&x.delta<=8*60).sort((a,b)=>a.delta-b.delta);
     if(after.length)return {choice:after[0].c,reason:`Recommended because it comes after the ${smartTime12Label(startValue)} start time.`};
   }
-  if(id==="bookingStart"){
-    const date=document.getElementById("bookingDate")?.value||"";
-    if(date===today){const future=smartTimeFutureCandidate(candidates,nowMinutes);if(future)return {choice:future,reason:"Recommended because it is the next matching time today."}}
-    return {choice:smartTimeClosestCandidate(candidates,19*60),reason:"Study with Pratik defaults toward an evening session when both AM and PM are possible."};
-  }
   if(id==="plannerTime"){
     if(plannerDate===today){const future=smartTimeFutureCandidate(candidates,nowMinutes);if(future)return {choice:future,reason:"Recommended because it is the next matching time today."}}
     const section=document.getElementById("plannerSection")?.value;
@@ -1950,7 +1963,6 @@ function smartTimePresetList(input){
   const id=input?.id||"",field=input?.dataset?.f||"",now=new Date(),rounded=roundClockToFive(now),next15=roundClockToFive(new Date(Date.now()+15*60000));
   if(id==="sleepTime"||id==="preferredSleep"||field==="sleep")return [{label:"Sleep target",value:state.settings.preferredSleep||"00:30"},{label:"11:30 PM",value:"23:30"}];
   if(id==="wakeTime"||id==="preferredWake"||field==="wake")return [{label:"Wake target",value:state.settings.preferredWake||"07:30"},{label:"7:00 AM",value:"07:00"}];
-  if(id==="bookingStart")return [{label:"Next 15 min",value:next15},{label:"7:00 PM",value:"19:00"},{label:"7:30 PM",value:"19:30"},{label:"8:00 PM",value:"20:00"}];
   if(id==="plannerEndTime"){
     const start=normalizeSmartTime(document.getElementById("plannerTime")?.value||"");
     if(start){const base=parseTime(start);return [30,60,90].map(n=>({label:`+${n} min`,value:minutesToClock(base+n)}))}
@@ -2431,17 +2443,24 @@ function routineBookSuggestionHtml(item,compact=false){
     return `<div class="routine-book-suggestion"><div class="routine-book-copy"><span class="routine-book-icon">${book.icon}</span><div><strong>${escapeHtml(book.title)}</strong><span>${escapeHtml(context)}</span></div></div><div class="routine-book-actions"><button type="button" class="routine-book-btn primary" data-routine-book-action="open" data-routine-book-id="${book.id}">Open</button><button type="button" class="routine-book-btn" data-routine-book-action="focus" data-routine-book-id="${book.id}">5 min</button></div></div>`;
   }).join("");
 }
-function routineBookingsForToday(){
-  const key=localDateKey();
-  return plannerTasksForDate(key).filter(task=>task.time).map(task=>({
-    minute:parseTime(task.time)??12*60,
-    icon:task.type==="appointment"?"📅":"📝",
+function plannerRoutineMinute(task,wake){
+  if(task.time)return parseTime(task.time)??wake+360;
+  const base={morning:wake+135,afternoon:wake+390,evening:wake+660,anytime:wake+510}[plannerSectionFor(task)]??wake+510;
+  return base+(Math.abs(String(task.id||task.title).split("").reduce((n,c)=>n+c.charCodeAt(0),0))%5)*8;
+}
+function plannerTaskLooksStudy(task){
+  return /(german|deutsch|msc|technical|study|course|coursera|machine learning|leetcode|english|reading|assignment|university|python|research)/i.test(String(task?.title||""));
+}
+function routinePlannerItemsForDate(key=localDateKey(),wake=parseTime(state.settings.preferredWake)||450){
+  return plannerTasksForDate(key).map(task=>({
+    minute:plannerRoutineMinute(task,wake),
+    icon:task.type==="appointment"?"📅":task.time?"⏱️":"📝",
     title:task.title,
-    detail:`${task.type==="appointment"?"Booked session":"Planned task"} • ${task.duration||30} minutes${task.endTime?` • until ${task.endTime}`:""}`,
+    detail:`${task.type==="appointment"?"Appointment":"Planned task"}${task.time?` • ${task.time}${task.endTime?`–${task.endTime}`:""}`:` • ${plannerSectionFor(task)}`} • ${task.duration||30} minutes`,
     appointment:task.type==="appointment",
     plannerItem:true,
     plannerItemId:task.id,
-    studyMinutes:Number(task.duration)||30,
+    studyMinutes:plannerTaskLooksStudy(task)?Number(task.duration)||30:0,
     priority:task.priority==="high"
   }));
 }
@@ -2483,8 +2502,8 @@ function courseraRotationForDate(mode=state.profile.routineMode||"balanced",key=
   const duration=planned?clamp(Number(planned.duration)||baseDuration,5,60):baseDuration;
   return {course,progress:p,planned:planned||null,duration,urgent,paceLabel,pace};
 }
-function courseraRoutineItem(mode,wake){
-  const plan=courseraRotationForDate(mode);if(!plan)return null;
+function courseraRoutineItem(mode,wake,key=localDateKey()){
+  const plan=courseraRotationForDate(mode,key);if(!plan)return null;
   const c=plan.course,p=plan.progress;
   const minute=wake+(mode==="balanced"?430:mode==="busy"?360:180);
   return {minute,icon:"🧑‍🎓",title:`Coursera — ${c.title}`,detail:`${plan.duration} focused minutes • ${p.percent}% complete • counts toward MSc / technical study${plan.paceLabel?` • ${plan.paceLabel}`:""}. Learn one section, close the notes, retrieve three ideas, then check yourself.`,focus:"selfStudy",studyMinutes:plan.duration,courseId:c.id,plannerItem:Boolean(plan.planned),plannerItemId:plan.planned?.id||null,priority:Boolean(plan.planned?.priority==="high"),minimum:"5 min",courseRotation:true};
@@ -2497,13 +2516,13 @@ function routineMomentumSummary(){
   if(yesterday==="missed")return `21-Day: Day ${stats.dayNumber} • ${stats.phase}. Yesterday was missed, so today’s minimum for “${block.name}” is enough. Do not compensate with extra work.`;
   return `21-Day: Day ${stats.dayNumber} • ${stats.phase}. Protect today’s repetition of “${block.name}”. Minimum counts; normal target is optional when energy and time are available.`;
 }
-function buildRoutine(mode=state.profile.routineMode||"balanced"){
+function buildRoutine(mode=state.profile.routineMode||"balanced",key=localDateKey()){
   const wake=parseTime(state.settings.preferredWake)||450;
   let sleep=parseTime(state.settings.preferredSleep);
   if(sleep==null)sleep=30;
   if(sleep<=wake)sleep+=1440;
-  const t=state.settings,items=[],bookings=routineBookingsForToday(),covered=routineBookingCoverage(bookings);
-  const courseItem=covered.selfStudy?null:courseraRoutineItem(mode,wake);
+  const t=state.settings,items=[],bookings=routinePlannerItemsForDate(key,wake),covered=routineBookingCoverage(bookings);
+  const courseItem=covered.selfStudy?null:courseraRoutineItem(mode,wake,key);
   const add=(offset,icon,title,detail,opts={})=>items.push({minute:wake+offset,icon,title,detail,...opts});
   const germanCore=Math.min(45,Math.max(20,Number(t.germanTarget)||60));
   const studyCore=Math.min(60,Math.max(25,Number(t.selfStudyTarget)||60));
@@ -2604,14 +2623,18 @@ function routineMomentumForItem(item){
   return activeMomentumBlocks().map(block=>({block,stats:momentumStats(block)})).find(x=>x.stats.todayIndex>=0&&x.stats.todayIndex<21&&momentumNameMatches(x.block,terms))||null;
 }
 function renderRoutine(){
-  const mode=state.profile.routineMode||"balanced",info=routineModeInfo(mode),routine=buildRoutine(mode),now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),todaySame=true,key=localDateKey(),d=actualTodayCalculated();
+  const mode=state.profile.routineMode||"balanced",key=plannerDate||localDateKey(),info=routineModeInfo(mode),routine=buildRoutine(mode,key),now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),todaySame=key===localDateKey(),d=calculatedForDateKey(key);
+  const friendly=plannerFriendlyDate(key),isToday=key===localDateKey();
+  setText("routineDayHeading",isToday?"My Day":`My Day • ${friendly}`);
+  setText("routineDaySubtitle",isToday?"Your routine, tasks, and appointments combined into one realistic plan for today.":`Routine, tasks, and appointments combined for ${friendly}.`);
+  setText("routineSequenceHeading",isToday?"Today’s realistic sequence":`${friendly} • realistic sequence`);
   setText("routineHeadline",info.headline);setText("routineDescription",info.description);
   document.querySelectorAll("[data-routine-mode]").forEach(b=>b.classList.toggle("active",b.dataset.routineMode===mode));
   setText("routineWake",state.settings.preferredWake);setText("routineSleep",state.settings.preferredSleep);
   const focusTotal=routine.reduce((sum,item)=>sum+(Number(item.studyMinutes)||0),0),scheduledCount=routine.filter(x=>x.plannerItem).length,bookingCount=routine.filter(x=>x.appointment).length;
   setText("routineFocusTotal",`${focusTotal} min`);
   setText("routinePriority",mode==="recovery"?"Recovery + continuity":"German + MSc/Coursera + essentials");
-  setText("routinePersonalNote",scheduledCount?`${scheduledCount} timed planner item${scheduledCount===1?" is":"s are"} included automatically${bookingCount?`, including ${bookingCount} booked session${bookingCount===1?"":"s"}`:""}. Matching study blocks are reduced so booked work does not become extra pressure.`:"No timed task is scheduled today. Coursera rotates into suitable technical-study days instead of being forced into every day.");
+  setText("routinePersonalNote",scheduledCount?`${scheduledCount} planned item${scheduledCount===1?" is":"s are"} included automatically${bookingCount?`, including ${bookingCount} appointment${bookingCount===1?"":"s"}`:""}. PPP fits them into this date and reduces overlapping study blocks so the day stays realistic.`:`No task or appointment is booked for ${isToday?"today":"this date"}. The core routine remains the base plan.`);
   setText("routineGrowthNote",routineMomentumSummary());
 
   const status=routine.map(item=>routineTrackedComplete(item,d,key));
@@ -2626,13 +2649,13 @@ function renderRoutine(){
     return `<div class="routine-step ${completed?"completed":""} ${past?"past":""} ${nowClass?"now":""} ${x.plannerItem?"appointment":""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.detail)}</span>${badges}${routineBookSuggestionHtml(x)}</div></div>`;
   }).join("");
 
-  const remaining=incompleteTasks(),hour=now.getHours();
-  document.getElementById("remainingPlan").innerHTML=remaining.length?remaining.slice(0,7).map((x,i)=>`<div class="remaining-item"><div class="remaining-check">${i+1}</div><div><strong>${x.title}</strong><span>${x.detail}</span></div>${routineBookCategories(x).length?`<div class="remaining-book-wrap">${routineBookSuggestionHtml(x,true)}</div>`:""}</div>`).join(""):`<div class="empty">Your tracked priorities are complete. Protect the evening and sleep well.</div>`;
-  const smart=buildSmartNowOptions();
-  const next=smart.options[0]||{title:"Maintain continuity",detail:"Your core work is covered. Protect recovery and make tomorrow easy to start.",kind:"recovery"};
+  const remaining=isToday?incompleteTasks():plannerTasksForDate(key).filter(task=>!plannerDone(task,key)).map(task=>({title:task.title,detail:`${task.time?`${task.time}${task.endTime?`–${task.endTime}`:""} • `:""}${task.duration||30} min • ${task.type==="appointment"?"appointment":"task"}`,focus:null,plannerTaskId:task.id}));
+  document.getElementById("remainingPlan").innerHTML=remaining.length?remaining.slice(0,7).map((x,i)=>`<div class="remaining-item"><div class="remaining-check">${i+1}</div><div><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.detail)}</span></div>${isToday&&routineBookCategories(x).length?`<div class="remaining-book-wrap">${routineBookSuggestionHtml(x,true)}</div>`:""}</div>`).join(""):`<div class="empty">${isToday?"Your tracked priorities are complete. Protect the evening and sleep well.":"No unfinished planned items for this date."}</div>`;
+  const smart=isToday?buildSmartNowOptions():{options:remaining.map(x=>({...x,kind:"planner",duration:plannerTaskById(x.plannerTaskId)?.duration||30,principle:"Planned for this day"}))};
+  const next=smart.options[0]||{title:isToday?"Maintain continuity":"This day is clear",detail:isToday?"Your core work is covered. Protect recovery and make tomorrow easy to start.":"No extra task needs to be added unless you choose one.",kind:"recovery"};
   routineNextAction=next;routineNextFocus=next.focus;routineNextPlannerId=next.plannerTaskId||null;routineNextCourseId=next.courseId||null;
   document.getElementById("routineNextText").textContent=`${next.title}: ${next.detail}${next.principle?` • ${next.principle}`:""}`;
-  renderSmartNow();
+  if(isToday)renderSmartNow();
 }
 function openRoutineNext(){
   if(routineNextAction){smartNowCurrent=routineNextAction;doSmartNow();return;}
@@ -3054,7 +3077,7 @@ function addPlannerTask(){
     statusDates:{}
   });
   input.value="";document.getElementById("plannerTime").value="";document.getElementById("plannerEndTime").value="";document.getElementById("plannerDuration").value=30;
-  save();renderPlanner();renderSmartNow();showToast("Added to the planner");
+  save();renderPlanner();renderSmartNow();showToast("Added to this day");
   input.focus();
 }
 function togglePlannerDone(id,key=plannerDate){
@@ -3189,6 +3212,11 @@ function actualTodaySnapshot(){
 }
 function actualTodayRecord(){return actualTodaySnapshot().raw}
 function actualTodayCalculated(){return actualTodaySnapshot().calculated}
+function calculatedForDateKey(key){
+  const monthKey=String(key).slice(0,7),index=Number(String(key).slice(8,10))-1;
+  if(!monthKey||index<0)return blankDay();
+  return calcMonth(monthKey)[index]||blankDay();
+}
 function humanMinutes(value){
   const n=Math.max(0,Math.round(value));return n>=60?`${Math.floor(n/60)}h ${n%60}m`:`${n} min`;
 }
@@ -3462,7 +3490,7 @@ function chooseSmartNow(direction=1,easier=false){
   smartNowIndex=(smartNowIndex+direction+smartNowOptions.length)%smartNowOptions.length;
   renderSmartNow(false);
 }
-function movePlannerDate(days){plannerDate=addDateDays(plannerDate,days);renderPlanner()}
+function movePlannerDate(days){plannerDate=addDateDays(plannerDate,days);renderPlanner();renderRoutine()}
 function plannerDropInto(id,section,beforeId=null){
   const task=plannerTaskById(id);if(!task)return;
   task.section=section;
@@ -3809,40 +3837,6 @@ function planNextCourseSessions(){
   }
   save();renderPlanner();renderCourses();showToast(added?`${added} paced session${added===1?"":"s"} planned for the current course only`:"The current course already has enough sessions planned");
 }
-function populateBookingTopics(){
-  const select=document.getElementById("bookingTopic"),date=document.getElementById("bookingDate")?.value||addDateDays(localDateKey(),1);if(!select)return;
-  const current=select.value;
-  const standard=["German","MSc Study","English Study","Machine Learning","Group Study","Other Study"];
-  let html=`<optgroup label="Common study topics">${standard.map(x=>`<option value="topic:${escapeHtml(x)}">${x}</option>`).join("")}</optgroup>`;
-  const tasks=plannerTasksForDate(date).filter(x=>!plannerDone(x,date));
-  if(tasks.length)html+=`<optgroup label="Pratik's PPP tasks">${tasks.slice(0,12).map(x=>`<option value="task:${x.id}">${escapeHtml(x.title)}</option>`).join("")}</optgroup>`;
-  select.innerHTML=html;if([...select.options].some(o=>o.value===current))select.value=current;updateBookingPreview();
-}
-function openStudyBooking(){
-  const date=document.getElementById("bookingDate"),start=document.getElementById("bookingStart");date.value=addDateDays(localDateKey(),1);start.value="19:00";document.getElementById("bookingDuration").value="60";document.getElementById("bookingNote").value="";document.querySelectorAll("[data-booking-duration]").forEach(b=>b.classList.toggle("active",b.dataset.bookingDuration==="60"));populateBookingTopics();showModal("studyBookingModal");updateBookingPreview();
-}
-function setBookingDuration(minutes){document.getElementById("bookingDuration").value=minutes;document.querySelectorAll("[data-booking-duration]").forEach(b=>b.classList.toggle("active",Number(b.dataset.bookingDuration)===Number(minutes)));updateBookingPreview()}
-function setBookingDate(which){document.getElementById("bookingDate").value=which==="today"?localDateKey():addDateDays(localDateKey(),1);populateBookingTopics();updateBookingPreview()}
-function setBookingTime(which){document.getElementById("bookingStart").value=which==="evening"?"19:00":roundClockToFive(new Date(Date.now()+15*60000));updateBookingPreview()}
-function bookingSelectedTitle(){
-  const value=document.getElementById("bookingTopic")?.value||"topic:Group Study";
-  if(value.startsWith("task:")){const t=plannerTaskById(value.slice(5));return t?.title||"Group Study"}
-  return value.slice(6)||"Group Study";
-}
-function updateBookingPreview(){
-  const el=document.getElementById("bookingPreview");if(!el)return;
-  const person=document.getElementById("bookingPerson")?.value.trim()||"Study partner",date=document.getElementById("bookingDate")?.value,start=document.getElementById("bookingStart")?.value,duration=Number(document.getElementById("bookingDuration")?.value)||60,title=bookingSelectedTitle();
-  if(!date||!start){el.textContent="Choose a date and time to preview the booking.";return}
-  const end=minutesToClock((parseTime(start)||0)+duration);el.innerHTML=`<strong>${escapeHtml(title)} with ${escapeHtml(person)}</strong><br>${formatDate(date)} • ${start}–${end} • ${duration} minutes`;
-}
-function saveStudyBooking(){
-  const person=document.getElementById("bookingPerson").value.trim()||"Study partner",date=document.getElementById("bookingDate").value,start=document.getElementById("bookingStart").value,duration=Number(document.getElementById("bookingDuration").value)||60,note=document.getElementById("bookingNote").value.trim(),topic=bookingSelectedTitle();
-  if(!date||!start){showToast("Choose the booking date and start time");return}
-  const title=`${topic} with ${person}${note?` — ${note}`:""}`,endTime=minutesToClock((parseTime(start)||0)+duration);
-  plannerStore().push({id:`pl_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,title,startDate:date,type:"appointment",time:start,endTime,duration,section:plannerSectionFor({time:start,section:"auto"}),priority:"normal",repeat:"none",order:Date.now(),completedDates:[],statusDates:{}});
-  plannerDate=date;save();hideModal("studyBookingModal");renderPlanner();renderSmartNow();showTab("planner");showToast("Study with Pratik added to PPP ✓");
-}
-
 function renderAll(){ensureMonth();ensureLibrary();ensureCourses();syncMomentumFromDailyData();renderMotivationExperience();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();renderRoutine();renderMomentum();renderLibrary();renderCourses();renderPlanner();renderActivity();save()}
 function setSaveStatus(t){const e=document.getElementById("saveStatus");if(e)e.textContent=t}
 function closeMoreMenu(){
@@ -4061,6 +4055,90 @@ function exportCsv(){
 function resetMonth(){if(confirm(`Delete all data for ${monthLabel()}?`)){state.months[currentMonth]=Array.from({length:monthDays(currentMonth)},blankDay);save();renderAll();showToast("Month reset")}}
 function getTodayRow(){return document.getElementById(`row-${todayIndex()}`)}
 function jumpToday(){const actualMonth=localDateKey().slice(0,7);if(currentMonth!==actualMonth){currentMonth=actualMonth;ensureMonth();renderAll()}showTab("calendar");setTimeout(()=>getTodayRow()?.scrollIntoView({behavior:"smooth",block:"center"}),70)}
+
+const SHARED_BOOKING_CONFIG_KEY="pppSharedBooking_v1";
+let sharedBookingRequests=[];
+function loadSharedBookingConfig(){
+  try{return {...{url:"",adminKey:""},...(JSON.parse(localStorage.getItem(SHARED_BOOKING_CONFIG_KEY)||"null")||{})}}catch(e){return {url:"",adminKey:""}}
+}
+function saveSharedBookingConfig(){
+  const url=String(document.getElementById("sharedBookingUrl")?.value||"").trim();
+  const adminKey=String(document.getElementById("sharedBookingKey")?.value||"").trim();
+  localStorage.setItem(SHARED_BOOKING_CONFIG_KEY,JSON.stringify({url,adminKey}));
+  renderSharedBookingConnection();
+  showToast(url&&adminKey?"Booking connection saved":"Booking connection cleared");
+}
+function sharedBookingConfig(){return loadSharedBookingConfig()}
+function renderSharedBookingConnection(){
+  const cfg=sharedBookingConfig(),urlEl=document.getElementById("sharedBookingUrl"),keyEl=document.getElementById("sharedBookingKey"),link=document.getElementById("publicBookingLink");
+  if(urlEl&&document.activeElement!==urlEl)urlEl.value=cfg.url||"";
+  if(keyEl&&document.activeElement!==keyEl)keyEl.value=cfg.adminKey||"";
+  if(link)link.value=cfg.url||"";
+  setText("sharedBookingStatus",cfg.url&&cfg.adminKey?"Connected. Outsiders can use the public link; the admin key stays only in this browser.":"Not connected yet. Paste the deployed Apps Script URL and your private admin key.");
+  setText("bookingConnectionNote",cfg.url?"Public link ready. It only shows the simple booking form; your PPP dashboard stays private.":"Connect once in Settings. Your public link will never expose PPP data.");
+}
+function bookingJsonp(action,params={},onDone=()=>{}){
+  const cfg=sharedBookingConfig();
+  if(!cfg.url||!cfg.adminKey){showToast("Connect Shared booking in Settings first");onDone(null);return}
+  const callback=`pppBooking_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+  const script=document.createElement("script");
+  const cleanup=()=>{try{delete window[callback]}catch(e){window[callback]=undefined}script.remove()};
+  const timeout=setTimeout(()=>{cleanup();showToast("Booking service did not respond");onDone(null)},12000);
+  window[callback]=data=>{clearTimeout(timeout);cleanup();if(data?.ok===false){showToast(data.error||"Booking request failed");onDone(null);return}onDone(data)};
+  const qs=new URLSearchParams({action,key:cfg.adminKey,callback,_:Date.now(),...params});
+  script.src=`${cfg.url}${cfg.url.includes("?")?"&":"?"}${qs.toString()}`;
+  script.onerror=()=>{clearTimeout(timeout);cleanup();showToast("Could not reach booking service");onDone(null)};
+  document.head.appendChild(script);
+}
+function requestTitleForPlanner(r){
+  const what=String(r.what||"").trim(),type=String(r.type||"Appointment").trim(),name=String(r.name||"").trim();
+  return what||`${type}${name?` with ${name}`:""}`;
+}
+function syncAcceptedBookingRequests(items){
+  const accepted=(items||[]).filter(r=>String(r.status).toLowerCase()==="accepted"&&r.id&&r.date);
+  let changed=false;
+  accepted.forEach(r=>{
+    if(plannerStore().some(x=>x.externalBookingId===r.id))return;
+    const duration=clamp(Number(r.duration)||30,5,720),time=String(r.time||"").slice(0,5),endTime=time?minutesToClock((parseTime(time)||0)+duration):"";
+    const task={id:`ext_${r.id}`,externalBookingId:r.id,title:requestTitleForPlanner(r),startDate:String(r.date),type:time?"appointment":"task",time,endTime,duration,section:"auto",priority:"normal",repeat:"none",order:Date.now(),completedDates:[],statusDates:{},externalBooking:true,requester:r.name||"",note:r.note||""};
+    task.section=plannerSectionFor(task);plannerStore().push(task);changed=true;
+  });
+  if(changed){save();renderPlanner();renderRoutine();renderSmartNow()}
+}
+function renderBookingRequests(){
+  const host=document.getElementById("bookingRequestList");if(!host)return;
+  const pending=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="pending");
+  if(!sharedBookingConfig().url){host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';return}
+  if(!pending.length){host.innerHTML='<div class="planner-empty">No pending requests.</div>';return}
+  host.innerHTML=pending.map(r=>{
+    const when=[r.date,r.time].filter(Boolean).join(" • "),duration=r.duration?`${r.duration} min`:"";
+    return `<div class="booking-request"><div><strong>${escapeHtml(requestTitleForPlanner(r))}</strong><div class="booking-request-meta">${escapeHtml(r.name||"Someone")} • ${escapeHtml(r.type||"Request")}${when?` • ${escapeHtml(when)}`:""}${duration?` • ${escapeHtml(duration)}`:""}</div>${r.note?`<div class="booking-request-note">${escapeHtml(r.note)}</div>`:""}</div><div class="booking-request-actions"><button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">Accept</button><button class="btn" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">Decline</button></div></div>`;
+  }).join("");
+}
+function refreshBookingRequests(silent=false){
+  if(!silent)setText("bookingRequestList","Loading requests…");
+  bookingJsonp("list",{},data=>{
+    if(!data){renderBookingRequests();return}
+    sharedBookingRequests=Array.isArray(data.requests)?data.requests:[];
+    syncAcceptedBookingRequests(sharedBookingRequests);renderBookingRequests();
+    if(!silent)showToast("Booking requests refreshed");
+  });
+}
+function updateBookingRequest(id,action){
+  bookingJsonp(action,{id},data=>{
+    if(!data)return;
+    showToast(action==="accept"?"Accepted and added to Google Calendar":"Request declined");
+    refreshBookingRequests(true);
+  });
+}
+function openBookingRequests(){closeMoreMenu();renderSharedBookingConnection();renderBookingRequests();showModal("bookingRequestsModal");if(sharedBookingConfig().url&&sharedBookingConfig().adminKey)refreshBookingRequests(true)}
+function copyPublicBookingLink(){
+  const url=sharedBookingConfig().url;if(!url){showToast("Connect Shared booking in Settings first");return}
+  navigator.clipboard?.writeText(url).then(()=>showToast("Booking link copied")).catch(()=>{const el=document.getElementById("publicBookingLink");el.select();document.execCommand("copy");showToast("Booking link copied")});
+}
+function openPublicBookingLink(){const url=sharedBookingConfig().url;if(!url){showToast("Connect Shared booking in Settings first");return}window.open(url,"_blank","noopener")}
+function testSharedBooking(){bookingJsonp("list",{},data=>{if(data){showToast("Booking connection works ✓");setText("sharedBookingStatus","Connected ✓")}})}
+
 function attachEvents(){
   document.addEventListener("input",e=>{
     const el=e.target;if(!el?.matches?.("[data-smart-time]"))return;
@@ -4090,13 +4168,13 @@ function attachEvents(){
   window.addEventListener("resize",()=>smartTimePositionPopover(smartTimeActiveInput));
   document.addEventListener("scroll",()=>smartTimePositionPopover(smartTimeActiveInput),true);
   document.querySelectorAll(".nav [data-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-  document.querySelectorAll("[data-more-tab]").forEach(b=>b.onclick=()=>showTab(b.dataset.moreTab));
+  document.querySelectorAll("[data-more-tab]").forEach(b=>b.onclick=()=>{closeMoreMenu();hideModal("toolsMenu");showTab(b.dataset.moreTab)});
   document.getElementById("moreMenuBtn").onclick=e=>{e.stopPropagation();toggleMoreMenu()};
   document.getElementById("moreMenu").onclick=e=>e.stopPropagation();
   document.addEventListener("click",closeMoreMenu);
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMoreMenu()});
   document.getElementById("prevMonth").onclick=()=>changeMonth(-1);document.getElementById("nextMonth").onclick=()=>changeMonth(1);
-  document.getElementById("quickBtn").onclick=()=>{closeMoreMenu();showModal("quickModal")};document.getElementById("closeQuick").onclick=()=>hideModal("quickModal");document.getElementById("openDetailed").onclick=()=>{hideModal("quickModal");showTab("today")};
+  document.getElementById("quickBtn").onclick=()=>{closeMoreMenu();hideModal("toolsMenu");showModal("quickModal")};document.getElementById("closeQuick").onclick=()=>hideModal("quickModal");document.getElementById("openDetailed").onclick=()=>{hideModal("quickModal");showTab("today")};
   document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>applyQuick(b.dataset.quick));
   document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=openFocusTimer;
   document.getElementById("heroSparkNext").onclick=()=>nextMotivationQuote(true);document.getElementById("motivationNextBtn").onclick=nextActionCenter;document.getElementById("motivationFocusBtn").onclick=runActionCenter;document.getElementById("motivationResetBtn").onclick=openUrgeReset;document.getElementById("smallWinFocusBtn").onclick=()=>prepareFiveMinuteFocus(false);document.getElementById("smallWinResetBtn").onclick=openUrgeReset;
@@ -4122,15 +4200,25 @@ function attachEvents(){
   document.getElementById("courseGrid").addEventListener("click",e=>{const b=e.target.closest("[data-course-action]");if(!b)return;const id=b.dataset.courseId;if(b.dataset.courseAction==="open")openCourse(id);if(b.dataset.courseAction==="focus")startCourseFocus(id);if(b.dataset.courseAction==="plan")addCourseToPlanner(id)});
   document.getElementById("courseGrid").addEventListener("input",e=>{const el=e.target;if(el.dataset.courseProgress){const p=courseProgress(el.dataset.courseProgress);p.percent=Number(el.value);if(p.percent>=100)p.status="Completed";else if(p.percent>0&&p.status==="Not started")p.status="In progress";save();renderCourses()}else if(el.dataset.courseSessions){courseProgress(el.dataset.courseSessions).sessions=Math.max(0,Number(el.value)||0);save();renderCourses()}});
   document.getElementById("courseGrid").addEventListener("change",e=>{const el=e.target;if(el.dataset.courseStatus){const p=courseProgress(el.dataset.courseStatus);p.status=el.value;if(el.value==="Completed")p.percent=100;save();renderCourses()}});
-  document.getElementById("openBookingBtn").onclick=()=>{closeMoreMenu();openStudyBooking()};
-  document.getElementById("closeBookingBtn").onclick=()=>hideModal("studyBookingModal");
-  document.getElementById("cancelBookingBtn").onclick=()=>hideModal("studyBookingModal");
-  document.getElementById("saveBookingBtn").onclick=saveStudyBooking;
-  document.getElementById("bookingDate").onchange=()=>{populateBookingTopics();updateBookingPreview()};
-  ["bookingPerson","bookingStart","bookingTopic","bookingNote"].forEach(id=>document.getElementById(id).addEventListener(id==="bookingTopic"?"change":"input",updateBookingPreview));
-  document.querySelectorAll("[data-booking-duration]").forEach(b=>b.onclick=()=>setBookingDuration(Number(b.dataset.bookingDuration)));
-  document.querySelectorAll("[data-booking-date]").forEach(b=>b.onclick=()=>setBookingDate(b.dataset.bookingDate));
-  document.querySelectorAll("[data-booking-time]").forEach(b=>b.onclick=()=>setBookingTime(b.dataset.bookingTime));
+  document.getElementById("openMyDayBtn").onclick=()=>{closeMoreMenu();plannerDate=localDateKey();renderPlanner();showTab("routine")};
+  document.getElementById("openBookingRequestsBtn").onclick=openBookingRequests;
+  document.getElementById("closeBookingRequestsBtn").onclick=()=>hideModal("bookingRequestsModal");
+  document.getElementById("copyBookingLinkBtn").onclick=copyPublicBookingLink;
+  document.getElementById("openPublicBookingBtn").onclick=openPublicBookingLink;
+  document.getElementById("refreshBookingRequestsBtn").onclick=()=>refreshBookingRequests(false);
+  document.getElementById("bookingRequestList").onclick=e=>{const b=e.target.closest("[data-booking-action]");if(b)updateBookingRequest(b.dataset.bookingId,b.dataset.bookingAction)};
+  document.getElementById("saveSharedBookingBtn").onclick=saveSharedBookingConfig;
+  document.getElementById("testSharedBookingBtn").onclick=testSharedBooking;
+  document.getElementById("addPlanItemBtn").onclick=()=>{
+    closeMoreMenu();
+    plannerDate=localDateKey();
+    renderPlanner();
+    showTab("planner");
+    setTimeout(()=>{
+      const input=document.getElementById("plannerQuickInput");
+      if(input){input.focus();input.scrollIntoView({behavior:state.profile.motion===false?"auto":"smooth",block:"center"})}
+    },0);
+  };
   document.getElementById("libraryContinueBtn").onclick=continueLibraryReading;
   document.getElementById("libraryFilter").addEventListener("click",e=>{const b=e.target.closest("[data-library-filter]");if(!b)return;ensureLibrary().filter=b.dataset.libraryFilter;save();renderLibrary()});
   document.getElementById("libraryGrid").addEventListener("click",e=>{const b=e.target.closest("[data-book-action]");if(!b)return;b.dataset.bookAction==="open"?openLibraryBook(b.dataset.bookId):startLibraryFocus(b.dataset.bookId)});
@@ -4150,7 +4238,7 @@ function attachEvents(){
     const block=findMomentumBlock(e.target.dataset.momentumNote),idx=block?momentumTodayIndex(block):-1;
     if(block&&idx>=0&&idx<21){block.days[idx].note=e.target.value;save()}
   });
-  document.getElementById("refreshRoutineBtn").onclick=()=>{renderRoutine();showToast("Routine refreshed from your latest progress")};
+  document.getElementById("refreshRoutineBtn").onclick=()=>{renderRoutine();showToast("My Day refreshed from your latest plan")};
   document.getElementById("routine").addEventListener("click",e=>{
     const btn=e.target.closest("[data-routine-book-action]");
     if(!btn)return;
@@ -4170,11 +4258,12 @@ function attachEvents(){
   document.querySelectorAll("[data-planner-length]").forEach(b=>b.onclick=()=>setPlannerQuickDuration(Number(b.dataset.plannerLength)));
   document.getElementById("plannerPrevDay").onclick=()=>movePlannerDate(-1);
   document.getElementById("plannerNextDay").onclick=()=>movePlannerDate(1);
-  document.getElementById("plannerTodayBtn").onclick=()=>{plannerDate=localDateKey();renderPlanner()};
-  document.getElementById("plannerTomorrowBtn").onclick=()=>{plannerDate=addDateDays(localDateKey(),1);renderPlanner()};
+  document.getElementById("plannerTodayBtn").onclick=()=>{plannerDate=localDateKey();renderPlanner();renderRoutine()};
+  document.getElementById("plannerTomorrowBtn").onclick=()=>{plannerDate=addDateDays(localDateKey(),1);renderPlanner();renderRoutine()};
+  document.getElementById("plannerOpenMyDayBtn").onclick=()=>{renderRoutine();showTab("routine")};
   document.getElementById("plannerCarryBtn").onclick=carryPreviousPlanner;
   document.getElementById("plannerClearDoneBtn").onclick=clearCompletedPlanner;
-  document.getElementById("themeBtn").onclick=()=>{closeMoreMenu();state.profile.theme=state.profile.theme==="dark"?"light":"dark";save();renderAll()};
+  document.getElementById("themeBtn").onclick=()=>{closeMoreMenu();hideModal("toolsMenu");state.profile.theme=state.profile.theme==="dark"?"light":"dark";save();renderAll()};
   document.getElementById("moreDataTools").onclick=()=>{closeMoreMenu();showModal("toolsMenu")};document.getElementById("closeTools").onclick=()=>hideModal("toolsMenu");document.getElementById("menuExport").onclick=exportBackup;document.getElementById("menuCsv").onclick=exportCsv;document.getElementById("menuSettings").onclick=()=>{hideModal("toolsMenu");showTab("settings")};
   document.getElementById("exportBtn").onclick=exportBackup;document.getElementById("csvBtn").onclick=exportCsv;document.getElementById("printBtn").onclick=()=>window.print();document.getElementById("resetMonthBtn").onclick=resetMonth;
   document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
@@ -4253,7 +4342,8 @@ function attachEvents(){
   window.addEventListener("resize",()=>{clearTimeout(window.__r);window.__r=setTimeout(()=>{renderDashboard()},100)});
 }
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
-ensureMonth();attachEvents();renderAll();restoreRunningTimer();addMotivationInteractionEffects();
+ensureMonth();attachEvents();
+renderSharedBookingConnection();renderAll();restoreRunningTimer();addMotivationInteractionEffects();
 setTimeout(()=>requestActivity(false),700);
 setInterval(()=>{if(document.getElementById("activity")?.classList.contains("active"))requestActivity(false)},30000);
 setInterval(()=>{
