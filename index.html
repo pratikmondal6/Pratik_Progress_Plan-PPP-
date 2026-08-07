@@ -4476,6 +4476,49 @@ setInterval(()=>{
 },60000);
 setInterval(()=>{if(document.visibilityState==="visible"&&state.profile.motivation!==false)nextMotivationQuote(false)},14000);
 </script>
+
+<!-- PPP V4 Native Booked Task Connector -->
+<script>
+window.PPPBookedTasks = [];
+
+function loadPPPBookedTasksV4(){
+  if(typeof google==="undefined" || !google.script) return;
+
+  google.script.run
+  .withSuccessHandler(tasks=>{
+      window.PPPBookedTasks = tasks || [];
+
+      /*
+       V4:
+       Booked tasks are now exposed globally so the existing
+       Today renderer can merge them with normal tasks.
+      */
+      if(typeof renderToday === "function"){
+          renderToday();
+      }
+  })
+  .getPPPBookedTasks();
+}
+
+function getTodayTasksWithBookingsV4(normalTasks){
+  return [
+    ...(normalTasks || []),
+    ...window.PPPBookedTasks.map(t=>({
+      id:t.id,
+      title:t.title,
+      time:t.time,
+      duration:t.duration,
+      source:"booking",
+      completed:t.completed,
+      person:t.person
+    }))
+  ];
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+ setTimeout(loadPPPBookedTasksV4,1200);
+});
+</script>
 </body>
 </html>
 <script>
@@ -4528,3 +4571,43 @@ setInterval(rotatePPPQuote,15000);
  border:1px solid rgba(168,85,247,.45)!important;
 }
 </style>
+
+
+<!-- PPP FINAL VERSION 5 -->
+<script>
+/*
+ V5:
+ Booked tasks behave like native Today items:
+ - same task source
+ - completion support
+ - no separate booking workflow required
+*/
+
+window.PPPNativeBookedTasks = [];
+
+function syncNativeBookedTasksV5(){
+  if(typeof google==="undefined" || !google.script) return;
+
+  google.script.run
+  .withSuccessHandler(tasks=>{
+      window.PPPNativeBookedTasks = tasks || [];
+
+      // refresh existing Today rendering if available
+      if(typeof renderToday === "function"){
+          renderToday();
+      }
+      if(typeof renderTasks === "function"){
+          renderTasks();
+      }
+  })
+  .getTodayUnifiedTasksV5();
+}
+
+function toggleBookedTaskV5(id, checked){
+  google.script.run.updateBookedTaskStatusV5(id, checked);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  setTimeout(syncNativeBookedTasksV5,1000);
+});
+</script>
