@@ -4110,7 +4110,7 @@ function renderSharedBookingConnection(){
   if(keyEl&&document.activeElement!==keyEl)keyEl.value=cfg.adminKey||"";
   if(link)link.value=cfg.url||"";
   setText("sharedBookingStatus",cfg.url&&cfg.adminKey?"Connected. Outsiders can use the public link; the admin key stays only in this browser.":"Not connected yet. Paste the deployed Apps Script URL and your private admin key.");
-  setText("bookingConnectionNote",cfg.url?"Public link ready. Visitors can use 12-hour or 24-hour time; PPP normalizes it automatically. Your dashboard stays private.":"Connect once in Settings. Your public link will never expose PPP data.");
+  setText("bookingConnectionNote",cfg.url?"Public link ready. The booking page uses PPP Smart Time: Quick fill, AM/PM choice when needed, and automatic 12/24-hour normalization.":"Connect once in Settings. Your public link will never expose PPP data.");
 }
 function bookingJsonp(action,params={},onDone=()=>{}){
   const cfg=sharedBookingConfig();
@@ -4155,7 +4155,12 @@ function renderBookingRequests(){
   const host=document.getElementById("bookingRequestList");if(!host)return;
   const pending=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="pending");
   if(!sharedBookingConfig().url){host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';return}
-  if(!pending.length){host.innerHTML='<div class="planner-empty">No pending requests.</div>';return}
+  if(!pending.length){
+    const total=sharedBookingRequests.length;
+    const accepted=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="accepted").length;
+    host.innerHTML=`<div class="planner-empty">${total?`No pending requests. ${accepted?`${accepted} accepted booking${accepted===1?"":"s"} already synced to My Day.`:"All stored requests are already handled."}`:"No requests stored yet. Submit one from the public booking link, then press Refresh."}</div>`;
+    return;
+  }
   host.innerHTML=pending.map(r=>{
     const timeLabel=bookingTimeDisplay(r.time),when=[r.date,timeLabel].filter(Boolean).join(" • "),duration=r.duration?`${r.duration} min`:"";
     return `<div class="booking-request"><div><strong>${escapeHtml(requestTitleForPlanner(r))}</strong><div class="booking-request-meta">${escapeHtml(r.name||"Someone")} • ${escapeHtml(r.type||"Request")}${when?` • ${escapeHtml(when)}`:""}${duration?` • ${escapeHtml(duration)}`:""}</div>${r.note?`<div class="booking-request-note">${escapeHtml(r.note)}</div>`:""}</div><div class="booking-request-actions"><button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">Accept</button><button class="btn" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">Decline</button></div></div>`;
@@ -4167,7 +4172,10 @@ function refreshBookingRequests(silent=false){
     if(!data){renderBookingRequests();return}
     sharedBookingRequests=Array.isArray(data.requests)?data.requests:[];
     syncAcceptedBookingRequests(sharedBookingRequests);renderBookingRequests();
-    if(!silent)showToast("Booking requests refreshed");
+    if(!silent){
+      const pending=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="pending").length;
+      showToast(pending?`${pending} pending booking request${pending===1?"":"s"}`:"No pending booking requests");
+    }
   });
 }
 function updateBookingRequest(id,action){
