@@ -736,7 +736,7 @@ html[data-theme="light"]{color-scheme:light}
         <div class="more-menu glass hidden" id="moreMenu" role="menu" aria-label="PPP quick actions">
           <div class="more-menu-group quick-action-group">
             <div class="more-menu-heading">Quick actions</div>
-            <button type="button" role="menuitem" id="openMyDayBtn"><span class="more-menu-icon">🗓️</span><span><strong>My Day</strong><small>Today’s plan</small></span></button>
+            <button type="button" role="menuitem" id="openMyDayBtn"><span class="more-menu-icon">🗓️</span><span><strong>Today</strong><small>Today’s plan</small></span></button>
             <button type="button" role="menuitem" id="addPlanItemBtn"><span class="more-menu-icon">➕</span><span><strong>Add task</strong><small>Task or appointment</small></span></button>
             <button type="button" role="menuitem" id="openBookingRequestsBtn"><span class="more-menu-icon">📅</span><span><strong>Book / requests</strong><small>Share link or review requests</small></span></button>
           </div>
@@ -776,7 +776,7 @@ html[data-theme="light"]{color-scheme:light}
 
   <nav class="nav glass" aria-label="Primary PPP sections">
     <button class="active" data-tab="command" data-nav-group="daily" title="Overall dashboard and direction"><span class="nav-icon">🏠</span><span class="nav-label">Command</span></button>
-    <button data-tab="routine" data-nav-group="daily" title="My Day — today’s complete routine and commitments"><span class="nav-icon">🗓️</span><span class="nav-label">My Day</span></button>
+    <button data-tab="routine" data-nav-group="daily" title="My Day — today’s complete routine and commitments"><span class="nav-icon">🗓️</span><span class="nav-label">Today</span></button>
     <button data-tab="momentum" data-nav-group="growth" title="Goals and 21-Day Momentum"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></button>
     <button data-tab="today" data-nav-group="daily" title="Record today’s progress"><span class="nav-icon">✅</span><span class="nav-label">Check-in</span></button>
     <button data-tab="library" data-nav-group="growth" title="Study Library"><span class="nav-icon">📚</span><span class="nav-label">Library</span></button>
@@ -975,7 +975,7 @@ html[data-theme="light"]{color-scheme:light}
 
   <section id="routine" class="panel">
     <div class="section-head">
-      <div><h2 id="routineDayHeading">My Day</h2><p id="routineDaySubtitle">Your routine, tasks, and appointments combined into one realistic day plan.</p></div>
+      <div><h2 id="routineDayHeading">Today</h2><p id="routineDaySubtitle">Your routine, tasks, and appointments combined into one realistic day plan.</p></div>
       <button class="btn" id="refreshRoutineBtn">↻ Recalculate</button>
     </div>
 
@@ -2636,7 +2636,7 @@ function routineMomentumForItem(item){
 function renderRoutine(){
   const mode=state.profile.routineMode||"balanced",key=plannerDate||localDateKey(),info=routineModeInfo(mode),routine=buildRoutine(mode,key),now=new Date(),nowMin=now.getHours()*60+now.getMinutes(),todaySame=key===localDateKey(),d=calculatedForDateKey(key);
   const friendly=plannerFriendlyDate(key),isToday=key===localDateKey();
-  setText("routineDayHeading",isToday?"My Day":`My Day • ${friendly}`);
+  setText("routineDayHeading",isToday?"Today":`My Day • ${friendly}`);
   setText("routineDaySubtitle",isToday?"Your routine, tasks, and appointments combined into one realistic plan for today.":`Routine, tasks, and appointments combined for ${friendly}.`);
   setText("routineSequenceHeading",isToday?"Today’s realistic sequence":`${friendly} • realistic sequence`);
   setText("routineHeadline",info.headline);setText("routineDescription",info.description);
@@ -4452,3 +4452,53 @@ setInterval(()=>{if(document.visibilityState==="visible"&&state.profile.motivati
 </script>
 </body>
 </html>
+<script>
+const PPP_QUOTES = [
+"Small steps every day create big results.",
+"Discipline creates freedom.",
+"Consistency beats motivation.",
+"Every expert was once a beginner.",
+"Progress, not perfection.",
+"Focus on becoming better than yesterday.",
+"Great things are built one day at a time."
+];
+
+let pppQuoteIndex = 0;
+
+function rotatePPPQuote(){
+  const box = document.getElementById("dailyQuote");
+  if(!box) return;
+
+  box.style.opacity="0";
+
+  setTimeout(()=>{
+    pppQuoteIndex=(pppQuoteIndex+1)%PPP_QUOTES.length;
+    box.textContent=PPP_QUOTES[pppQuoteIndex];
+    box.style.opacity="1";
+  },300);
+}
+
+setInterval(rotatePPPQuote,15000);
+</script>
+<style>
+#dailyQuote{
+ transition:opacity .3s ease;
+}
+</style>
+
+<style>
+.booking-source-badge{
+ display:inline-block;
+ margin-left:8px;
+ padding:3px 8px;
+ border-radius:999px;
+ font-size:.7rem;
+ font-weight:800;
+ background:rgba(168,85,247,.18);
+ color:#d8b4fe;
+}
+.today-booking-card{
+ background:rgba(168,85,247,.12)!important;
+ border:1px solid rgba(168,85,247,.45)!important;
+}
+</style>
