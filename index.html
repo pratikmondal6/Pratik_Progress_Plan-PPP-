@@ -716,21 +716,6 @@ html[data-theme="light"]{color-scheme:light}
 .booking-setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.booking-setup-grid label{font-size:.7rem;font-weight:850;color:var(--muted)}.booking-setup-grid input{margin-top:5px}
 @media(max-width:680px){.booking-share-bar{grid-template-columns:1fr 1fr}.booking-share-bar input{grid-column:1/-1}.booking-request{grid-template-columns:1fr}.booking-request-actions .btn{flex:1}.booking-setup-grid{grid-template-columns:1fr}}
 
-
-/* ===== PPP Premium Booking Redesign ===== */
-.booking-request{border:1px solid var(--line);background:var(--panel2);border-radius:22px;padding:18px;margin-top:12px;transition:.35s ease;overflow:hidden}
-.booking-request.removing{opacity:0;transform:translateX(50px) scale(.96)}
-.booking-request.accepted-glow{background:linear-gradient(135deg,rgba(79,140,255,.18),rgba(155,108,255,.14))}
-.booking-request-title{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.booking-status{display:none}
-.booking-request-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
-.booking-request-grid div{background:rgba(255,255,255,.04);padding:10px;border-radius:14px;font-size:.82rem}
-.booking-request-grid b{color:var(--muted);font-size:.7rem}
-.booking-time-main{font-size:1.15rem;font-weight:950;color:#8ddcff}
-.booking-source-time{font-size:.72rem;color:var(--muted);margin-top:4px}
-.booking-request-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}
-.booking-success{padding:15px;border-radius:16px;background:rgba(43,213,118,.12);color:#78efad;font-weight:900;animation:fade .35s}
-@media(max-width:700px){.booking-request-grid{grid-template-columns:1fr}.booking-request-title{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
@@ -4169,35 +4154,54 @@ function syncAcceptedBookingRequests(items){
 function renderBookingRequests(){
   const host=document.getElementById("bookingRequestList");if(!host)return;
   const all=sharedBookingRequests||[];
-  const pending=all.filter(r=>String(r.status||"pending").toLowerCase()==="pending");
+  const pending=all.filter(r=>String(r.status).toLowerCase()==="pending");
 
   if(!sharedBookingConfig().url){
     host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';
     return;
   }
 
-  if(!pending.length){
-    host.innerHTML='<div class="planner-empty">No pending booking requests.</div>';
+  const source=pending.length?pending:all.slice(0,10);
+
+  if(!source.length){
+    host.innerHTML='<div class="planner-empty">No booking requests yet.</div>';
     return;
   }
 
-  host.innerHTML=pending.map(r=>{
-    const germanTime=r.germanTime||`${r.date||""} ${r.time||""}`;
-    const source=r.timezone&&r.timezone!=="Europe/Berlin"?`Requested from ${r.timezone}`:"Germany time";
+  host.innerHTML=source.map(r=>{
+    const status=String(r.status||"pending").toLowerCase();
+    const timeLabel=bookingTimeDisplay(r.time);
+    const timezone=r.timezone||r.userTimezone||"Local timezone";
+    const duration=r.duration?`${r.duration} min`:"";
+
     return `
-    <div class="booking-request" data-request-id="${escapeHtml(r.id)}">
-      <div class="booking-request-title">
-        <strong>📅 ${escapeHtml(requestTitleForPlanner(r))}</strong>
+    <div class="booking-request ${status}">
+      <div class="booking-request-main">
+        <div class="booking-request-title">
+          <strong>📅 ${escapeHtml(requestTitleForPlanner(r))}</strong>
+          <span class="booking-status ${status}">${escapeHtml(status)}</span>
+        </div>
+
+        <div class="booking-request-grid">
+          <div>👤 <b>Name</b><br>${escapeHtml(r.name||"Unknown")}</div>
+          <div>📌 <b>Type</b><br>${escapeHtml(r.type||"Request")}</div>
+          <div>📅 <b>Date</b><br>${escapeHtml(r.date||"")}</div>
+          <div>⏰ <b>Time</b><br>${escapeHtml(timeLabel||"")}</div>
+          <div>🌍 <b>Timezone</b><br>${escapeHtml(timezone)}</div>
+          <div>⏱ <b>Duration</b><br>${escapeHtml(duration)}</div>
+        </div>
+
+        ${r.note?`<div class="booking-request-note">📝 ${escapeHtml(r.note)}</div>`:""}
+
+        ${status==="accepted"?`
+          <div class="booking-sync-note">
+          ✅ Added to My Day / Planner automatically
+          </div>`:""}
       </div>
-      <div class="booking-request-grid">
-        <div>👤<br><b>Name</b><br>${escapeHtml(r.name||"Unknown")}</div>
-        <div>⏰<br><b>Your time</b><br><span class="booking-time-main">${escapeHtml(germanTime)}</span><div class="booking-source-time">${escapeHtml(source)}</div></div>
-        <div>⏱<br><b>Duration</b><br>${escapeHtml(String(r.duration||30))} min</div>
-      </div>
-      ${r.note?`<div class="booking-request-note">📝 ${escapeHtml(r.note)}</div>`:""}
+
       <div class="booking-request-actions">
-        <button class="btn danger" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">✕ Decline</button>
-        <button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">✓ Add to My Day</button>
+        <button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">✓ Accept</button>
+        <button class="btn danger" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">✕ Delete / Decline</button>
       </div>
     </div>`;
   }).join("");
@@ -4215,19 +4219,9 @@ function refreshBookingRequests(silent=false){
   });
 }
 function updateBookingRequest(id,action){
-  const card=document.querySelector(`[data-request-id="${CSS.escape(id)}"]`);
   bookingJsonp(action,{id},data=>{
     if(!data)return;
-    if(card){
-      card.classList.add("removing");
-      setTimeout(()=>card.remove(),350);
-    }
-    if(action==="accept"){
-      showToast("✓ Added to My Day");
-      setTimeout(()=>{showTab("planner");renderPlanner();},500);
-    }else{
-      showToast("Request permanently deleted");
-    }
+    showToast(action==="accept"?"Accepted → Google Calendar + My Day Planner":"Request declined/deleted");
     refreshBookingRequests(true);
   });
 }
@@ -4456,6 +4450,100 @@ setInterval(()=>{
 },60000);
 setInterval(()=>{if(document.visibilityState==="visible"&&state.profile.motivation!==false)nextMotivationQuote(false)},14000);
 </script>
+
+<style id="PPP-booking-clean-fix">
+/* Compact booking inbox */
+.ppp-booking-card,
+.booking-card,
+.request-card {
+  display:block !important;
+  min-height:0 !important;
+  height:auto !important;
+  padding:14px !important;
+  border-radius:18px !important;
+}
+
+.booking-grid,
+.request-grid,
+.booking-card > div {
+  grid-template-columns:1fr !important;
+}
+
+.booking-card .technical,
+.request-card .technical,
+.iso-date,
+.raw-time,
+.timezone-debug {
+  display:none !important;
+}
+
+.booking-actions,
+.request-actions {
+  display:flex !important;
+  flex-direction:row !important;
+  width:100% !important;
+  gap:10px !important;
+  margin-top:14px !important;
+}
+
+.booking-actions button,
+.request-actions button {
+  flex:1 !important;
+  min-width:120px !important;
+  white-space:nowrap !important;
+  writing-mode:horizontal-tb !important;
+}
+
+.booking-time-local {
+  font-size:1.1rem !important;
+  font-weight:950 !important;
+  color:#71eaf5 !important;
+}
+
+.booking-time-source {
+  font-size:.75rem !important;
+  color:var(--muted) !important;
+}
+
+.booking-card.accepted {
+  animation:pppAccept .45s ease;
+}
+@keyframes pppAccept {
+ from {opacity:1;transform:scale(1)}
+ to {opacity:0;transform:translateX(40px) scale(.96)}
+}
+</style>
+
+<script id="PPP-booking-time-fix">
+function pppFormatGermanyTime(dateValue,timeValue,sourceZone){
+  try{
+    const datePart = new Date(dateValue);
+    if(isNaN(datePart)) return "Invalid date";
+
+    let h=0,m=0;
+    if(timeValue){
+      const t=String(timeValue).match(/(\d{1,2}):(\d{2})/);
+      if(t){h=Number(t[1]);m=Number(t[2]);}
+    }
+
+    const combined=new Date(datePart);
+    combined.setHours(h,m,0,0);
+
+    return new Intl.DateTimeFormat("en-GB",{
+      timeZone:"Europe/Berlin",
+      day:"2-digit",
+      month:"short",
+      year:"numeric",
+      hour:"2-digit",
+      minute:"2-digit",
+      hour12:false
+    }).format(combined);
+  }catch(e){
+    return "Time unavailable";
+  }
+}
+</script>
+
 </body>
 </html>
 <script>
