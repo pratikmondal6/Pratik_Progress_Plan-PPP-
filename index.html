@@ -717,6 +717,32 @@ html[data-theme="light"]{color-scheme:light}
 @media(max-width:680px){.booking-share-bar{grid-template-columns:1fr 1fr}.booking-share-bar input{grid-column:1/-1}.booking-request{grid-template-columns:1fr}.booking-request-actions .btn{flex:1}.booking-setup-grid{grid-template-columns:1fr}}
 
 </style>
+
+<style id="PPP-table-booking-final">
+.booking-table-wrap{width:100%;overflow:auto;margin-top:14px}
+.booking-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.booking-table th{padding:12px;text-align:left;color:var(--muted);font-size:.72rem;text-transform:uppercase;border-bottom:1px solid var(--line)}
+.booking-table td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.booking-table tr:hover{background:rgba(79,140,255,.08)}
+.booking-table .time{font-weight:900;color:#71eaf5}
+.booking-table button{border:0;border-radius:10px;padding:8px 13px;font-weight:900;cursor:pointer}
+.booking-table .accept{background:#20c997;color:#04170e}
+.booking-table .decline{background:rgba(255,93,108,.15);color:#ff9aa5;border:1px solid rgba(255,93,108,.25)}
+</style>
+<script id="PPP-table-time-fix">
+function pppGermanyTime(dateValue){
+ try{
+   let d=new Date(dateValue);
+   if(isNaN(d)) return "Invalid time";
+   return new Intl.DateTimeFormat("de-DE",{
+     timeZone:"Europe/Berlin",
+     dateStyle:"medium",
+     timeStyle:"short"
+   }).format(d);
+ }catch(e){return "Invalid time";}
+}
+</script>
+
 </head>
 <body>
 <canvas id="confetti" class="confetti"></canvas>
@@ -4450,100 +4476,6 @@ setInterval(()=>{
 },60000);
 setInterval(()=>{if(document.visibilityState==="visible"&&state.profile.motivation!==false)nextMotivationQuote(false)},14000);
 </script>
-
-<style id="PPP-booking-clean-fix">
-/* Compact booking inbox */
-.ppp-booking-card,
-.booking-card,
-.request-card {
-  display:block !important;
-  min-height:0 !important;
-  height:auto !important;
-  padding:14px !important;
-  border-radius:18px !important;
-}
-
-.booking-grid,
-.request-grid,
-.booking-card > div {
-  grid-template-columns:1fr !important;
-}
-
-.booking-card .technical,
-.request-card .technical,
-.iso-date,
-.raw-time,
-.timezone-debug {
-  display:none !important;
-}
-
-.booking-actions,
-.request-actions {
-  display:flex !important;
-  flex-direction:row !important;
-  width:100% !important;
-  gap:10px !important;
-  margin-top:14px !important;
-}
-
-.booking-actions button,
-.request-actions button {
-  flex:1 !important;
-  min-width:120px !important;
-  white-space:nowrap !important;
-  writing-mode:horizontal-tb !important;
-}
-
-.booking-time-local {
-  font-size:1.1rem !important;
-  font-weight:950 !important;
-  color:#71eaf5 !important;
-}
-
-.booking-time-source {
-  font-size:.75rem !important;
-  color:var(--muted) !important;
-}
-
-.booking-card.accepted {
-  animation:pppAccept .45s ease;
-}
-@keyframes pppAccept {
- from {opacity:1;transform:scale(1)}
- to {opacity:0;transform:translateX(40px) scale(.96)}
-}
-</style>
-
-<script id="PPP-booking-time-fix">
-function pppFormatGermanyTime(dateValue,timeValue,sourceZone){
-  try{
-    const datePart = new Date(dateValue);
-    if(isNaN(datePart)) return "Invalid date";
-
-    let h=0,m=0;
-    if(timeValue){
-      const t=String(timeValue).match(/(\d{1,2}):(\d{2})/);
-      if(t){h=Number(t[1]);m=Number(t[2]);}
-    }
-
-    const combined=new Date(datePart);
-    combined.setHours(h,m,0,0);
-
-    return new Intl.DateTimeFormat("en-GB",{
-      timeZone:"Europe/Berlin",
-      day:"2-digit",
-      month:"short",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit",
-      hour12:false
-    }).format(combined);
-  }catch(e){
-    return "Time unavailable";
-  }
-}
-</script>
-
 </body>
 </html>
 <script>
