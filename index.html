@@ -4519,6 +4519,69 @@ document.addEventListener("DOMContentLoaded",()=>{
  setTimeout(loadPPPBookedTasksV4,1200);
 });
 </script>
+
+<!-- PPP FINAL COMPLETE V2 - Admin table/date/time renderer -->
+<style>
+.ppp-request-table{
+width:100%;border-collapse:collapse;margin-top:15px;
+background:rgba(255,255,255,.04);border-radius:16px;overflow:hidden;
+}
+.ppp-request-table th,.ppp-request-table td{
+padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,.12);
+}
+.ppp-request-table th{font-weight:900}
+.ppp-time-fixed{font-weight:900}
+.ppp-date-fixed{font-weight:800}
+</style>
+
+<script>
+function pppFormatDateFixed(v){
+ if(!v) return "";
+ let s=String(v).substring(0,10);
+ let p=s.split("-");
+ if(p.length===3) return p[2]+"."+p[1]+"."+p[0];
+ return s;
+}
+
+function pppFormatTimeFixed(item){
+ return item.displayTime || item.time || "";
+}
+
+function pppRenderRequestTableFixed(requests){
+ const root=document.getElementById("requestsContainer") ||
+            document.getElementById("requestsList") ||
+            document.querySelector("[data-requests]");
+ if(!root || !Array.isArray(requests)) return;
+
+ root.innerHTML=`
+ <table class="ppp-request-table">
+ <thead>
+ <tr>
+ <th>Name</th>
+ <th>Type</th>
+ <th>Date</th>
+ <th>Time</th>
+ <th>Duration</th>
+ <th>Action</th>
+ </tr>
+ </thead>
+ <tbody>
+ ${requests.map(r=>`
+ <tr>
+ <td>${r.name||""}</td>
+ <td>${r.type||""}</td>
+ <td class="ppp-date-fixed">${pppFormatDateFixed(r.date)}</td>
+ <td class="ppp-time-fixed">${pppFormatTimeFixed(r)}</td>
+ <td>${r.duration||""} min</td>
+ <td>
+ <button onclick="acceptRequest('${r.id}')">Accept</button>
+ </td>
+ </tr>`).join("")}
+ </tbody>
+ </table>`;
+}
+</script>
+
 </body>
 </html>
 <script>
