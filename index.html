@@ -1074,17 +1074,28 @@ html[data-theme="light"]{color-scheme:light}
     </div>
 
     <div class="box glass" style="margin-top:13px">
-      <h3 style="margin:0 0 12px">Create a new block</h3>
+      <h3 style="margin:0 0 5px">Recommended goal tracks</h3>
+      <div class="box-sub">Choose only what you genuinely want active. Each track grows by <strong>+5 minutes per day</strong> from its Day-1 target.</div>
+      <div class="momentum-cycle" id="momentumPresetTracks">
+        <div class="momentum-phase"><strong>🇩🇪 German Consistency</strong><span>Day 1: 15 min → Day 21: 115 min</span><button class="btn" type="button" data-momentum-preset="german" style="margin-top:9px">Start German track</button></div>
+        <div class="momentum-phase"><strong>🤖 Machine Learning</strong><span>Day 1: 20 min → Day 21: 120 min</span><button class="btn" type="button" data-momentum-preset="ml" style="margin-top:9px">Start ML track</button></div>
+        <div class="momentum-phase"><strong>💻 Coding & Career</strong><span>Day 1: 10 min → Day 21: 110 min</span><button class="btn" type="button" data-momentum-preset="career" style="margin-top:9px">Start coding track</button></div>
+      </div>
+      <div class="k-sub" style="margin-top:9px">The growth rule applies to the normal target. Your minimum stays small so a difficult day can still protect the streak.</div>
+    </div>
+
+    <div class="box glass" style="margin-top:13px">
+      <h3 style="margin:0 0 12px">Create a custom block</h3>
       <div class="momentum-form-grid">
         <div class="momentum-field wide"><label>Habit or routine</label><input id="momentumName" type="text" placeholder="e.g. German study"></div>
-        <div class="momentum-field"><label>Normal target</label><input id="momentumTarget" type="number" min="1" max="999" value="30"></div>
+        <div class="momentum-field"><label>Day-1 target</label><input id="momentumTarget" type="number" min="1" max="999" value="15"></div>
         <div class="momentum-field"><label>Minimum</label><input id="momentumMinimum" type="number" min="1" max="999" value="5"></div>
         <div class="momentum-field"><label>Unit</label><select id="momentumUnit"><option>minutes</option><option>pages</option><option>sessions</option><option>times</option></select></div>
         <div class="momentum-field wide"><label>Daily trigger</label><input id="momentumTrigger" type="text" placeholder="e.g. After breakfast or at 19:00"></div>
         <div class="momentum-field"><label>Start date</label><input id="momentumStart" type="date"></div>
         <div class="momentum-add-wrap"><button class="btn green" id="momentumAddBtn" style="min-height:43px">Create Block</button></div>
       </div>
-      <div class="k-sub" style="margin-top:10px">Start with one active block; three is the maximum. Matching German, MSc/technical, English, career, LeetCode, movement, attention, and Coursera evidence can update the 21-Day block automatically. A difficult day can count as “Minimum”.</div>
+      <div class="k-sub" style="margin-top:10px">Every minute-based block grows by +5 minutes per day from its Day-1 target. Start with one active block; three is the maximum. Matching German, MSc/technical, English, career, LeetCode, movement, attention, and Coursera evidence can update the 21-Day block automatically. A difficult day can count as “Minimum”.</div>
     </div>
 
     <div class="momentum-blocks" id="momentumBlocks"></div>
@@ -2682,6 +2693,7 @@ function momentumStore(){
     b.id=b.id||`mb_${Date.now()}_${bi}`;
     b.name=String(b.name||"Untitled habit").slice(0,100);
     b.target=clamp(Number(b.target)||30,1,999);
+    b.growthPerDay=Number.isFinite(Number(b.growthPerDay))?clamp(Number(b.growthPerDay),0,60):5;
     b.minimum=clamp(Number(b.minimum)||5,1,999);
     b.unit=["minutes","pages","sessions","times"].includes(b.unit)?b.unit:"minutes";
     b.trigger=String(b.trigger||"").slice(0,180);
@@ -2704,6 +2716,16 @@ function dateKeyOrdinal(key){
 function momentumDayDiff(fromKey,toKey){return dateKeyOrdinal(toKey)-dateKeyOrdinal(fromKey)}
 function momentumTodayIndex(block){return momentumDayDiff(block.startDate,localDateKey())}
 function momentumPhase(dayNumber){return dayNumber<=7?"Start":dayNumber<=14?"Stabilize":"Continue"}
+function momentumTargetForDay(block,index){
+  const base=Math.max(1,Number(block.target)||1);
+  if(block.unit!=="minutes")return base;
+  const growth=Math.max(0,Number(block.growthPerDay)||0);
+  return clamp(base+(Math.max(0,index)||0)*growth,1,999);
+}
+function momentumTodayTarget(block){
+  const idx=momentumTodayIndex(block);
+  return momentumTargetForDay(block,clamp(idx,0,20));
+}
 function momentumStats(block){
   const todayIndex=momentumTodayIndex(block);
   const done=block.days.filter(d=>d.status==="done").length;
@@ -2751,7 +2773,7 @@ function momentumEvidenceForDate(block,key){
   else if(/social/.test(name))value=d.social;
   else if(/diet|food|nutrition/.test(name))value=d.diet;
   else return null;
-  const minimum=Math.max(1,Number(block.minimum)||1),target=Math.max(minimum,Number(block.target)||minimum);
+  const minimum=Math.max(1,Number(block.minimum)||1),dayIndex=clamp(momentumDayDiff(block.startDate,key),0,20),target=Math.max(minimum,momentumTargetForDay(block,dayIndex));
   if(kind==="minutes"){
     const measured=Number(value||0);
     if(block.unit==="sessions"||block.unit==="times")return measured>0?(target<=1?"done":"minimum"):"";
@@ -2780,13 +2802,13 @@ function syncMomentumFromDailyData(){
 function coachRecommendedMomentumPreset(){
   const month=localDateKey().slice(0,7),data=calcMonth(month),logged=data.filter(x=>x.logged);
   const choices={
-    "German":{name:"German study",target:Math.min(30,Number(state.settings.germanTarget)||30),minimum:5,unit:"minutes",trigger:"After breakfast or at the first desk session"},
-    "MSc / technical study":{name:"MSc / technical study",target:30,minimum:10,unit:"minutes",trigger:"After German or at the first deep-work window"},
-    "English study":{name:"English study",target:10,minimum:2,unit:"minutes",trigger:"After lunch or before evening reading"},
-    "Self-improvement":{name:"Self-improvement reading",target:5,minimum:2,unit:"minutes",trigger:"After English or during the evening wind-down"},
-    "Job preparation":{name:"Job preparation",target:10,minimum:3,unit:"minutes",trigger:"After the main technical block"},
+    "German":{name:"German study",target:15,minimum:5,growthPerDay:5,unit:"minutes",trigger:"After breakfast or at the first desk session"},
+    "MSc / technical study":{name:"Machine Learning / technical study",target:20,minimum:10,growthPerDay:5,unit:"minutes",trigger:"After German or at the first deep-work window"},
+    "English study":{name:"English study",target:10,minimum:2,growthPerDay:5,unit:"minutes",trigger:"After lunch or before evening reading"},
+    "Self-improvement":{name:"Self-improvement reading",target:5,minimum:2,growthPerDay:5,unit:"minutes",trigger:"After English or during the evening wind-down"},
+    "Job preparation":{name:"Job preparation",target:10,minimum:3,growthPerDay:5,unit:"minutes",trigger:"After the main technical block"},
     "LeetCode problem":{name:"LeetCode practice",target:1,minimum:1,unit:"sessions",trigger:"After MSc / technical study"},
-    "Movement":{name:"Movement",target:10,minimum:2,unit:"minutes",trigger:"After a focus block"}
+    "Movement":{name:"Movement",target:10,minimum:2,growthPerDay:5,unit:"minutes",trigger:"After a focus block"}
   };
   if(!logged.length)return choices["German"];
   const candidates=habitScores(data).filter(([name,,type])=>type==="core"&&choices[name]);
@@ -2796,7 +2818,7 @@ function coachRecommendedMomentumPreset(){
 function startCoachMomentum(){
   if(activeMomentumBlocks().length){showToast("Stay with the current 21-day block before adding another coach challenge");showTab("momentum");return}
   const p=coachRecommendedMomentumPreset();
-  momentumStore().push({id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:p.name,target:p.target,minimum:p.minimum,unit:p.unit,trigger:p.trigger,startDate:localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))});
+  momentumStore().push({id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:p.name,target:p.target,growthPerDay:Number(p.growthPerDay)||5,minimum:p.minimum,unit:p.unit,trigger:p.trigger,startDate:localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))});
   save();renderMomentum();renderDashboard();renderRoutine();renderSmartNow(true);showTab("momentum");
   showToast(`Coach started: ${p.name} • minimum ${p.minimum} ${p.unit}`);
 }
@@ -2817,7 +2839,7 @@ function renderMomentumDashboard(){
   const rows=active.slice(0,3).map(({block,stats})=>{
     const todayStatus=stats.todayIndex>=0&&stats.todayIndex<21?momentumStatusLabel(block.days[stats.todayIndex]?.status||""):stats.stateLabel;
     const yesterday=stats.todayIndex>0?block.days[stats.todayIndex-1]?.status:"",rescue=yesterday==="missed"&&!block.days[stats.todayIndex]?.status;
-    return `<div class="momentum-dashboard-row"><strong>${escapeHtml(block.name)} • Day ${stats.dayNumber}/21${rescue?" • return gently":""}</strong><span>${stats.phase} • Today: ${escapeHtml(todayStatus)} • Minimum ${block.minimum} ${escapeHtml(block.unit)}</span><div class="track"><div class="fill" style="width:${stats.consistency}%"></div></div></div>`;
+    return `<div class="momentum-dashboard-row"><strong>${escapeHtml(block.name)} • Day ${stats.dayNumber}/21${rescue?" • return gently":""}</strong><span>${stats.phase} • Today: ${escapeHtml(todayStatus)} • Target ${momentumTodayTarget(block)} ${escapeHtml(block.unit)} • Minimum ${block.minimum} ${escapeHtml(block.unit)}</span><div class="track"><div class="fill" style="width:${stats.consistency}%"></div></div></div>`;
   }).join("");
   root.innerHTML=`<div class="momentum-dashboard-list">${rows}</div><div class="momentum-mini-stats"><span class="momentum-mini-stat">${active.length} active</span><span class="momentum-mini-stat">${due.length} due today</span><span class="momentum-mini-stat">Minimum counts</span></div>`;
 }
@@ -2838,10 +2860,10 @@ function momentumCardHtml(block){
       ?`<div class="momentum-today"><div><strong>This block starts ${escapeHtml(block.startDate)}.</strong><p>You can edit the start date by creating a new block if your plan changes.</p></div></div>`
       :s.todayIndex>20
         ?`<div class="momentum-today"><div><strong>The 21-day cycle is complete.</strong><p>Continue with the same habit to begin a fresh block while preserving this history.</p></div><div class="momentum-today-actions"><button class="btn green" data-momentum-action="continue" data-momentum-id="${block.id}">Continue 21 Days</button></div></div>`
-        :`<div class="momentum-today"><div><strong>Today • Day ${s.dayNumber}: ${today(todayStatus)}</strong><p>${s.phase} phase. Protect the minimum when the normal target feels too heavy.</p></div><div class="momentum-today-actions"><button class="btn green" data-momentum-action="today-done" data-momentum-id="${block.id}">Normal Done</button><button class="btn gold" data-momentum-action="today-minimum" data-momentum-id="${block.id}">Minimum Done</button><button class="btn danger" data-momentum-action="today-missed" data-momentum-id="${block.id}">Missed</button><button class="btn primary" data-momentum-action="start" data-momentum-id="${block.id}">Do ${block.minimum} ${escapeHtml(block.unit)} Now</button></div></div>`;
+        :`<div class="momentum-today"><div><strong>Today • Day ${s.dayNumber}: ${today(todayStatus)}</strong><p>${s.phase} phase. Today’s normal target is <strong>${momentumTodayTarget(block)} ${escapeHtml(block.unit)}</strong>. Protect the minimum when the growing target is too heavy.</p></div><div class="momentum-today-actions"><button class="btn green" data-momentum-action="today-done" data-momentum-id="${block.id}">Normal Done</button><button class="btn gold" data-momentum-action="today-minimum" data-momentum-id="${block.id}">Minimum Done</button><button class="btn danger" data-momentum-action="today-missed" data-momentum-id="${block.id}">Missed</button><button class="btn primary" data-momentum-action="start" data-momentum-id="${block.id}">Do ${block.minimum} ${escapeHtml(block.unit)} Now</button></div></div>`;
   const note=todayAvailable?`<div class="momentum-note"><textarea data-momentum-note="${block.id}" placeholder="Optional note for today… what helped or blocked you?">${escapeHtml(block.days[s.todayIndex].note)}</textarea></div>`:"";
   return `<article class="momentum-card glass ${block.archived?"archived":""}" data-momentum-card="${block.id}">
-    <div class="momentum-card-head"><div class="momentum-title-wrap"><div class="momentum-title">${escapeHtml(block.name)}</div><div class="momentum-sub">Target: <strong>${block.target} ${escapeHtml(block.unit)}</strong> • Minimum: <strong>${block.minimum} ${escapeHtml(block.unit)}</strong>${block.trigger?` • Trigger: ${escapeHtml(block.trigger)}`:""}</div></div><span class="momentum-status ${statusClass}">${escapeHtml(s.stateLabel)}</span></div>
+    <div class="momentum-card-head"><div class="momentum-title-wrap"><div class="momentum-title">${escapeHtml(block.name)}</div><div class="momentum-sub">Day 1: <strong>${block.target} ${escapeHtml(block.unit)}</strong>${block.unit==="minutes"?` • +${block.growthPerDay||0} min/day • Today: <strong>${momentumTodayTarget(block)} min</strong>`:""} • Minimum: <strong>${block.minimum} ${escapeHtml(block.unit)}</strong>${block.trigger?` • Trigger: ${escapeHtml(block.trigger)}`:""}</div></div><span class="momentum-status ${statusClass}">${escapeHtml(s.stateLabel)}</span></div>
     <div class="momentum-progress-row"><div class="momentum-progress-track"><div class="momentum-progress-fill" style="width:${s.consistency}%"></div></div><div class="momentum-progress-label">${s.completed}/21 • ${s.consistency}%</div></div>
     <div class="momentum-stats"><div class="momentum-stat"><strong>Day ${s.dayNumber}</strong><span>${s.phase} phase</span></div><div class="momentum-stat"><strong>${s.streak}</strong><span>Current streak</span></div><div class="momentum-stat"><strong>${s.done}</strong><span>Normal days</span></div><div class="momentum-stat"><strong>${s.minimum}</strong><span>Minimum days</span></div><div class="momentum-stat"><strong>${s.missed}</strong><span>Missed days</span></div></div>
     <div class="momentum-day-grid">${block.days.map((_,i)=>momentumDayHtml(block,i,s)).join("")}</div>
@@ -2868,10 +2890,23 @@ function addMomentumBlock(){
   if(!name){showToast("Give the habit a name first");document.getElementById("momentumName").focus();return}
   const target=clamp(Number(document.getElementById("momentumTarget").value)||30,1,999);
   const minimum=clamp(Number(document.getElementById("momentumMinimum").value)||5,1,target);
-  const block={id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name,target,minimum,unit:document.getElementById("momentumUnit").value,trigger:document.getElementById("momentumTrigger").value.trim(),startDate:document.getElementById("momentumStart").value||localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))};
+  const unit=document.getElementById("momentumUnit").value;
+  const block={id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name,target,growthPerDay:unit==="minutes"?5:0,minimum,unit,trigger:document.getElementById("momentumTrigger").value.trim(),startDate:document.getElementById("momentumStart").value||localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))};
   momentumStore().push(block);
   document.getElementById("momentumName").value="";document.getElementById("momentumTrigger").value="";
   save();renderMomentum();showToast("21-day block created");
+}
+function startMomentumPreset(kind){
+  if(activeMomentumBlocks().length>=3){showToast("Keep a maximum of three active 21-day goals");return}
+  const presets={
+    german:{name:"German consistency",target:15,minimum:5,growthPerDay:5,unit:"minutes",trigger:"First study block of the day"},
+    ml:{name:"Machine Learning / technical study",target:20,minimum:10,growthPerDay:5,unit:"minutes",trigger:"Main deep-work block after German"},
+    career:{name:"Coding & career practice",target:10,minimum:5,growthPerDay:5,unit:"minutes",trigger:"After the main technical block"}
+  };
+  const p=presets[kind];if(!p)return;
+  if(activeMomentumBlocks().some(b=>b.name===p.name)){showToast("That 21-day goal is already active");return}
+  momentumStore().push({id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:p.name,target:p.target,growthPerDay:p.growthPerDay,minimum:p.minimum,unit:p.unit,trigger:p.trigger,startDate:localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))});
+  save();renderMomentum();renderDashboard();renderRoutine();renderSmartNow(true);showToast(`${p.name} started • Day 1 ${p.target} min • +5 min/day`);
 }
 function findMomentumBlock(id){return momentumStore().find(b=>b.id===id)}
 function setMomentumDay(block,index,status){
@@ -2909,7 +2944,7 @@ function momentumAction(action,id){
   if(action==="continue"){
     if(activeMomentumBlocks().filter(b=>b.id!==id).length>=3){showToast("Keep a maximum of three active blocks");return}
     block.archived=true;
-    momentumStore().push({id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:block.name,target:block.target,minimum:block.minimum,unit:block.unit,trigger:block.trigger,startDate:localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))});
+    momentumStore().push({id:`mb_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:block.name,target:block.target,growthPerDay:block.growthPerDay||0,minimum:block.minimum,unit:block.unit,trigger:block.trigger,startDate:localDateKey(),archived:false,createdAt:new Date().toISOString(),days:Array.from({length:21},()=>({status:"",note:""}))});
     save();renderMomentum();showToast("A fresh 21-day block has started");
   }
   if(action==="delete"&&confirm(`Delete the 21-day history for “${block.name}”?`)){
@@ -4075,7 +4110,7 @@ function renderSharedBookingConnection(){
   if(keyEl&&document.activeElement!==keyEl)keyEl.value=cfg.adminKey||"";
   if(link)link.value=cfg.url||"";
   setText("sharedBookingStatus",cfg.url&&cfg.adminKey?"Connected. Outsiders can use the public link; the admin key stays only in this browser.":"Not connected yet. Paste the deployed Apps Script URL and your private admin key.");
-  setText("bookingConnectionNote",cfg.url?"Public link ready. It only shows the simple booking form; your PPP dashboard stays private.":"Connect once in Settings. Your public link will never expose PPP data.");
+  setText("bookingConnectionNote",cfg.url?"Public link ready. Visitors can use 12-hour or 24-hour time; PPP normalizes it automatically. Your dashboard stays private.":"Connect once in Settings. Your public link will never expose PPP data.");
 }
 function bookingJsonp(action,params={},onDone=()=>{}){
   const cfg=sharedBookingConfig();
@@ -4090,6 +4125,17 @@ function bookingJsonp(action,params={},onDone=()=>{}){
   script.onerror=()=>{clearTimeout(timeout);cleanup();showToast("Could not reach booking service");onDone(null)};
   document.head.appendChild(script);
 }
+
+function normalizeExternalBookingTime(raw){
+  const normalized=normalizeSmartTime(String(raw||''));
+  return normalized&&normalized!==null?normalized:"";
+}
+function bookingTimeDisplay(raw){
+  const v=normalizeExternalBookingTime(raw);if(!v)return "";
+  const mins=parseTime(v),h=Math.floor(mins/60),m=mins%60,ampm=h>=12?"PM":"AM";
+  return `${h%12||12}:${String(m).padStart(2,"0")} ${ampm} • ${v}`;
+}
+
 function requestTitleForPlanner(r){
   const what=String(r.what||"").trim(),type=String(r.type||"Appointment").trim(),name=String(r.name||"").trim();
   return what||`${type}${name?` with ${name}`:""}`;
@@ -4099,7 +4145,7 @@ function syncAcceptedBookingRequests(items){
   let changed=false;
   accepted.forEach(r=>{
     if(plannerStore().some(x=>x.externalBookingId===r.id))return;
-    const duration=clamp(Number(r.duration)||30,5,720),time=String(r.time||"").slice(0,5),endTime=time?minutesToClock((parseTime(time)||0)+duration):"";
+    const duration=clamp(Number(r.duration)||30,5,720),time=normalizeExternalBookingTime(r.time),endTime=time?minutesToClock((parseTime(time)||0)+duration):"";
     const task={id:`ext_${r.id}`,externalBookingId:r.id,title:requestTitleForPlanner(r),startDate:String(r.date),type:time?"appointment":"task",time,endTime,duration,section:"auto",priority:"normal",repeat:"none",order:Date.now(),completedDates:[],statusDates:{},externalBooking:true,requester:r.name||"",note:r.note||""};
     task.section=plannerSectionFor(task);plannerStore().push(task);changed=true;
   });
@@ -4111,7 +4157,7 @@ function renderBookingRequests(){
   if(!sharedBookingConfig().url){host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';return}
   if(!pending.length){host.innerHTML='<div class="planner-empty">No pending requests.</div>';return}
   host.innerHTML=pending.map(r=>{
-    const when=[r.date,r.time].filter(Boolean).join(" • "),duration=r.duration?`${r.duration} min`:"";
+    const timeLabel=bookingTimeDisplay(r.time),when=[r.date,timeLabel].filter(Boolean).join(" • "),duration=r.duration?`${r.duration} min`:"";
     return `<div class="booking-request"><div><strong>${escapeHtml(requestTitleForPlanner(r))}</strong><div class="booking-request-meta">${escapeHtml(r.name||"Someone")} • ${escapeHtml(r.type||"Request")}${when?` • ${escapeHtml(when)}`:""}${duration?` • ${escapeHtml(duration)}`:""}</div>${r.note?`<div class="booking-request-note">${escapeHtml(r.note)}</div>`:""}</div><div class="booking-request-actions"><button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">Accept</button><button class="btn" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">Decline</button></div></div>`;
   }).join("");
 }
@@ -4227,6 +4273,9 @@ function attachEvents(){
   document.getElementById("momentumAddBtn").onclick=addMomentumBlock;
   document.getElementById("momentumCoachStartBtn").onclick=startCoachMomentum;
   document.getElementById("momentumName").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();addMomentumBlock()}};
+  document.getElementById("momentumPresetTracks")?.addEventListener("click",e=>{
+    const btn=e.target.closest("[data-momentum-preset]");if(btn)startMomentumPreset(btn.dataset.momentumPreset);
+  });
   document.getElementById("momentumBlocks").addEventListener("click",e=>{
     const day=e.target.closest("[data-momentum-day]");
     if(day){cycleMomentumDay(day.dataset.momentumId,Number(day.dataset.momentumDay));return}
