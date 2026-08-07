@@ -199,7 +199,7 @@ textarea{min-height:95px;resize:vertical}
 .save-bar{position:sticky;bottom:10px;z-index:30;margin-top:14px;padding:10px;border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .save-status{font-size:.82rem;color:var(--muted)}
 .table-wrap{overflow:auto;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow);overscroll-behavior:contain;touch-action:pan-x pan-y}
-.calendar-table{border-collapse:separate;border-spacing:0;min-width:1860px;width:100%;font-size:.82rem}
+.calendar-table{border-collapse:separate;border-spacing:0;min-width:1960px;width:100%;font-size:.82rem}
 .calendar-table th{position:sticky;top:0;z-index:4;background:#123354;color:#fff;padding:11px 7px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08)}
 .calendar-table td{padding:7px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;background:var(--panel-solid)}
 .calendar-table th:first-child,.calendar-table td:first-child{
@@ -273,7 +273,7 @@ textarea{min-height:95px;resize:vertical}
   .activity-bar-row{grid-template-columns:92px 1fr 56px}
   .activity-connect{align-items:flex-start;flex-direction:column}
   .table-wrap{border-radius:14px;scroll-padding-left:62px}
-  .calendar-table{min-width:1760px}
+  .calendar-table{min-width:1860px}
   .calendar-table th:first-child,.calendar-table td:first-child{
     width:62px;min-width:62px;max-width:62px;left:0
   }
@@ -852,6 +852,7 @@ body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:non
 
       <div class="input-card glass"><h3>🧠 Self-improvement</h3><div class="segment" data-status="selfImprovement"></div></div>
       <div class="input-card glass"><h3>💼 Job preparation</h3><div class="segment" data-status="jobPrep"></div></div>
+      <div class="input-card glass"><h3>🧩 LeetCode — 1 problem</h3><div class="segment" data-status="leetcode"></div><div class="k-sub" style="margin-top:8px">Solve one problem. A serious attempt can be recorded as Partial.</div></div>
       <div class="input-card glass"><h3>🚶 Movement</h3><div class="segment" data-status="movement"></div></div>
       <div class="input-card glass"><h3>🛡 Attention protected</h3><div class="segment" data-status="pornFree" data-binary="1"></div></div>
       <div class="input-card glass"><h3>📵 Social media controlled</h3><div class="segment" data-status="social"></div></div>
@@ -882,7 +883,7 @@ body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:non
     <div class="table-wrap" id="calendarTableWrap">
       <table class="calendar-table">
         <thead><tr>
-          <th>Date</th><th>Day</th><th>German</th><th>MSc / technical</th><th>English</th><th>Self-improvement</th><th>Job preparation</th><th>Movement</th><th>Attention</th><th>Social</th><th>Diet</th><th>Plan / bookings</th><th>Sleep</th><th>Wake</th><th>Duration</th><th>Status</th><th>Notes</th><th>Positive</th><th>Penalty</th><th>Net</th><th>Completion</th><th>Day Result</th><th>Streak</th><th>Reward</th>
+          <th>Date</th><th>Day</th><th>German</th><th>MSc / technical</th><th>English</th><th>Self-improvement</th><th>Job preparation</th><th>LeetCode</th><th>Movement</th><th>Attention</th><th>Social</th><th>Diet</th><th>Plan / bookings</th><th>Sleep</th><th>Wake</th><th>Duration</th><th>Status</th><th>Notes</th><th>Positive</th><th>Penalty</th><th>Net</th><th>Completion</th><th>Day Result</th><th>Streak</th><th>Reward</th>
         </tr></thead>
         <tbody id="dataBody"></tbody>
       </table>
@@ -892,14 +893,14 @@ body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:non
 
   <section id="routine" class="panel">
     <div class="section-head">
-      <div><h2>Pratik’s Routine</h2><p>A repeatable plan for German, MSc and technical progress, English, self-improvement, job preparation, self-control, health, and sleep.</p></div>
+      <div><h2>Pratik’s Routine</h2><p>A repeatable plan for German, MSc and technical progress, English, self-improvement, job preparation, one LeetCode problem, self-control, health, and sleep.</p></div>
       <button class="btn" id="refreshRoutineBtn">↻ Recalculate</button>
     </div>
 
     <div class="box glass routine-hero personalized-routine-hero">
       <div class="ai-head"><div><h3 id="routineHeadline">Your core day: small enough to repeat, strong enough to matter.</h3><div class="box-sub" id="routineDescription">This plan uses your real targets and automatically includes study sessions you book inside PPP.</div></div><span class="ai-pill">✦ Built for Pratik</span></div>
       <div class="routine-profile-strip" aria-label="Personal routine priorities">
-        <span>🇩🇪 German first</span><span>🎓 MSc / technical work</span><span>🇬🇧 English daily</span><span>🧠 Self-improvement daily</span><span>💼 Job preparation</span><span>🛡 Protect attention</span>
+        <span>🇩🇪 German first</span><span>🎓 MSc / technical work</span><span>🇬🇧 English daily</span><span>🧠 Self-improvement daily</span><span>💼 Job preparation</span><span>🧩 One LeetCode problem</span><span>🛡 Protect attention</span>
       </div>
       <div class="routine-modes" aria-label="Choose today's capacity">
         <button class="routine-mode active" data-routine-mode="balanced">Core Day</button>
@@ -1266,20 +1267,22 @@ body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:non
 const APP_KEY="pratiksProgressPlan_v3";
 const LEGACY_KEYS=["momentumOS_v2","pratiksPathBeast_v2"];
 const STATUS=["","Done","Partial","Missed"];
+const LEETCODE_START_DATE="2026-08-07";
+function leetcodeRequiredForDate(dateKey){return String(dateKey||localDateKey())>=LEETCODE_START_DATE}
 const BINARY=["","Done","Missed"];
-const WEIGHT_LABELS={german:"German",selfStudy:"MSc / technical study",english:"English study",selfImprovement:"Self-improvement",jobPrep:"Job preparation",movement:"Movement",pornFree:"Attention protected",social:"Social media control",diet:"Diet"};
-const ACTIVE_HABIT_KEYS=["german","selfStudy","english","selfImprovement","jobPrep","movement","pornFree","social","diet"];
+const WEIGHT_LABELS={german:"German",selfStudy:"MSc / technical study",english:"English study",selfImprovement:"Self-improvement",jobPrep:"Job preparation",leetcode:"LeetCode problem",movement:"Movement",pornFree:"Attention protected",social:"Social media control",diet:"Diet"};
+const ACTIVE_HABIT_KEYS=["german","selfStudy","english","selfImprovement","jobPrep","leetcode","movement","pornFree","social","diet"];
 const DEFAULTS={
   profile:{name:"Pratik",theme:"dark",themeDefaultVersion:1,celebrations:true,coach:true,motivation:true,motion:true,monthlyTarget:1000,routineMode:"balanced",sleepPlanVersion:2},
   settings:{targetSleep:7,shortBelow:6.5,longAbove:9,preferredSleep:"00:30",preferredWake:"07:30",tolerance:90,germanTarget:60,soumiTarget:60,selfStudyTarget:60,missionThreshold:70},
-  weights:{german:5,selfStudy:5,english:3,selfImprovement:3,jobPrep:2.5,movement:2,pornFree:5,social:4,diet:3},
+  weights:{german:5,selfStudy:5,english:3,selfImprovement:3,jobPrep:2.5,leetcode:3,movement:2,pornFree:5,social:4,diet:3},
   months:{},
   planner:[],
   momentum:{blocks:[]},
   library:{progress:{},filter:"all"},
   courses:{progress:{}}
 };
-const blankDay=()=>({german:0,habib:"",soumi:0,selfStudy:0,english:"",selfImprovement:"",jobPrep:"",movement:"",pornFree:"",social:"",diet:"",sleep:"",wake:"",notes:""});
+const blankDay=()=>({german:0,habib:"",soumi:0,selfStudy:0,english:"",selfImprovement:"",jobPrep:"",leetcode:"",movement:"",pornFree:"",social:"",diet:"",sleep:"",wake:"",notes:""});
 let state=loadState();
 let currentMonth="2026-08";
 let motivationIndex=0,motivationTimer=null,urgeResetSeconds=90,urgeResetInterval=null;
@@ -1369,6 +1372,7 @@ function actionCenterIconFor(x){
   if(title.includes("english"))return "🇬🇧";
   if(title.includes("self-improvement")||title.includes("read"))return "🧠";
   if(title.includes("job")||title.includes("career"))return "💼";
+  if(title.includes("leetcode")||title.includes("coding problem")||title.includes("algorithm"))return "🧩";
   if(x?.focus==="selfStudy"||title.includes("study")||title.includes("msc")||title.includes("technical"))return "🎓";
   if(title.includes("move")||title.includes("walk"))return "🚶";
   return "→";
@@ -1411,7 +1415,7 @@ function dailyMicroWins(){
   const d=ensureMonth()[todayIndex()],c=currentData()[todayIndex()];
   let wins=0;
   if(d.german>0)wins++;if(d.soumi>0)wins++;if(d.selfStudy>0)wins++;
-  ["habib","english","selfImprovement","pornFree","social","diet"].forEach(k=>{if(d[k]==="Done"||d[k]==="Partial")wins++});
+  ["habib","english","selfImprovement","jobPrep","leetcode","movement","pornFree","social","diet"].forEach(k=>{if(d[k]==="Done"||d[k]==="Partial")wins++});
   if(d.sleep&&d.wake)wins++;
   return {wins,completion:Math.round((c.completion||0)*100),c};
 }
@@ -1686,7 +1690,7 @@ function sleepCalc(d){
   const timingScore=clamp(100-((circ(s,ps)+circ(w,pw))/2)/2,0,100);
   return {hours,status,timingScore:(durationScore*.65+timingScore*.35)};
 }
-function maxPoints(){return ACTIVE_HABIT_KEYS.reduce((sum,key)=>sum+Number(state.weights[key]||0),0)}
+function maxPoints(dateKey=null){return ACTIVE_HABIT_KEYS.reduce((sum,key)=>sum+(key==="leetcode"&&dateKey&&!leetcodeRequiredForDate(dateKey)?0:Number(state.weights[key]||0)),0)}
 function statusMet(value){return value==="Done"||value==="Partial"}
 function routineDailyMinimums(){
   const mode=state.profile.routineMode||"balanced";
@@ -1698,7 +1702,7 @@ function calcMonth(key=currentMonth){
   const days=ensureMonth(key);let streak=0,best=0;
   return days.map((d,i)=>{
     const w=state.weights,t=state.settings,minimums=routineDailyMinimums();
-    const logged=[d.german,d.selfStudy,d.english,d.selfImprovement,d.jobPrep,d.movement,d.pornFree,d.social,d.diet].some(v=>v!==""&&v!==0);
+    const logged=[d.german,d.selfStudy,d.english,d.selfImprovement,d.jobPrep,d.leetcode,d.movement,d.pornFree,d.social,d.diet].some(v=>v!==""&&v!==0);
     const dateKey=`${key}-${String(i+1).padStart(2,"0")}`;
     const dayTasks=plannerTasksForDate(dateKey);
     const taskContributions=dayTasks.map(task=>plannerTaskContribution(task,dateKey));
@@ -1710,6 +1714,7 @@ function calcMonth(key=currentMonth){
       signedStatus(d.english,w.english),
       signedStatus(d.selfImprovement,w.selfImprovement),
       signedStatus(d.jobPrep,w.jobPrep),
+      leetcodeRequiredForDate(dateKey)?signedStatus(d.leetcode,w.leetcode):0,
       signedStatus(d.movement,w.movement),
       signedStatus(d.pornFree,w.pornFree,true),
       signedStatus(d.social,w.social),
@@ -1719,10 +1724,10 @@ function calcMonth(key=currentMonth){
     const positivePoints=contributions.filter(v=>v>0).reduce((a,b)=>a+b,0);
     const negativePoints=Math.abs(contributions.filter(v=>v<0).reduce((a,b)=>a+b,0));
     const points=positivePoints-negativePoints;
-    const dailyMax=maxPoints()+dayTasks.reduce((sum,task)=>sum+plannerTaskPoints(task),0);
+    const dailyMax=maxPoints(dateKey)+dayTasks.reduce((sum,task)=>sum+plannerTaskPoints(task),0);
     const completion=dailyMax?positivePoints/dailyMax:0;
     const dayResult=classifyDay(points,dailyMax,dayLogged);
-    const coreComplete=d.german>=minimums.german&&d.selfStudy>=minimums.selfStudy&&statusMet(d.english)&&statusMet(d.selfImprovement)&&statusMet(d.jobPrep)&&statusMet(d.movement)&&d.pornFree==="Done";
+    const coreComplete=d.german>=minimums.german&&d.selfStudy>=minimums.selfStudy&&statusMet(d.english)&&statusMet(d.selfImprovement)&&statusMet(d.jobPrep)&&(!leetcodeRequiredForDate(dateKey)||statusMet(d.leetcode))&&statusMet(d.movement)&&d.pornFree==="Done";
     const mission=dayLogged&&dayResult==="Winning Day"&&coreComplete;
     streak=mission?streak+1:0;best=Math.max(best,streak);
     const bonus=mission&&streak%7===0?10:0,sleep=sleepCalc(d);
@@ -1773,6 +1778,7 @@ function habitScores(data=currentData()){
     ["English study",avg(logged.map(x=>mult(x.english))),"core"],
     ["Self-improvement",avg(logged.map(x=>mult(x.selfImprovement))),"core"],
     ["Job preparation",avg(logged.map(x=>mult(x.jobPrep))),"core"],
+    ["LeetCode problem",avg(logged.filter(x=>leetcodeRequiredForDate(`${currentMonth}-${String(x.index+1).padStart(2,"0")}`)).map(x=>mult(x.leetcode))),"core"],
     ["Movement",avg(logged.map(x=>mult(x.movement))),"core"],
     ["Attention protected",avg(logged.map(x=>x.pornFree==="Done"?1:0)),"core"],
     ["Sleep rhythm",avg(logged.map(x=>x.sleepHours==null?0:clamp(x.sleepScore/100,0,1))),"support"],
@@ -1788,6 +1794,7 @@ function coachCoreChecks(day){
     {name:"English study",done:statusMet(day?.english),action:"Do the smallest English session and record Partial or Done."},
     {name:"Self-improvement",done:statusMet(day?.selfImprovement),action:"Read or apply one useful idea for at least five minutes."},
     {name:"Job preparation",done:statusMet(day?.jobPrep),action:"Do one small career action: one vacancy, one CV line, or one interview answer."},
+    {name:"LeetCode problem",done:!leetcodeRequiredForDate(localDateKey())||statusMet(day?.leetcode),action:"Solve one LeetCode problem. If blocked, make a serious attempt, study the solution, and record Partial."},
     {name:"Movement",done:statusMet(day?.movement),action:"Walk or move for a short, realistic block."},
     {name:"Attention protected",done:day?.pornFree==="Done",action:"Use the Attention Reset, create distance, and protect the next ten minutes."}
   ];
@@ -1816,7 +1823,7 @@ function coachData(data=currentData()){
   if(!m.logged.length){
     return {headline:`${state.profile.name}, your ${modeName} is ready. Complete the minimum version, not an imaginary perfect day.`,items:[
       ["Start the core",`${routineDailyMinimums().german}m German + ${routineDailyMinimums().selfStudy}m MSc / technical study.`],
-      ["Complete the small daily essentials","English, self-improvement, job preparation, and movement can each be a short honest minimum."],
+      ["Complete the small daily essentials","English, self-improvement, job preparation, one LeetCode problem, and movement can each be a short honest minimum."],
       ["Protect attention and sleep","Use the reset plan when needed and keep the 00:30–07:30 sleep rhythm."]
     ]};
   }
@@ -2000,7 +2007,7 @@ function renderCalendar(){
       <td><input type="number" min="0" max="300" step="5" value="${d.german}" data-i="${i}" data-f="german"></td>
       <td><input type="number" min="0" max="400" step="5" value="${d.selfStudy}" data-i="${i}" data-f="selfStudy"></td>
       <td>${selectCell(d.english,STATUS,i,"english")}</td><td>${selectCell(d.selfImprovement,STATUS,i,"selfImprovement")}</td>
-      <td>${selectCell(d.jobPrep,STATUS,i,"jobPrep")}</td><td>${selectCell(d.movement,STATUS,i,"movement")}</td>
+      <td>${selectCell(d.jobPrep,STATUS,i,"jobPrep")}</td><td>${leetcodeRequiredForDate(dateKey)?selectCell(d.leetcode,STATUS,i,"leetcode"):'<span class="k-sub">Not active</span>'}</td><td>${selectCell(d.movement,STATUS,i,"movement")}</td>
       <td>${selectCell(d.pornFree,BINARY,i,"pornFree")}</td><td>${selectCell(d.social,STATUS,i,"social")}</td><td>${selectCell(d.diet,STATUS,i,"diet")}</td>
       <td>${calendarPlanCell(dateKey)}</td>
       <td><input type="time" value="${d.sleep}" data-i="${i}" data-f="sleep"></td><td><input type="time" value="${d.wake}" data-i="${i}" data-f="wake"></td>
@@ -2014,7 +2021,7 @@ function renderInsights(data=currentData()){
   const m=smartMetrics(data),scores=habitScores(data).sort((a,b)=>a[1]-b[1]),review=[],optimizer=[],plan=[];
   if(!m.logged.length){
     review.push(["No data yet","Complete your first check-in. Insights become smarter after 3–7 logged days."]);
-    optimizer.push(["Start with the core","German, MSc / technical study, English, self-improvement, job preparation, movement, and protected attention create the mission-day foundation."]);
+    optimizer.push(["Start with the core","German, MSc / technical study, English, self-improvement, job preparation, one LeetCode problem, movement, and protected attention create the mission-day foundation."]);
     plan.push(["Day 1 plan","Use the current routine mode minimums, then record one honest result in every mandatory area."]);
   }else{
     review.push(["Strongest habit",`${scores[scores.length-1][0]} is leading at ${Math.round(scores[scores.length-1][1]*100)}%. Use it as an anchor routine.`]);
@@ -2119,9 +2126,10 @@ function buildRoutine(mode=state.profile.routineMode||"balanced"){
     add(290,"🍲","Lunch + real rest","Eat away from the screen. Rest is allowed; endless scrolling is not the same as recovery.");
     add(390,"🧑‍💻","Flexible responsibilities","University, work, errands, applications, or planned tasks. Use one 45-minute phone-free window.");
     add(500,"💼","Job preparation — 15 min","Take one small career step: improve one CV bullet, review one suitable role, or practise one interview answer.",{minimum:"5 min"});
-    add(560,"🏃","Movement — 20 min","Walk outside or exercise. The target is activation, not an impressive workout.",{minimum:"5 min outside"});
-    add(610,"🇬🇧","English study — 10 min","Read, listen, write, or practise speaking. Complete at least five focused minutes.",{studyMinutes:10,bookCategory:"english",minimum:"5 min"});
-    add(640,"🧠","Self-improvement — 10 min","Read one useful section and keep one sentence or action idea.",{studyMinutes:10,bookCategory:"growth",minimum:"5 min"});
+    add(535,"🧩","LeetCode — solve 1 problem","Choose one appropriate problem. Try independently, test the solution, and write the key pattern you learned.",{minimum:"One serious attempt"});
+    add(580,"🏃","Movement — 20 min","Walk outside or exercise. The target is activation, not an impressive workout.",{minimum:"5 min outside"});
+    add(630,"🇬🇧","English study — 10 min","Read, listen, write, or practise speaking. Complete at least five focused minutes.",{studyMinutes:10,bookCategory:"english",minimum:"5 min"});
+    add(660,"🧠","Self-improvement — 10 min","Read one useful section and keep one sentence or action idea.",{studyMinutes:10,bookCategory:"growth",minimum:"5 min"});
     items.push({minute:sleep-75,icon:"📵",title:"Digital protection",detail:"Leave triggering content, reduce private scrolling, charge the phone away from bed, and prepare tomorrow’s first study material."});
     items.push({minute:sleep-30,icon:"🌙",title:"Wind down",detail:"Low light, hygiene, calm audio or reading. Do not start a punishment study session."});
     items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"Your target is 00:30–07:30. Protecting tomorrow is part of today’s discipline."});
@@ -2133,8 +2141,9 @@ function buildRoutine(mode=state.profile.routineMode||"balanced"){
     if(!covered.selfStudy)add(360,"🎓","MSc / technical minimum — 25 min","Produce one visible result: one diagram, one code change, one page of notes, or one solved task.",{focus:"selfStudy",studyMinutes:25,bookCategory:"technical",minimum:"10 min"});
     add(430,"🚶","Movement — 10 min","A short walk is enough to reset attention.",{minimum:"3 min"});
     add(465,"💼","Job preparation — 10 min","Complete one small career action.",{minimum:"5 min"});
-    add(500,"🇬🇧","English study — 5 min","Use the easiest useful English activity and complete five focused minutes.",{studyMinutes:5,bookCategory:"english",minimum:"5 min"});
-    add(530,"🧠","Self-improvement — 5 min","Read one page and keep one practical idea.",{studyMinutes:5,bookCategory:"growth",minimum:"5 min"});
+    add(490,"🧩","LeetCode — solve 1 problem","Choose an easy or familiar-pattern problem. Work carefully and record what you learned.",{minimum:"One serious attempt"});
+    add(530,"🇬🇧","English study — 5 min","Use the easiest useful English activity and complete five focused minutes.",{studyMinutes:5,bookCategory:"english",minimum:"5 min"});
+    add(560,"🧠","Self-improvement — 5 min","Read one page and keep one practical idea.",{studyMinutes:5,bookCategory:"growth",minimum:"5 min"});
     items.push({minute:sleep-60,icon:"📵",title:"Close the digital door",detail:"No late-night trigger loop. Prepare tomorrow and move the phone away from bed."});
     items.push({minute:sleep,icon:"😴",title:"Sleep on time",detail:"A busy day does not need a heroic ending."});
   }else{
@@ -2145,8 +2154,9 @@ function buildRoutine(mode=state.profile.routineMode||"balanced"){
     if(!covered.selfStudy)add(180,"🎓","One tiny academic result — 15 min","Open the current Requirements Engineering, technical, or MSc task and create one visible result.",{focus:"selfStudy",studyMinutes:15,bookCategory:"technical",minimum:"5 min"});
     add(250,"🫶","Rest without disappearing","Eat, shower, speak to someone safe, or rest. Avoid turning recovery into hours of uncontrolled private scrolling.");
     add(315,"💼","Job preparation — 5 min","Open your CV, one suitable role, or one interview question. Five minutes is enough.",{minimum:"5 min"});
-    add(350,"🇬🇧","English study — 5 min","Read or listen for five gentle minutes.",{studyMinutes:5,bookCategory:"english",minimum:"5 min"});
-    add(390,"🧠","Self-improvement — 5 min","Read one page and choose one kind action for yourself.",{studyMinutes:5,bookCategory:"growth",minimum:"5 min"});
+    add(335,"🧩","LeetCode — one small problem","Choose an easy problem or revisit a familiar pattern. Make one honest attempt and learn the solution if blocked.",{minimum:"One serious attempt"});
+    add(380,"🇬🇧","English study — 5 min","Read or listen for five gentle minutes.",{studyMinutes:5,bookCategory:"english",minimum:"5 min"});
+    add(420,"🧠","Self-improvement — 5 min","Read one page and choose one kind action for yourself.",{studyMinutes:5,bookCategory:"growth",minimum:"5 min"});
     items.push({minute:sleep-90,icon:"📝",title:"Prepare one easy start for tomorrow",detail:"Put the German or MSc material where you can see it. Write only the first action."});
     items.push({minute:sleep-55,icon:"📵",title:"Protect the vulnerable hour",detail:"Leave triggering spaces, keep the phone away from bed, and choose calm stimulation."});
     items.push({minute:sleep,icon:"😴",title:"Sleep",detail:"A low-energy day becomes useful when it helps tomorrow begin."});
@@ -2161,6 +2171,7 @@ function routineTrackedComplete(item,d,key){
   const title=String(item.title||"").toLowerCase();
   if(title.includes("english"))return d.english==="Done";
   if(title.includes("self-improvement"))return d.selfImprovement==="Done";
+  if(title.includes("leetcode"))return statusMet(d.leetcode);
   return false;
 }
 function incompleteTasks(){
@@ -2174,6 +2185,7 @@ function incompleteTasks(){
   if(d.english!=="Done")items.push({title:"English reading",detail:"Five relaxed minutes are enough",focus:null,score:mult(d.english),bookCategory:"english"});
   if(d.selfImprovement!=="Done")items.push({title:"Self-improvement",detail:"Read five minutes and keep one useful sentence",focus:null,score:mult(d.selfImprovement),bookCategory:"growth"});
   if(d.jobPrep!=="Done")items.push({title:"Job preparation",detail:"Complete one small career action",focus:null,score:mult(d.jobPrep)});
+  if(leetcodeRequiredForDate(localDateKey())&&d.leetcode!=="Done")items.push({title:"LeetCode problem",detail:"Solve one problem; a serious attempt can be Partial",focus:null,score:mult(d.leetcode)});
   if(d.movement!=="Done")items.push({title:"Movement",detail:"Walk or move for a short realistic block",focus:null,score:mult(d.movement)});
   const habits=items.sort((a,b)=>a.score-b.score);
   const planned=plannerTasksForDate(localDateKey()).filter(task=>!plannerDone(task,localDateKey())&&!task.time).sort((a,b)=>(a.priority==="high"?-1:a.priority==="low"?1:0)-(b.priority==="high"?-1:b.priority==="low"?1:0)||(a.duration||30)-(b.duration||30)).map(task=>({title:task.title,detail:`Planned task • ${task.duration||30} min${task.priority==="high"?" • high priority":""}`,focus:null,score:2,plannerTaskId:task.id,planned:true}));
@@ -2187,7 +2199,7 @@ function renderRoutine(){
   setText("routineWake",state.settings.preferredWake);setText("routineSleep",state.settings.preferredSleep);
   const focusTotal=routine.reduce((sum,item)=>sum+(Number(item.studyMinutes)||0),0),scheduledCount=routine.filter(x=>x.plannerItem).length,bookingCount=routine.filter(x=>x.appointment).length;
   setText("routineFocusTotal",`${focusTotal} min`);
-  setText("routinePriority",mode==="recovery"?"Recovery + essentials":"German + MSc + daily essentials");
+  setText("routinePriority",mode==="recovery"?"Recovery + essentials":"German + MSc + LeetCode + essentials");
   setText("routinePersonalNote",scheduledCount?`${scheduledCount} timed planner item${scheduledCount===1?" is":"s are"} included automatically${bookingCount?`, including ${bookingCount} booked session${bookingCount===1?"":"s"}`:""}. Matching study blocks are reduced when the title clearly covers German or MSc/technical work.`:"No timed task is scheduled today. New appointments and timed planner tasks will appear here automatically.");
 
   const status=routine.map(item=>routineTrackedComplete(item,d,key));
@@ -2758,6 +2770,9 @@ function buildSmartNowOptions(){
   if(raw.jobPrep!=="Done"&&nowMin<sleep-75){
     push({title:"Do one small job-preparation action",detail:"Review one suitable role, improve one CV line, or practise one interview answer.",reason:"Job preparation is part of the daily plan and can be completed with one small visible action.",duration:10,kind:"habit"});
   }
+  if(leetcodeRequiredForDate(key)&&raw.leetcode!=="Done"&&nowMin<sleep-75){
+    push({title:"Solve today’s LeetCode problem",detail:"Choose one suitable problem, try it independently, test your answer, and note the pattern. If blocked, study the solution and record Partial.",reason:"One coding problem is now a mandatory daily task and is still unfinished.",duration:25,kind:"habit"});
+  }
   if(raw.movement!=="Done"&&nowMin<sleep-45){
     push({title:"Move for five minutes",detail:"Walk, stretch, or step outside. The target is activation, not a workout.",reason:"Movement supports attention and is still unfinished today.",duration:5,kind:"habit"});
   }
@@ -3250,22 +3265,22 @@ function applyQuick(mode){
   if(mode==="minimum"||mode==="recovery"){
     const mins=mode==="recovery"?{german:5,selfStudy:15}:routineDailyMinimums();
     set("german",Math.max(d.german||0,mins.german));set("selfStudy",Math.max(d.selfStudy||0,mins.selfStudy));
-    ["english","selfImprovement","jobPrep","movement"].forEach(f=>set(f,d[f]||"Partial"));set("pornFree","Done");set("social",d.social||"Done");set("diet",d.diet||"Partial");
+    ["english","selfImprovement","jobPrep","leetcode","movement"].forEach(f=>set(f,d[f]||"Partial"));set("pornFree","Done");set("social",d.social||"Done");set("diet",d.diet||"Partial");
   }
   if(mode==="solid"){
     set("german",Math.max(d.german||0,45));set("selfStudy",Math.max(d.selfStudy||0,45));
-    ["english","selfImprovement","jobPrep","movement","social","diet"].forEach(f=>set(f,d[f]||"Partial"));set("pornFree","Done");
+    ["english","selfImprovement","jobPrep","leetcode","movement","social","diet"].forEach(f=>set(f,d[f]||"Partial"));set("pornFree","Done");
   }
   if(mode==="full"){
     set("german",state.settings.germanTarget);set("selfStudy",state.settings.selfStudyTarget);
-    ["english","selfImprovement","jobPrep","movement","pornFree","social","diet"].forEach(f=>set(f,"Done"));
+    ["english","selfImprovement","jobPrep","leetcode","movement","pornFree","social","diet"].forEach(f=>set(f,"Done"));
   }
   save();renderAll();hideModal("quickModal");showTab("today");showToast(`${mode[0].toUpperCase()+mode.slice(1)} plan applied`);
 }
 function smartMinimum(){
   const d=ensureMonth()[todayIndex()],mins=routineDailyMinimums();
   d.german=Math.max(d.german||0,mins.german);d.selfStudy=Math.max(d.selfStudy||0,mins.selfStudy);
-  ["english","selfImprovement","jobPrep","movement"].forEach(f=>{if(!d[f])d[f]="Partial"});
+  ["english","selfImprovement","jobPrep","leetcode","movement"].forEach(f=>{if(!d[f])d[f]="Partial"});
   d.pornFree="Done";d.social=d.social||"Done";d.diet=d.diet||"Partial";
   save();renderAll();showToast(`Smart minimum applied for your ${state.profile.routineMode==="recovery"?"Low-Energy":state.profile.routineMode==="busy"?"Busy":"Core"} Day`);
 }
@@ -3391,8 +3406,8 @@ function showModal(id){document.getElementById(id).classList.remove("hidden")}fu
 function download(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);showToast("File downloaded")}
 function exportBackup(){download("pratiks-progress-plan-backup.json",JSON.stringify(state,null,2),"application/json")}
 function exportCsv(){
-  const data=currentData(),head=["Date","Day","German Minutes","MSc / Technical Minutes","English Study","Self Improvement","Job Preparation","Movement","Attention Protected","Social Control","Diet","Booked Study","Sleep","Wake","Sleep Hours","Sleep Status","Notes","Positive Points","Penalty Points","Net Points","Completion","Day Result","Streak","Bonus","Reward Points"];
-  const rows=data.map((d,i)=>{const key=localDateKey(dayDate(i)),bookings=plannerTasksForDate(key).map(task=>`${task.time?task.time+" ":""}${task.type==="appointment"?"Booking":"Task"}: ${task.title} [${plannerStatus(task,key)}]`).join(" | ");return [dateLabel(dayDate(i)),dayDate(i).toLocaleDateString(undefined,{weekday:"long"}),d.german,d.selfStudy,d.english,d.selfImprovement,d.jobPrep,d.movement,d.pornFree,d.social,d.diet,bookings,d.sleep,d.wake,d.sleepHours?.toFixed(1)||"",d.sleepStatus,d.notes,d.positivePoints.toFixed(1),d.negativePoints.toFixed(1),d.points.toFixed(1),Math.round(d.completion*100)+"%",d.dayResult,d.streak,d.bonus,d.reward.toFixed(1)]});
+  const data=currentData(),head=["Date","Day","German Minutes","MSc / Technical Minutes","English Study","Self Improvement","Job Preparation","LeetCode Problem","Movement","Attention Protected","Social Control","Diet","Booked Study","Sleep","Wake","Sleep Hours","Sleep Status","Notes","Positive Points","Penalty Points","Net Points","Completion","Day Result","Streak","Bonus","Reward Points"];
+  const rows=data.map((d,i)=>{const key=localDateKey(dayDate(i)),bookings=plannerTasksForDate(key).map(task=>`${task.time?task.time+" ":""}${task.type==="appointment"?"Booking":"Task"}: ${task.title} [${plannerStatus(task,key)}]`).join(" | ");return [dateLabel(dayDate(i)),dayDate(i).toLocaleDateString(undefined,{weekday:"long"}),d.german,d.selfStudy,d.english,d.selfImprovement,d.jobPrep,d.leetcode,d.movement,d.pornFree,d.social,d.diet,bookings,d.sleep,d.wake,d.sleepHours?.toFixed(1)||"",d.sleepStatus,d.notes,d.positivePoints.toFixed(1),d.negativePoints.toFixed(1),d.points.toFixed(1),Math.round(d.completion*100)+"%",d.dayResult,d.streak,d.bonus,d.reward.toFixed(1)]});
   const csv=[head,...rows].map(r=>r.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n");download(`pratiks-progress-plan-${currentMonth}.csv`,csv,"text/csv");
 }
 function resetMonth(){if(confirm(`Delete all data for ${monthLabel()}?`)){state.months[currentMonth]=Array.from({length:monthDays(currentMonth)},blankDay);save();renderAll();showToast("Month reset")}}
