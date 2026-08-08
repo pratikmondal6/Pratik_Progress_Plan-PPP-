@@ -71,7 +71,7 @@ linear-gradient(125deg,rgba(7,20,38,.95),rgba(21,52,87,.92) 55%,rgba(74,36,126,.
 .ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:12}.ring .bg-ring{stroke:rgba(255,255,255,.10)}.ring .value-ring{stroke:url(#ringGradient);stroke-linecap:round;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
 .ring-content{text-align:center}.ring-number{font-size:3rem;font-weight:950;letter-spacing:-.06em}.ring-label{font-size:.78rem;color:#b8c9df;text-transform:uppercase;letter-spacing:.1em;font-weight:850}
-.nav{position:sticky;top:78px;z-index:35;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:14px 0;padding:10px;border-radius:20px;overflow:visible}
+.nav{position:sticky;top:78px;z-index:35;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:14px 0;padding:10px;border-radius:20px;overflow:visible}
 .nav button{--nav-glow:79,140,255;min-width:0;border:1px solid rgba(145,164,190,.10);border-radius:14px;background:rgba(8,20,36,.28);color:var(--muted);padding:10px 8px;font-weight:850;white-space:normal;display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;transition:.18s transform,.18s border-color,.18s background,.18s color,.18s box-shadow}
 .nav button[data-nav-group="growth"]{--nav-glow:155,108,255}
 .nav button[data-nav-group="tools"]{--nav-glow:39,214,232}
@@ -163,6 +163,10 @@ linear-gradient(125deg,rgba(7,20,38,.95),rgba(21,52,87,.92) 55%,rgba(74,36,126,.
 .routine-step:hover{transform:translateX(3px)}
 .routine-step.now{border-color:rgba(39,214,232,.55);box-shadow:0 0 0 3px rgba(39,214,232,.08)}
 .routine-step.done{opacity:.58}
+.routine-step.external-booking{border-color:rgba(255,191,63,.55);background:linear-gradient(135deg,rgba(255,191,63,.18),rgba(79,140,255,.08));box-shadow:0 10px 30px rgba(255,191,63,.08);}
+.routine-step.external-booking .routine-icon{background:linear-gradient(135deg,rgba(255,191,63,.38),rgba(255,122,69,.25));color:#422900}
+.routine-step.external-booking .routine-content strong{color:#664700}
+.routine-step.external-booking .routine-badge.booked{background:rgba(255,191,63,.2);color:#6a4d00!important;border-color:rgba(255,191,63,.35)}
 .routine-time{font-size:.78rem;font-weight:900;color:#9fc0ef;padding-top:7px}
 .routine-icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(79,140,255,.20),rgba(155,108,255,.20))}
 .routine-content strong{display:block;font-size:.88rem}.routine-content span{display:block;color:var(--muted);font-size:.78rem;line-height:1.45;margin-top:3px}
@@ -324,6 +328,14 @@ textarea{min-height:95px;resize:vertical}
 .planner-item.dragging{opacity:.45;transform:scale(.98)}
 .planner-item.completed{opacity:.58}
 .planner-item.completed .planner-title-input{text-decoration:line-through}
+.planner-item.external-booking{border-color:rgba(255,191,63,.45);background:linear-gradient(135deg,rgba(255,246,205,.28),rgba(255,234,179,.22));box-shadow:0 10px 30px rgba(255,191,63,.16);}
+.planner-item.external-booking:hover{border-color:rgba(255,191,63,.85);transform:scale(1.005)}
+.planner-item.external-booking .planner-title-input{color:#7a5200}
+.planner-item.external-booking .planner-meta{background:rgba(255,255,255,.14);border-radius:12px;padding:5px 8px}
+.planner-item.external-booking .planner-tag.appointment{background:linear-gradient(135deg,rgba(255,223,114,.35),rgba(255,191,63,.22));color:#6c4800;border:1px solid rgba(255,191,63,.35);font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+.planner-item.external-booking .planner-tag.appointment::before{content:'📅 ';}
+.planner-item.external-booking .planner-mini{border-color:rgba(255,191,63,.22);color:#8f7600}
+.planner-item.external-booking .planner-repeat{background:rgba(255,191,63,.10)}
 .planner-drag{cursor:grab;color:var(--muted);font-weight:950;user-select:none}
 .planner-check{width:19px;height:19px;accent-color:var(--green)}
 .planner-main{min-width:0}
@@ -467,7 +479,7 @@ textarea{min-height:95px;resize:vertical}
 .more-menu strong{display:block;font-size:.82rem;line-height:1.25}
 .more-menu small{display:block;color:var(--muted);font-size:.69rem;line-height:1.3;margin-top:2px}
 .more-menu-footer{border-top:1px solid var(--line);padding:8px 5px 5px;margin-top:5px}
-.nav{grid-template-columns:repeat(6,minmax(0,1fr));width:100%;max-width:none;margin:14px 0;padding:10px;gap:10px}
+.nav{grid-template-columns:repeat(7,minmax(0,1fr));width:100%;max-width:none;margin:14px 0;padding:10px;gap:10px}
 .nav button{min-height:58px;padding:12px 16px;white-space:nowrap;border-radius:16px}
 .nav-icon{font-size:1.14rem}
 .nav-label{font-size:.82rem}
@@ -720,14 +732,25 @@ html[data-theme="light"]{color-scheme:light}
 
 <style id="PPP-table-booking-final">
 .booking-table-wrap{width:100%;overflow:auto;margin-top:14px}
-.booking-table{width:100%;border-collapse:collapse;font-size:.9rem}
-.booking-table th{padding:12px;text-align:left;color:var(--muted);font-size:.72rem;text-transform:uppercase;border-bottom:1px solid var(--line)}
-.booking-table td{padding:13px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.booking-table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:740px}
+.booking-table th, .booking-table td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.booking-table th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;text-align:left}
+.booking-table td{color:var(--text)}
 .booking-table tr:hover{background:rgba(79,140,255,.08)}
-.booking-table .time{font-weight:900;color:#71eaf5}
-.booking-table button{border:0;border-radius:10px;padding:8px 13px;font-weight:900;cursor:pointer}
+.booking-table button{border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+.booking-row-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.booking-row-processing{opacity:.65;transition:opacity .2s ease}
+.booking-row-processing button{cursor:wait;opacity:.6}
+.booking-row-removed{animation:fadeOutRow .18s ease forwards}
+@keyframes fadeOutRow{from{opacity:1;height:auto}to{opacity:0;height:0;padding:0;margin:0;border:none}}
+.booking-status{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:.7rem;font-weight:800;text-transform:uppercase;background:rgba(255,255,255,.08);color:var(--muted)}
+.booking-status.accepted{background:rgba(43,213,118,.16);color:#7ff3c7}
+.booking-status.pending{background:rgba(79,140,255,.14);color:#9ecaff}
+.booking-status.declined{background:rgba(255,93,108,.16);color:#ffb2bd}
+.booking-note{margin-top:6px;color:var(--muted);font-size:.78rem;line-height:1.4}
 .booking-table .accept{background:#20c997;color:#04170e}
 .booking-table .decline{background:rgba(255,93,108,.15);color:#ff9aa5;border:1px solid rgba(255,93,108,.25)}
+@media(max-width:760px){.booking-table{min-width:0;font-size:.86rem}.booking-table th,.booking-table td{padding:10px 12px}}
 </style>
 <script id="PPP-table-time-fix">
 function pppGermanyTime(dateValue){
@@ -806,6 +829,7 @@ function pppGermanyTime(dateValue){
     <button data-tab="momentum" data-nav-group="growth" title="Goals and 21-Day Momentum"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></button>
     <button data-tab="today" data-nav-group="daily" title="Record today’s progress"><span class="nav-icon">✅</span><span class="nav-label">Check-in</span></button>
     <button data-tab="library" data-nav-group="growth" title="Study Library"><span class="nav-icon">📚</span><span class="nav-label">Library</span></button>
+    <button data-tab="bookings" data-nav-group="tools" title="Accepted bookings and booked tasks"><span class="nav-icon">📌</span><span class="nav-label">Bookings</span></button>
     <button data-tab="planner" data-nav-group="daily" title="Plan or schedule a specific day"><span class="nav-icon">📝</span><span class="nav-label">Plan</span></button>
   </nav>
 
@@ -1224,6 +1248,20 @@ function pppGermanyTime(dateValue){
     <div class="planner-sections" id="plannerSections"></div>
   </section>
 
+  <section id="bookings" class="panel">
+    <div class="section-head">
+      <div>
+        <h2>Bookings</h2>
+        <p>Accepted bookings are stored here separately from My Day.</p>
+      </div>
+      <div>
+        <button class="btn" id="refreshAcceptedBookingsBtn">Refresh</button>
+      </div>
+    </div>
+    <div class="box glass">
+      <div id="bookingPanelList" class="booking-panel-list"><div class="planner-empty">No booked tasks yet. Accept a request from the booking requests modal.</div></div>
+    </div>
+  </section>
 
   <section id="activity" class="panel">
     <div class="section-head">
@@ -1428,12 +1466,22 @@ const DEFAULTS={
   weights:{german:5,selfStudy:5,english:3,selfImprovement:3,jobPrep:2.5,leetcode:3,movement:2,pornFree:5,social:4,diet:3},
   months:{},
   planner:[],
+  acceptedBookings:[],
   momentum:{blocks:[]},
   library:{progress:{},filter:"all"},
   courses:{progress:{}}
 };
 const blankDay=()=>({german:0,habib:"",soumi:0,selfStudy:0,english:"",selfImprovement:"",jobPrep:"",leetcode:"",movement:"",pornFree:"",social:"",diet:"",sleep:"",wake:"",notes:""});
 let state=loadState();
+const PPP_ACTIVITY_PAGE_SOURCE="PPP_PROGRESS_PLAN_WEB_V1";
+const PPP_ACTIVITY_EXTENSION_SOURCE="PPP_ACTIVITY_EXTENSION_V1";
+const ACTIVITY_CATEGORIES=[
+  ["study","Study","var(--cyan)"],["productive","Productive","var(--green)"],
+  ["communication","Communication","var(--blue)"],["social","Social","var(--pink)"],
+  ["entertainment","Entertainment","var(--purple)"],["neutral","Neutral","var(--muted)"]
+];
+let extensionActivity=null,extensionConnected=false,activityRequestSeq=0;
+const activityPending=new Map();
 let currentMonth=`${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,"0")}`;
 let motivationIndex=0,motivationTimer=null,urgeResetSeconds=90,urgeResetInterval=null;
 const MOTIVATION_QUOTES=[
@@ -1869,11 +1917,19 @@ function classifyDay(net,max,logged){
 }
 function dayResultClass(result){return {"Strong Day":"winning","Building Day":"building","Minimum Day":"recovery","Reset Day":"losing","Not logged":"unlogged"}[result]||"unlogged"}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function parseTime(v){if(!v)return null;const [h,m]=v.split(":").map(Number);return h*60+m}
+function parseTime(v){if(v==null||v=="")return null;const parts=String(v).split(":").map(Number);if(parts.length!==2||Number.isNaN(parts[0])||Number.isNaN(parts[1]))return null;return parts[0]*60+parts[1]}
 function smartTimePad(n){return String(n).padStart(2,"0")}
 function normalizeSmartTime(raw){
-  let s=String(raw??"").trim().toLowerCase();
-  if(!s)return "";
+  if(raw instanceof Date && !isNaN(raw.getTime())){
+    return `${smartTimePad(raw.getHours())}:${smartTimePad(raw.getMinutes())}`;
+  }
+  const rawValue = String(raw??"").trim();
+  if(!rawValue) return "";
+  if(/^\d{4}-\d{2}-\d{2}[T ]/.test(rawValue) || /\d{2}:\d{2}:\d{2}/.test(rawValue) || /Z$/i.test(rawValue)){
+    const match = rawValue.match(/([01]?\d|2[0-3]):([0-5]\d)/);
+    if(match) return `${smartTimePad(Number(match[1]))}:${smartTimePad(Number(match[2]))}`;
+  }
+  let s=rawValue.toLowerCase();
   if(s==="now"){
     const d=new Date();return `${smartTimePad(d.getHours())}:${smartTimePad(d.getMinutes())}`;
   }
@@ -2491,10 +2547,11 @@ function plannerTaskLooksStudy(task){
 function routinePlannerItemsForDate(key=localDateKey(),wake=parseTime(state.settings.preferredWake)||450){
   return plannerTasksForDate(key).map(task=>({
     minute:plannerRoutineMinute(task,wake),
-    icon:task.type==="appointment"?"📅":task.time?"⏱️":"📝",
+    icon:task.externalBooking?"📅":task.type==="appointment"?"📅":task.time?"⏱️":"📝",
     title:task.title,
     detail:`${task.type==="appointment"?"Appointment":"Planned task"}${task.time?` • ${task.time}${task.endTime?`–${task.endTime}`:""}`:` • ${plannerSectionFor(task)}`} • ${task.duration||30} minutes`,
     appointment:task.type==="appointment",
+    externalBooking:task.externalBooking,
     plannerItem:true,
     plannerItemId:task.id,
     studyMinutes:plannerTaskLooksStudy(task)?Number(task.duration)||30:0,
@@ -2683,7 +2740,7 @@ function renderRoutine(){
     const clock=((x.minute%1440)+1440)%1440,completed=status[i],past=todaySame&&clock<nowMin-30&&!completed,nowClass=todaySame&&i===nextIndex;
     const momentumLink=routineMomentumForItem(x),momentumBadge=momentumLink?`<span class="routine-badge momentum">🔥 Day ${momentumLink.stats.dayNumber} • ${momentumLink.stats.phase} • ${momentumStatusLabel(momentumLink.block.days[momentumLink.stats.todayIndex]?.status||"")}</span>`:"";
     const badges=[x.plannerItem?`<span class="routine-badge booked">${x.appointment?"Booked session":"Planner task"}</span>`:"",x.courseRotation?'<span class="routine-badge course">Coursera rotation • counts as technical study</span>':"",momentumBadge,x.priority?'<span class="routine-badge">High priority</span>':"",x.minimum?`<span class="routine-badge minimum">Minimum: ${escapeHtml(x.minimum)}</span>`:""] .join("");
-    return `<div class="routine-step ${completed?"completed":""} ${past?"past":""} ${nowClass?"now":""} ${x.plannerItem?"appointment":""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.detail)}</span>${badges}${routineBookSuggestionHtml(x)}</div></div>`;
+    return `<div class="routine-step ${completed?"completed":""} ${past?"past":""} ${nowClass?"now":""} ${x.externalBooking?"external-booking":x.plannerItem?(x.appointment?"appointment":"planner-item"):""}"><div class="routine-time">${minutesToClock(clock)}</div><div class="routine-icon">${x.icon}</div><div class="routine-content"><strong>${escapeHtml(x.title)}</strong><span>${escapeHtml(x.detail)}</span>${badges}${routineBookSuggestionHtml(x)}</div></div>`;
   }).join("");
 
   const remaining=isToday?incompleteTasks():plannerTasksForDate(key).filter(task=>!plannerDone(task,key)).map(task=>({title:task.title,detail:`${task.time?`${task.time}${task.endTime?`–${task.endTime}`:""} • `:""}${task.duration||30} min • ${task.type==="appointment"?"appointment":"task"}`,focus:null,plannerTaskId:task.id}));
@@ -2697,6 +2754,15 @@ function renderRoutine(){
 function openRoutineNext(){
   if(routineNextAction){smartNowCurrent=routineNextAction;doSmartNow();return;}
   renderSmartNow(true);smartNowCurrent&&doSmartNow();
+}
+function normalizePlannerDate(raw){
+  if(raw==null) return localDateKey();
+  const text=String(raw).trim();
+  const isoMatch=text.match(/^(\d{4}-\d{2}-\d{2})/);
+  if(isoMatch) return isoMatch[1];
+  const date=new Date(text);
+  if(!isNaN(date.getTime())) return localDateKey(date);
+  return localDateKey();
 }
 function localDateKey(date=new Date()){
   const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");
@@ -2992,7 +3058,7 @@ function plannerStore(){
   state.planner.forEach((x,i)=>{
     x.id=x.id||`pl_${Date.now()}_${i}`;
     x.title=x.title||"Untitled task";
-    x.startDate=x.startDate||localDateKey();
+    x.startDate=normalizePlannerDate(x.startDate||localDateKey());
     x.type=x.type==="appointment"?"appointment":"task";
     x.time=x.time||"";
     x.duration=clamp(Number(x.duration)||30,5,720);
@@ -3233,10 +3299,11 @@ function plannerItemHtml(task,key){
   if(task.time)meta.push(`<span class="planner-tag appointment">${task.time}${task.endTime?`–${task.endTime}`:""}</span>`);
   meta.push(`<span class="planner-tag">${task.duration} min</span>`);
   meta.push(`<span class="planner-tag planner-points-tag">±${plannerTaskPoints(task)} pts</span>`);
-  if(task.type==="appointment")meta.push(`<span class="planner-tag appointment">Appointment</span>`);
+  if(task.externalBooking)meta.push(`<span class="planner-tag appointment">Booked</span>`);
+  else if(task.type==="appointment")meta.push(`<span class="planner-tag appointment">Appointment</span>`);
   if(task.priority==="high")meta.push(`<span class="planner-tag high">High priority</span>`);
   if(task.repeat!=="none")meta.push(`<span class="planner-tag">${{daily:"Daily",weekdays:"Weekdays",weekly:"Weekly",monthly:"Monthly"}[task.repeat]}</span>`);
-  return `<div class="planner-item ${done?"completed":""}" draggable="true" data-planner-id="${task.id}">
+  return `<div class="planner-item ${done?"completed":""}${task.externalBooking?" external-booking":""}" draggable="true" data-planner-id="${task.id}">
     <span class="planner-drag" title="Drag to move">⋮⋮</span>
     <input class="planner-check" type="checkbox" ${done?"checked":""} data-planner-check="${task.id}" aria-label="Mark complete">
     <div class="planner-main">
@@ -3898,7 +3965,26 @@ function planNextCourseSessions(){
   }
   save();renderPlanner();renderCourses();showToast(added?`${added} paced session${added===1?"":"s"} planned for the current course only`:"The current course already has enough sessions planned");
 }
-function renderAll(){ensureMonth();ensureLibrary();ensureCourses();syncMomentumFromDailyData();renderMotivationExperience();renderDashboard();renderToday();renderCalendar();renderSettings();renderFocus();renderRoutine();renderMomentum();renderLibrary();renderCourses();renderPlanner();renderActivity();save()}
+function renderAll(){
+  cleanExpiredAcceptedBookings();
+  ensureMonth();
+  ensureLibrary();
+  ensureCourses();
+  syncMomentumFromDailyData();
+  renderMotivationExperience();
+  renderDashboard();
+  renderToday();
+  renderCalendar();
+  renderSettings();
+  renderFocus();
+  renderRoutine();
+  renderMomentum();
+  renderLibrary();
+  renderCourses();
+  renderPlanner();
+  renderActivity();
+  save();
+}
 function setSaveStatus(t){const e=document.getElementById("saveStatus");if(e)e.textContent=t}
 function closeMoreMenu(){
   const menu=document.getElementById("moreMenu"),button=document.getElementById("moreMenuBtn");
@@ -3936,6 +4022,7 @@ function showTab(id){
   if(id==="library")setTimeout(()=>renderLibrary(),20);
   if(id==="courses")setTimeout(()=>renderCourses(),20);
   if(id==="planner")setTimeout(()=>renderPlanner(),20);
+  if(id==="bookings")setTimeout(()=>renderBookingsPanel(),20);
   if(id==="activity")setTimeout(()=>requestActivity(false),20);
   if(id==="calendar")setTimeout(()=>{
     const wrap=document.getElementById("calendarTableWrap");
@@ -4119,6 +4206,78 @@ function jumpToday(){const actualMonth=localDateKey().slice(0,7);if(currentMonth
 
 const SHARED_BOOKING_CONFIG_KEY="pppSharedBooking_v1";
 let sharedBookingRequests=[];
+function getAcceptedBookingRequests(){
+  const acceptedFromServer=(sharedBookingRequests||[]).filter(r=>String(r.status||"").toLowerCase()==="accepted");
+  const ids=new Set(acceptedFromServer.map(r=>r.id));
+  const localOnly=(state.acceptedBookings||[]).filter(r=>r.id&&!ids.has(r.id));
+  return [...acceptedFromServer,...localOnly];
+}
+function addAcceptedBookingRequest(request){
+  if(!request||!request.id) return;
+  const existing=(state.acceptedBookings||[]).some(r=>String(r.id)===String(request.id));
+  if(existing) return;
+  state.acceptedBookings=[...(state.acceptedBookings||[]), request];
+  save();
+}
+function acceptedBookingDateKey(r){
+  const raw=bookingDateValue(r);
+  if(!raw) return null;
+  return normalizeExternalBookingDate(raw);
+}
+function cleanExpiredAcceptedBookings(){
+  if(!Array.isArray(state.acceptedBookings)||!state.acceptedBookings.length) return;
+  const today=localDateKey();
+  const kept=state.acceptedBookings.filter(r=>{
+    const key=acceptedBookingDateKey(r);
+    if(!key) return true;
+    return key>=today;
+  });
+  if(kept.length!==state.acceptedBookings.length){
+    state.acceptedBookings=kept;
+    save();
+  }
+}
+function renderBookingsPanel(){
+  const host=document.getElementById("bookingPanelList");
+  if(!host) return;
+  if(!sharedBookingConfig().url){
+    host.innerHTML='<div class="planner-empty">Connect the booking service in Settings, then refresh.</div>';
+    return;
+  }
+  const all=getAcceptedBookingRequests();
+  if(!all.length){
+    host.innerHTML='<div class="planner-empty">No booked tasks yet. Accept a request from the booking requests modal.</div>';
+    return;
+  }
+  host.innerHTML=`<div class="booking-table-wrap"><table class="booking-table"><thead><tr>
+      <th>Request</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Duration</th>
+      <th>Timezone</th>
+      <th>Note</th>
+    </tr></thead><tbody>` + all.map(r=>{
+    const rawDate=bookingDateValue(r);
+    const rawTime=bookingTimeValue(r);
+    const timeLabel=r.displayTime||bookingTimeDisplay(rawTime);
+    const dateLabel=bookingDateDisplay(rawDate);
+    const timezone=r.timezone||r.userTimezone||"Local timezone";
+    const duration=r.duration?`${r.duration} min`:"";
+    return `
+      <tr class="booking-row accepted">
+        <td>${escapeHtml(requestTitleForPlanner(r))}</td>
+        <td>${escapeHtml(r.name||"Unknown")}</td>
+        <td>${escapeHtml(r.type||"Booking")}</td>
+        <td>${escapeHtml(dateLabel||"")}</td>
+        <td>${escapeHtml(timeLabel||"")}</td>
+        <td>${escapeHtml(duration)}</td>
+        <td>${escapeHtml(timezone)}</td>
+        <td>${escapeHtml(r.note||"")}</td>
+      </tr>`;
+  }).join("") + `</tbody></table></div>`;
+}
 function loadSharedBookingConfig(){
   try{return {...{url:"",adminKey:""},...(JSON.parse(localStorage.getItem(SHARED_BOOKING_CONFIG_KEY)||"null")||{})}}catch(e){return {url:"",adminKey:""}}
 }
@@ -4144,22 +4303,54 @@ function bookingJsonp(action,params={},onDone=()=>{}){
   const callback=`pppBooking_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
   const script=document.createElement("script");
   const cleanup=()=>{try{delete window[callback]}catch(e){window[callback]=undefined}script.remove()};
-  const timeout=setTimeout(()=>{cleanup();showToast("Booking service did not respond");onDone(null)},12000);
-  window[callback]=data=>{clearTimeout(timeout);cleanup();if(data?.ok===false){showToast(data.error||"Booking request failed");onDone(null);return}onDone(data)};
+  const timeout=setTimeout(()=>{cleanup();showToast("Booking service did not respond");console.log("bookingJsonp timeout", {action, params, url: cfg.url});onDone(null)},12000);
+  window[callback]=data=>{clearTimeout(timeout);cleanup();
+    console.log("bookingJsonp response", {action, params, data});
+    if(data?.ok===false){showToast(data.error||"Booking request failed");onDone(null);return}
+    onDone(data)
+  };
   const qs=new URLSearchParams({action,key:cfg.adminKey,callback,_:Date.now(),...params});
-  script.src=`${cfg.url}${cfg.url.includes("?")?"&":"?"}${qs.toString()}`;
-  script.onerror=()=>{clearTimeout(timeout);cleanup();showToast("Could not reach booking service");onDone(null)};
+  const src=`${cfg.url}${cfg.url.includes("?")?"&":"?"}${qs.toString()}`;
+  console.log("bookingJsonp request", {action, params, src});
+  script.src=src;
+  script.onerror=()=>{clearTimeout(timeout);cleanup();showToast("Could not reach booking service");console.log("bookingJsonp error", {action, params, src});onDone(null)};
   document.head.appendChild(script);
 }
 
 function normalizeExternalBookingTime(raw){
-  const normalized=normalizeSmartTime(String(raw||''));
-  return normalized&&normalized!==null?normalized:"";
+  if(raw==null) return "";
+  const normalized=normalizeSmartTime(raw);
+  if(normalized) return normalized;
+  const str=String(raw||"");
+  const match=str.match(/([01]?\d|2[0-3]):([0-5]\d)/);
+  return match?`${smartTimePad(Number(match[1]))}:${smartTimePad(Number(match[2]))}`:"";
+}
+function normalizeExternalBookingDate(raw){
+  if(raw==null) return localDateKey();
+  const str=String(raw||"").trim();
+  const isoMatch=str.match(/^(\d{4}-\d{2}-\d{2})/);
+  if(isoMatch) return isoMatch[1];
+  const date=new Date(str);
+  if(!isNaN(date.getTime())) return localDateKey(date);
+  return localDateKey();
+}
+function bookingDateValue(r){
+  return r.date||r.startDate||r.start_date||r.dateTime||r.datetime||r.start||r.createdAt||r.eventDate||r.event_date||r.when||r.scheduledAt||r.scheduled_at||r.timestamp;
+}
+function bookingTimeValue(r){
+  return r.time||r.startTime||r.start_time||r.dateTime||r.datetime||r.when||r.scheduledTime||r.scheduled_time||r.timeOfDay||"";
 }
 function bookingTimeDisplay(raw){
-  const v=normalizeExternalBookingTime(raw);if(!v)return "";
-  const mins=parseTime(v),h=Math.floor(mins/60),m=mins%60,ampm=h>=12?"PM":"AM";
-  return `${h%12||12}:${String(m).padStart(2,"0")} ${ampm} • ${v}`;
+  if(!raw) return "";
+  const date=new Date(raw);
+  if(isNaN(date)) return String(raw);
+  return new Intl.DateTimeFormat(navigator.language||"en-US",{hour:"2-digit",minute:"2-digit",hour12:false}).format(date);
+}
+function bookingDateDisplay(raw){
+  if(!raw) return "";
+  const date=new Date(raw);
+  if(isNaN(date)) return String(raw);
+  return new Intl.DateTimeFormat(navigator.language||"en-US",{weekday:"short",month:"short",day:"numeric",year:"numeric"}).format(date);
 }
 
 function requestTitleForPlanner(r){
@@ -4167,15 +4358,21 @@ function requestTitleForPlanner(r){
   return what||`${type}${name?` with ${name}`:""}`;
 }
 function syncAcceptedBookingRequests(items){
-  const accepted=(items||[]).filter(r=>String(r.status).toLowerCase()==="accepted"&&r.id&&r.date);
-  let changed=false;
-  accepted.forEach(r=>{
-    if(plannerStore().some(x=>x.externalBookingId===r.id))return;
-    const duration=clamp(Number(r.duration)||30,5,720),time=normalizeExternalBookingTime(r.time),endTime=time?minutesToClock((parseTime(time)||0)+duration):"";
-    const task={id:`ext_${r.id}`,externalBookingId:r.id,title:requestTitleForPlanner(r),startDate:String(r.date),type:time?"appointment":"task",time,endTime,duration,section:"auto",priority:"normal",repeat:"none",order:Date.now(),completedDates:[],statusDates:{},externalBooking:true,requester:r.name||"",note:r.note||""};
-    task.section=plannerSectionFor(task);plannerStore().push(task);changed=true;
+  const accepted=(items||[]).filter(r=>{
+    const status=String(r.status||"").toLowerCase();
+    const dateValue=bookingDateValue(r);
+    if(status!=="accepted"||!r.id||!dateValue){
+      if(status==="accepted"&&r.id){
+        console.log("syncAcceptedBookingRequests skipped request", {id:r.id, status, dateValue, request:r});
+      }
+      return false;
+    }
+    return true;
   });
-  if(changed){save();renderPlanner();renderRoutine();renderSmartNow()}
+  accepted.forEach(r=>{
+    addAcceptedBookingRequest({...r, status:"accepted"});
+  });
+  renderBookingsPanel();
 }
 function renderBookingRequests(){
   const host=document.getElementById("bookingRequestList");if(!host)return;
@@ -4187,57 +4384,54 @@ function renderBookingRequests(){
     return;
   }
 
-  const source=pending.length?pending:all.slice(0,10);
+  const source=pending;
 
   if(!source.length){
     host.innerHTML='<div class="planner-empty">No booking requests yet.</div>';
     return;
   }
 
-  host.innerHTML=source.map(r=>{
+  host.innerHTML=`<div class="booking-table-wrap"><table class="booking-table"><thead><tr>
+      <th>Request</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Duration</th>
+      <th>Timezone</th>
+      <th>Actions</th>
+    </tr></thead><tbody>` + source.map(r=>{
     const status=String(r.status||"pending").toLowerCase();
-    const timeLabel=bookingTimeDisplay(r.time);
+    const rawDate=bookingDateValue(r);
+    const rawTime=bookingTimeValue(r);
+    const timeLabel=r.displayTime||bookingTimeDisplay(rawTime);
+    const dateLabel=bookingDateDisplay(rawDate);
     const timezone=r.timezone||r.userTimezone||"Local timezone";
     const duration=r.duration?`${r.duration} min`:"";
 
     return `
-    <div class="booking-request ${status}">
-      <div class="booking-request-main">
-        <div class="booking-request-title">
-          <strong>📅 ${escapeHtml(requestTitleForPlanner(r))}</strong>
-          <span class="booking-status ${status}">${escapeHtml(status)}</span>
-        </div>
-
-        <div class="booking-request-grid">
-          <div>👤 <b>Name</b><br>${escapeHtml(r.name||"Unknown")}</div>
-          <div>📌 <b>Type</b><br>${escapeHtml(r.type||"Request")}</div>
-          <div>📅 <b>Date</b><br>${escapeHtml(r.date||"")}</div>
-          <div>⏰ <b>Time</b><br>${escapeHtml(timeLabel||"")}</div>
-          <div>🌍 <b>Timezone</b><br>${escapeHtml(timezone)}</div>
-          <div>⏱ <b>Duration</b><br>${escapeHtml(duration)}</div>
-        </div>
-
-        ${r.note?`<div class="booking-request-note">📝 ${escapeHtml(r.note)}</div>`:""}
-
-        ${status==="accepted"?`
-          <div class="booking-sync-note">
-          ✅ Added to My Day / Planner automatically
-          </div>`:""}
-      </div>
-
-      <div class="booking-request-actions">
-        <button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">✓ Accept</button>
-        <button class="btn danger" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">✕ Delete / Decline</button>
-      </div>
-    </div>`;
-  }).join("");
+      <tr class="booking-row ${status}">
+        <td>${escapeHtml(requestTitleForPlanner(r))}</td>
+        <td>${escapeHtml(r.name||"Unknown")}</td>
+        <td>${escapeHtml(r.type||"Request")}</td>
+        <td>${escapeHtml(dateLabel||"")}</td>
+        <td>${escapeHtml(timeLabel||"")}</td>
+        <td>${escapeHtml(duration)}</td>
+        <td>${escapeHtml(timezone)}</td>
+        <td class="booking-row-actions">
+          <button class="btn green" data-booking-action="accept" data-booking-id="${escapeHtml(r.id)}">Accept</button>
+          <button class="btn danger" data-booking-action="decline" data-booking-id="${escapeHtml(r.id)}">Decline</button>
+        </td>
+      </tr>
+      ${r.note?`<tr class="booking-note-row"><td colspan="8" class="booking-note">📝 ${escapeHtml(r.note)}</td></tr>`:""}`;
+  }).join("") + `</tbody></table></div>`;
 }
 function refreshBookingRequests(silent=false){
   if(!silent)setText("bookingRequestList","Loading requests…");
   bookingJsonp("list",{},data=>{
-    if(!data){renderBookingRequests();return}
+    if(!data){renderBookingRequests();renderBookingsPanel();return}
     sharedBookingRequests=Array.isArray(data.requests)?data.requests:[];
-    syncAcceptedBookingRequests(sharedBookingRequests);renderBookingRequests();
+    renderBookingRequests();renderBookingsPanel();
     if(!silent){
       const pending=sharedBookingRequests.filter(r=>String(r.status).toLowerCase()==="pending").length;
       showToast(pending?`${pending} pending booking request${pending===1?"":"s"}`:"No pending booking requests");
@@ -4245,11 +4439,46 @@ function refreshBookingRequests(silent=false){
   });
 }
 function updateBookingRequest(id,action){
+  let restoredRequest=null;
+  let restoreIndex=0;
+  if(sharedBookingRequests){
+    const idx=sharedBookingRequests.findIndex(r=>String(r.id)===String(id));
+    if(idx>=0){
+      restoredRequest=sharedBookingRequests.splice(idx,1)[0];
+      restoreIndex=idx;
+      renderBookingRequests();
+    }
+  }
+
   bookingJsonp(action,{id},data=>{
-    if(!data)return;
-    showToast(action==="accept"?"Accepted → Google Calendar + My Day Planner":"Request declined/deleted");
+    if(!data){
+      if(restoredRequest){
+        sharedBookingRequests.splice(Math.min(restoreIndex, sharedBookingRequests.length),0,restoredRequest);
+        renderBookingRequests();
+      }
+      return;
+    }
+    if(action==="accept"){
+      const acceptedRequest={...restoredRequest,...(data.request||{}), id:restoredRequest?.id||data?.request?.id||id, status:"accepted"};
+      console.log("accept response data", {id, data, restoredRequest, acceptedRequest});
+      if(acceptedRequest && acceptedRequest.id){
+        addAcceptedBookingRequest(acceptedRequest);
+      }
+      if(!acceptedRequest || !acceptedRequest.id){
+        showToast("Could not sync accepted booking");
+      }
+    }
+    showToast(action==="accept"?"Accepted booking stored in Bookings":"Request declined/deleted");
+    if(action==="accept"){
+      hideModal("bookingRequestsModal");
+      showTab("bookings");
+    }
     refreshBookingRequests(true);
   });
+}
+function acceptRequest(id){
+  if(!id) return;
+  updateBookingRequest(id, "accept");
 }
 function openBookingRequests(){closeMoreMenu();renderSharedBookingConnection();renderBookingRequests();showModal("bookingRequestsModal");if(sharedBookingConfig().url&&sharedBookingConfig().adminKey)refreshBookingRequests(true)}
 function copyPublicBookingLink(){
