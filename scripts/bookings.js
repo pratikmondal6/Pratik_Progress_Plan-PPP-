@@ -25,10 +25,11 @@ function bookingDateValue(request){return String(request.ownerDate||request.date
 function bookingTimeValue(request){
   const raw=String(request.ownerTime||request.time||request.startTime||request.start_time||"").trim(),match=raw.match(/(?:^|T)([01]?\d|2[0-3]):([0-5]\d)/);return match?`${String(Number(match[1])).padStart(2,"0")}:${match[2]}`:"";
 }
-function bookingVisitorTimeLabel(request){if(!request.time)return "";return `${bookingTimeLabel(String(request.time))} · ${request.timezone||"visitor timezone"}`}
+function bookingRawTimeValue(value){const match=String(value||"").match(/(?:^|T)([01]?\d|2[0-3]):([0-5]\d)/);return match?`${String(Number(match[1])).padStart(2,"0")}:${match[2]}`:""}
+function bookingVisitorTimeLabel(request){const value=bookingRawTimeValue(request.time);return value?`${bookingTimeLabel(value)} · ${request.timezone||"visitor timezone"}`:`Time unavailable · ${request.timezone||"visitor timezone"}`}
 function bookingTitle(request){return String(request.what||request.title||request.type||"Appointment").trim()}
 function bookingDateLabel(value){if(!/^\d{4}-\d{2}-\d{2}$/.test(value))return value||"No date";return dateFromKey(value).toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"short",year:"numeric"})}
-function bookingTimeLabel(value){if(!value)return "No time";const [hours,minutes]=value.split(":").map(Number);return new Date(2000,0,1,hours,minutes).toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"})}
+function bookingTimeLabel(value){const normalized=bookingRawTimeValue(value);if(!normalized)return "No time";const [hours,minutes]=normalized.split(":").map(Number);return new Date(2000,0,1,hours,minutes).toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"})}
 function acceptedBookings(){return Array.isArray(state.acceptedBookings)?state.acceptedBookings:[]}
 function syncBookingToPlanner(request){
   const date=bookingDateValue(request),time=bookingTimeValue(request),start=parseTime(time),duration=clamp(Number(request.duration)||30,15,240);if(!date||start==null)return false;
