@@ -12,6 +12,12 @@ WEBSITE
 - Full monthly habit, study and sleep tracking
 - Points, streaks, achievements and smart local insights
 - Digital Activity dashboard
+- Private diary for thoughts, tasks, plans and summaries, with optional seven-day deletion
+- Local smart diary analysis that extracts planner updates without uploading writing
+- Unified ten-goal model across the 21-day plan, life routine, diary, calendar, graphs and monthly review
+- Automatic wake-based day planner that limits learning work and protects ordinary human life
+- Diary-extracted future commitments that block time in the selected day's schedule
+- Diary-extracted wake and bedtime preferences, including migration of existing entries
 - Laptop calendar column-overlap fix
 - Only Date remains pinned
 - Start of Table button
@@ -48,3 +54,10 @@ DATA SAFETY
   are unchanged.
 - Activity data remains in chrome.storage.local.
 - Export backups regularly.
+
+PROJECT STRUCTURE
+- index.html: minimal document entry point and component mount points
+- components/: separate layout, page-section and overlay HTML partials
+- styles/main.css: design system, layouts, responsive and print styles
+- scripts/: state, analytics, dashboard, routine, activity, UI and bootstrap layers
+- ARCHITECTURE.md: module responsibilities and dependency order
