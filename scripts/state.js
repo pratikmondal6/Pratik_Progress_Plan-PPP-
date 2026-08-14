@@ -65,12 +65,13 @@ function sleepCalc(d){
   return {hours,status,timingScore:(durationScore*.65+timingScore*.35)};
 }
 function goalTarget(key){return Number(state.settings.goalTargets?.[key]||GOAL_MAP[key]?.target||30)}
-function maxPoints(){return GOALS.reduce((total,goal)=>total+Number(state.weights[goal.key]||0),0)}
+function activeGoals(){const keys=Array.isArray(state.settings.activeGoalKeys)?state.settings.activeGoalKeys:GOAL_KEYS;const goals=GOALS.filter(goal=>keys.includes(goal.key));return goals.length?goals:[GOALS[0]]}
+function maxPoints(){return activeGoals().reduce((total,goal)=>total+Number(state.weights[goal.key]||0),0)}
 function calcMonth(key=currentMonth){
   const days=ensureMonth(key);let streak=0,best=0;
   return days.map((d,i)=>{
-    const points=GOALS.reduce((total,goal)=>total+Math.min((Number(d[goal.key])||0)/goalTarget(goal.key),1)*Number(state.weights[goal.key]||0),0);
-    const logged=GOALS.some(goal=>Number(d[goal.key])>0);
+    const points=activeGoals().reduce((total,goal)=>total+Math.min((Number(d[goal.key])||0)/goalTarget(goal.key),1)*Number(state.weights[goal.key]||0),0);
+    const logged=activeGoals().some(goal=>Number(d[goal.key])>0);
     const completion=maxPoints()?points/maxPoints():0;
     const mission=logged&&completion>=state.settings.missionThreshold/100;
     streak=mission?streak+1:0;best=Math.max(best,streak);
@@ -79,6 +80,7 @@ function calcMonth(key=currentMonth){
   });
 }
 function currentData(){return calcMonth()}
+function rollingData(days=90){const now=new Date(),cutoff=new Date(now);cutoff.setDate(cutoff.getDate()-days+1);cutoff.setHours(0,0,0,0);return Object.keys(state.months).sort().flatMap(key=>calcMonth(key).map((day,index)=>({...day,date:dayDate(index,key),dateKey:localDateKey(dayDate(index,key))}))).filter(day=>day.date>=cutoff&&day.date<=now)}
 function recentLogged(data,n=7){return data.filter(x=>x.logged).slice(-n)}
 function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
 function rewardLevel(points){

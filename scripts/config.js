@@ -35,7 +35,7 @@ const DEFAULT_LIBRARY_BOOKS=[
 ];
 const DEFAULTS={
   profile:{name:"Pratik",theme:"dark",celebrations:true,coach:true,monthlyTarget:1000,routineMode:"balanced"},
-  settings:{targetSleep:8,shortBelow:7,longAbove:9,preferredSleep:"23:00",preferredWake:"07:00",tolerance:90,missionThreshold:65,goalTargets:Object.fromEntries(GOALS.map(goal=>[goal.key,goal.target]))},
+  settings:{targetSleep:8,shortBelow:7,longAbove:9,preferredSleep:"23:00",preferredWake:"07:00",tolerance:90,missionThreshold:65,activeGoalKeys:GOALS.map(goal=>goal.key),goalTargets:Object.fromEntries(GOALS.map(goal=>[goal.key,goal.target]))},
   weights:Object.fromEntries(GOALS.map(goal=>[goal.key,goal.weight])),
   months:{},
   library:{books:DEFAULT_LIBRARY_BOOKS,progress:{},filter:"all"},

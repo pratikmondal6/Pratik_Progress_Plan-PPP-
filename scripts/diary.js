@@ -1,5 +1,7 @@
 const DIARY_KEY="pppDiary_v1";
 const DIARY_RETENTION_MS=7*24*60*60*1000;
+const DIARY_AI_REVIEW_KEY="pppDiaryGeminiReviews_v1";
+const CONSISTENCY_LOG_KEY="pppConsistencyCheckins_v1";
 const DIARY_TYPES={
   thought:{label:"Thought",icon:"💭"},
   task:{label:"Task or plan",icon:"✅"},
@@ -9,6 +11,7 @@ const DIARY_TYPES={
 };
 let diaryEntries=[];
 let pendingDiaryImage=null;
+let diaryReviewMode="local";
 
 function normalizeDiaryImage(image){
   if(!image||typeof image!=="object"||!/^data:image\/(?:jpeg|png|webp|gif);base64,/i.test(image.dataUrl||""))return null;
@@ -25,6 +28,7 @@ function loadDiaryEntries(){
       type:DIARY_TYPES[entry.type]?entry.type:"note",
       createdAt:Number(entry.createdAt),
       autoDelete:entry.autoDelete===true,
+      excludeAI:entry.excludeAI===true,
       image:normalizeDiaryImage(entry.image),
       analysis:normalizeDiaryAnalysis(entry.analysis)
     })):[];
@@ -81,6 +85,9 @@ function normalizeDiaryAnalysis(analysis){
     summary:String(analysis.summary||"No planner-relevant information detected."),
     actions:Array.isArray(analysis.actions)?analysis.actions.map(action=>({field:String(action.field||""),value:action.value,label:String(action.label||"")})).filter(action=>action.field):[],
     synced:Array.isArray(analysis.synced)?analysis.synced.map(String):[],
+    ai:analysis.ai===true,
+    insights:Array.isArray(analysis.insights)?analysis.insights.map(String).slice(0,4):[],
+    suggestions:Array.isArray(analysis.suggestions)?analysis.suggestions.map(String).slice(0,4):[],
     analyzedAt:Number(analysis.analyzedAt)||Date.now()
   };
 }
@@ -197,25 +204,29 @@ function syncDiaryAnalysis(entry){
   save();
 }
 
-function addDiaryEntry(){
+function persistDiaryEntry(analysis){
   const text=document.getElementById("diaryText").value.trim();
   const title=document.getElementById("diaryTitle").value.trim();
   const type=document.getElementById("diaryType").value;
   const autoDelete=document.getElementById("diaryAutoDelete").checked;
+  const excludeAI=document.getElementById("diaryExcludeAI").checked;
   if(!text&&!pendingDiaryImage){showToast("Write something or attach an image before saving");document.getElementById("diaryText").focus();return}
   const createdAt=Date.now();
-  const entry={id:diaryId(),title,text,type:DIARY_TYPES[type]?type:"note",createdAt,autoDelete,image:pendingDiaryImage,analysis:analyzeDiaryEntry(text,title,type,createdAt)};
+  const entry={id:diaryId(),title,text,type:DIARY_TYPES[type]?type:"note",createdAt,autoDelete,excludeAI,image:pendingDiaryImage,analysis:analysis||analyzeDiaryEntry(text,title,type,createdAt)};
   syncDiaryAnalysis(entry);
   diaryEntries.unshift(entry);
   if(!saveDiaryEntries()){diaryEntries.shift();return}
   document.getElementById("diaryTitle").value="";
   document.getElementById("diaryText").value="";
   document.getElementById("diaryAutoDelete").checked=false;
+  document.getElementById("diaryExcludeAI").checked=false;
   clearPendingDiaryImage();
   updateDiaryCharacterCount();
   renderDiary();
   showToast(entry.analysis.synced.length?`Diary saved · ${entry.analysis.synced.length} planner update${entry.analysis.synced.length===1?"":"s"}`:"Diary entry saved");
 }
+
+function addDiaryEntry(){persistDiaryEntry(null)}
 
 function deleteDiaryEntry(id){
   if(!confirm("Delete this diary entry?"))return;
@@ -291,6 +302,28 @@ function buildDiaryDailyReview(){
 function diaryReviewList(title,icon,items,emptyText,kind=""){
   return `<div class="diary-review-group ${kind}"><div class="diary-review-group-title"><span>${icon}</span><strong>${title}</strong><em>${items.length}</em></div>${items.length?`<ul>${items.map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ul>`:`<p>${emptyText}</p>`}</div>`;
 }
+function loadConsistencyCheckins(){try{const value=JSON.parse(localStorage.getItem(CONSISTENCY_LOG_KEY)||"[]");return Array.isArray(value)?value:[]}catch(e){return []}}
+function renderConsistencyWeek(){
+  const host=document.getElementById("consistencyWeekSummary");if(!host)return;const days=rollingData(7),logged=days.filter(day=>day.logged),missions=logged.filter(day=>day.mission),completion=logged.length?avg(logged.map(day=>day.completion)):0,sleep=days.filter(day=>day.sleepHours!=null),sleepAverage=sleep.length?avg(sleep.map(day=>day.sleepHours)):null,today=localDateKey(new Date()),commitments=loadCommitments().filter(item=>item.date>=days[0]?.dateKey&&item.date<=today),recentDiary=diaryEntries.filter(entry=>entry.createdAt>=Date.now()-7*86400000),review={completed:[],negative:[],plans:[]};
+  recentDiary.forEach(entry=>diarySentences(`${entry.title?entry.title+". ":""}${entry.text}`).forEach(sentence=>{const state=diarySentenceState(sentence);if(state==="positive")review.completed.push(sentence);else if(state==="negative")review.negative.push(sentence);else if(state==="plan")review.plans.push(sentence)}));
+  const scores=habitScores(days).sort((a,b)=>a[1]-b[1]),weak=scores[0],strong=scores[scores.length-1],missed=Math.max(0,logged.length-missions.length),guidance=[];
+  if(!logged.length)guidance.push("Start with one active goal for five minutes today. Recording a small action is the first coaching signal.");else if(missed>=2)guidance.push("The current plan is too difficult for this week. Protect one minimum habit and rebuild before increasing targets.");else guidance.push("Keep the same minimum for another week. Increase it only when starting feels reliable.");
+  if(weak&&weak[1]<.5)guidance.push(`${weak[0]} needs a smaller starting action and a fixed cue.`);if(sleepAverage!=null&&sleepAverage<state.settings.shortBelow)guidance.push("Low sleep is reducing focus capacity; protect bedtime before adding more work.");if(review.negative.length)guidance.push(`Diary friction detected: ${review.negative[0]}`);if(!recentDiary.length)guidance.push("Diary context is empty. The coach can measure completion, but private experiences and urges must be written in the diary to be understood.");
+  host.innerHTML=`<div class="consistency-week"><div><strong>${Math.round(completion*100)}%</strong><span>7-day completion</span></div><div><strong>${missions.length}</strong><span>mission days</span></div><div><strong>${commitments.length}</strong><span>calendar commitments</span></div><div><strong>${sleepAverage==null?"—":sleepAverage.toFixed(1)+"h"}</strong><span>average sleep</span></div></div><div class="diary-review-grid">${diaryReviewList("Strongest active habit","✓",strong?[`${strong[0]} · ${Math.round(strong[1]*100)}%`]:[],"No habit data yet.","positive")}${diaryReviewList("Needs a smaller step","→",weak?[`${weak[0]} · ${Math.round(weak[1]*100)}%`]:[],"No habit data yet.")}${diaryReviewList("Diary progress","🏆",uniqueDiaryItems(review.completed,3),"No completed action mentioned.","positive")}${diaryReviewList("Diary friction","!",uniqueDiaryItems(review.negative,3),"No negative pattern mentioned.","negative")}${diaryReviewList("Upcoming intentions","📌",uniqueDiaryItems(review.plans,3),"No upcoming plan mentioned.")}</div><div class="diary-tomorrow"><div class="diary-tomorrow-head"><span>↻</span><div><strong>Automatic recovery plan</strong><p>Small adjustments from your combined data</p></div></div><ol>${uniqueDiaryItems(guidance,5).map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ol></div>`
+}
+function loadDiaryGeminiReviews(){try{return JSON.parse(localStorage.getItem(DIARY_AI_REVIEW_KEY)||"{}")||{}}catch(e){return {}}}
+function diaryGeminiEntries(scope){const now=Date.now(),start=scope==="day"?new Date().setHours(0,0,0,0):scope==="week"?now-7*86400000:0;return diaryEntries.filter(entry=>entry.createdAt>=start&&!entry.excludeAI).slice().reverse()}
+function renderGeminiReview(scope,analysis,count){
+  const container=document.getElementById("diaryReviewContent"),list=(title,icon,items,kind="")=>diaryReviewList(title,icon,Array.isArray(items)?items:[],"Nothing confidently identified.",kind);
+  container.innerHTML=`<div class="diary-outcome"><div><span class="diary-outcome-label">Gemini ${escapeHtml(scope)} review · ${count} entries</span><h4>${escapeHtml(analysis.overview||"Diary review")}</h4><p>${escapeHtml(analysis.summary||"")}</p></div></div><div class="diary-review-grid">${list("Goals","🎯",analysis.goals)}${list("Achievements","🏆",analysis.achievements,"positive")}${list("Lifestyle","🌿",analysis.lifestyle)}${list("Positive patterns","＋",analysis.positives,"positive")}${list("Negative effects","−",analysis.negatives,"negative")}${list("Problems / obstacles","!",analysis.obstacles,"negative")}${list("Habit and addiction patterns","🔁",analysis.habitPatterns)}${list("Triggers","⚡",analysis.triggers,"negative")}${list("Lessons and patterns","💡",analysis.patterns)}</div><div class="diary-tomorrow"><div class="diary-tomorrow-head"><span>🌅</span><div><strong>Supportive next steps</strong><p>Practical, non-judgmental actions based on your diary</p></div></div><ol>${(analysis.nextSteps||[]).map(item=>`<li>${escapeHtml(item)}</li>`).join("")}</ol></div>${analysis.supportNote?`<p class="diary-hint">${escapeHtml(analysis.supportNote)}</p>`:""}`;
+}
+async function requestGeminiDiaryReview(scope){
+  const entries=diaryGeminiEntries(scope);if(!entries.length){showToast(`No diary entries found for this ${scope}`);return}const config=sharedBookingConfig();if(!config.url||!config.adminKey){showToast("Connect the Apps Script service in Settings first");return}
+  if(!document.getElementById("geminiReviewConsent").checked){showToast("Confirm the Gemini privacy notice first");return}
+  let text=entries.map(entry=>`[${diaryDate(entry.createdAt)}] ${entry.type}${entry.title?` — ${entry.title}`:""}\n${entry.text}`).join("\n\n"),truncated=false;if(text.length>50000){text=text.slice(-50000);truncated=true}
+  const buttons=[...document.querySelectorAll("[data-gemini-review]")];buttons.forEach(button=>button.disabled=true);document.getElementById("diaryReviewContent").innerHTML='<div class="diary-review-empty"><span>✦</span><strong>Gemini is reviewing your diary…</strong><p>Looking for goals, achievements, positive and negative patterns, obstacles, and next steps.</p></div>';
+  try{const data=await bookingPost("analyzeDiary",{scope,text});const reviews=loadDiaryGeminiReviews();reviews[scope]={analysis:data.analysis,count:entries.length,createdAt:Date.now(),truncated};reviews.latestScope=scope;localStorage.setItem(DIARY_AI_REVIEW_KEY,JSON.stringify(reviews));diaryReviewMode=scope;renderGeminiReview(scope,data.analysis,entries.length);showToast(`Gemini ${scope} review ready${truncated?" · latest history used":""}`)}catch(error){diaryReviewMode="local";renderDiaryDailyReview();showToast(error?.message||"Gemini review failed")}finally{buttons.forEach(button=>button.disabled=false)}
+}
 function renderDiaryDailyReview(){
   const container=document.getElementById("diaryReviewContent");if(!container)return;const review=buildDiaryDailyReview();
   if(!review.entries.length){container.innerHTML=`<div class="diary-review-empty"><span>☀️</span><strong>Your review will appear here</strong><p>Write about what happened, what you finished, what felt difficult, and what you want to do next.</p></div>`;return}
@@ -310,7 +343,7 @@ function renderDiary(){
   });
   setText("diaryEntryCount",diaryEntries.length);
   setText("diaryWordCount",diaryWordTotal(diaryEntries).toLocaleString());
-  renderDiaryDailyReview();
+  const savedReviews=loadDiaryGeminiReviews(),savedReview=savedReviews[diaryReviewMode];if(diaryReviewMode!=="local"&&savedReview)renderGeminiReview(diaryReviewMode,savedReview.analysis,savedReview.count);else renderDiaryDailyReview();
   if(!visible.length){
     container.innerHTML=`<div class="box glass diary-empty"><div>📓</div><strong>${diaryEntries.length?"No matching entries":"Your diary is ready"}</strong><p>${diaryEntries.length?"Try another search or filter.":"Write your first thought, plan, task, or daily summary above."}</p></div>`;
     return;
@@ -326,8 +359,10 @@ function renderDiary(){
       ${diaryImageMarkup(entry)}
       ${entry.text?`<p>${escapeHtml(entry.text).replace(/\n/g,"<br>")}</p>`:""}
       ${entry.analysis?`<div class="diary-analysis ${entry.analysis.sentiment}">
-        <div class="diary-analysis-head"><strong>✦ Smart diary analysis</strong><span>${escapeHtml(entry.analysis.sentiment)}</span></div>
+        <div class="diary-analysis-head"><strong>✦ ${entry.analysis.ai?"Gemini AI":"Smart diary"} analysis</strong><span>${escapeHtml(entry.analysis.sentiment)}</span></div>
         <p>${escapeHtml(entry.analysis.summary)}</p>
+        ${entry.analysis.insights?.length?`<div class="diary-analysis-signals">${entry.analysis.insights.map(item=>`<span>${escapeHtml(item)}</span>`).join("")}</div>`:""}
+        ${entry.analysis.suggestions?.length?`<p><strong>Next:</strong> ${escapeHtml(entry.analysis.suggestions.join(" · "))}</p>`:""}
         ${entry.analysis.actions.length?`<div class="diary-analysis-signals">${entry.analysis.actions.map(action=>`<span>${escapeHtml(action.label)}</span>`).join("")}</div>`:""}
         <div class="diary-sync-result">${entry.analysis.synced.length?`✓ Synced to ${escapeHtml(diaryDate(entry.createdAt).split(",")[0])}'s planner: ${escapeHtml(entry.analysis.synced.join(" · "))}`:"No planner fields changed."}</div>
       </div>`:""}
@@ -343,15 +378,18 @@ function updateDiaryCharacterCount(){
 
 function initDiary(){
   loadDiaryEntries();
+  const reviews=loadDiaryGeminiReviews();if(reviews.latestScope&&reviews[reviews.latestScope])diaryReviewMode=reviews.latestScope;
   updateDiaryCurrentDateTime();
   document.getElementById("saveDiaryEntry").onclick=addDiaryEntry;
   document.getElementById("clearDiaryEntries").onclick=clearDiaryEntries;
+  document.getElementById("refreshConsistencyCoach").onclick=()=>{renderConsistencyWeek();showToast("Consistency coaching refreshed")};
   document.getElementById("diaryText").addEventListener("input",updateDiaryCharacterCount);
   document.getElementById("diaryText").addEventListener("keydown",event=>{if(event.ctrlKey&&event.key==="Enter")addDiaryEntry()});
   document.getElementById("diaryImageButton").onclick=()=>document.getElementById("diaryImageInput").click();
   document.getElementById("diaryImageInput").onchange=event=>selectDiaryImage(event.target.files?.[0]);
   document.getElementById("diaryImageRemove").onclick=clearPendingDiaryImage;
-  document.getElementById("refreshDiaryReview").onclick=()=>{renderDiaryDailyReview();showToast("Today’s private review refreshed")};
+  document.getElementById("refreshDiaryReview").onclick=()=>{diaryReviewMode="local";renderDiaryDailyReview();showToast("Today’s private review refreshed")};
+  document.querySelectorAll("[data-gemini-review]").forEach(button=>button.onclick=()=>requestGeminiDiaryReview(button.dataset.geminiReview));
   document.getElementById("diarySearch").addEventListener("input",renderDiary);
   document.getElementById("diaryFilter").addEventListener("change",renderDiary);
   document.getElementById("diaryEntries").addEventListener("click",event=>{
@@ -359,6 +397,7 @@ function initDiary(){
     if(button)deleteDiaryEntry(button.dataset.diaryDelete);
   });
   renderDiary();
+  renderConsistencyWeek();
   setInterval(updateDiaryCurrentDateTime,1000);
   setInterval(renderDiary,60000);
 }

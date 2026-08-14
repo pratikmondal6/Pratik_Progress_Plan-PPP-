@@ -15,6 +15,7 @@ function attachEvents(){
     const wrap=document.getElementById("calendarTableWrap");
     if(wrap)wrap.scrollTo({left:0,behavior:"smooth"});
   };
+  document.getElementById("applyCoachMinimum").onclick=applyHabitCoachMinimum;document.getElementById("openCoachDiary").onclick=()=>showTab("diary");
   document.getElementById("jumpTodayBtn").onclick=jumpToday;
   document.getElementById("timerStart").onclick=()=>{if(startTimer())showToast("Focus timer started")};document.getElementById("timerPause").onclick=pauseTimer;document.getElementById("timerFinish").onclick=()=>finishAndSaveTimer(false);document.getElementById("timerReset").onclick=resetTimer;
   document.getElementById("musicPlayPause").onclick=toggleFocusMusic;
@@ -83,6 +84,7 @@ function attachEvents(){
     if(el.id==="customDuration")setTimerDuration(Number(el.value));
     if(el.dataset.weight){state.weights[el.dataset.weight]=Number(el.value)||0;save();renderAll()}
     if(el.dataset.goalTarget){state.settings.goalTargets[el.dataset.goalTarget]=Number(el.value)||GOAL_MAP[el.dataset.goalTarget].target;save();renderAll()}
+    if(el.dataset.activeGoal){const keys=new Set(state.settings.activeGoalKeys||GOAL_KEYS);el.checked?keys.add(el.dataset.activeGoal):keys.delete(el.dataset.activeGoal);if(!keys.size){el.checked=true;showToast("Keep at least one active goal");return}state.settings.activeGoalKeys=[...keys];save();renderAll()}
     if(["targetSleep","shortBelow","longAbove","preferredSleep","preferredWake","tolerance","missionThreshold"].includes(el.id)){state.settings[el.id]=el.type==="number"?Number(el.value):el.value;save();renderAll()}
     if(el.id==="userName"){state.profile.name=el.value||"Pratik";save();renderAll()}
     if(el.id==="monthlyTarget"){state.profile.monthlyTarget=Number(el.value)||1000;save();renderAll()}

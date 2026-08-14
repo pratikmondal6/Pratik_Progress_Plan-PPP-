@@ -4,7 +4,8 @@ function ensureLibrary(){
   if(!state.library.progress||typeof state.library.progress!=="object")state.library.progress={};
   if(!state.library.filter)state.library.filter="all";
   state.library.books.forEach(book=>{
-    if(!state.library.progress[book.id])state.library.progress[book.id]={percent:0,status:"Not started",sessions:0,lastOpened:"",note:""};
+    if(!state.library.progress[book.id])state.library.progress[book.id]={percent:0,status:"Not started",sessions:0,lastOpened:"",note:"",lastPage:0};
+    if(state.library.progress[book.id].lastPage==null)state.library.progress[book.id].lastPage=0;
   });
   return state.library;
 }
@@ -19,19 +20,16 @@ function renderLibrary(){
   const library=ensureLibrary(),books=library.books,progress=library.progress;
   const reading=books.filter(book=>progress[book.id].status==="Reading").length;
   const finished=books.filter(book=>progress[book.id].status==="Finished").length;
-  const sessions=books.reduce((sum,book)=>sum+Number(progress[book.id].sessions||0),0);
-  document.getElementById("librarySummary").innerHTML=[[books.length,"Books"],[reading,"Currently reading"],[finished,"Finished"],[sessions,"Reading sessions"]].map(([value,label])=>`<div class="library-stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
+  const pages=books.reduce((sum,book)=>sum+Number(progress[book.id].lastPage||0),0);
+  document.getElementById("librarySummary").innerHTML=[[books.length,"Books"],[reading,"Currently reading"],[finished,"Finished"],[pages,"Pages recorded"]].map(([value,label])=>`<div class="library-stat"><strong>${value}</strong><span>${label}</span></div>`).join("");
   document.querySelectorAll("[data-library-filter]").forEach(button=>button.classList.toggle("active",button.dataset.libraryFilter===library.filter));
   const visible=books.filter(book=>library.filter==="all"||book.category===library.filter||(library.filter==="reading"&&progress[book.id].status==="Reading"));
   mount.innerHTML=visible.length?visible.map(book=>{
     const p=progress[book.id],url=safeBookUrl(book.url);
     return `<article class="box glass book-card">
       <div class="book-top"><div class="book-icon">${escapeHtml(book.icon||"📘")}</div><div class="book-meta"><h3>${escapeHtml(book.title)}</h3><div class="book-author">${escapeHtml(book.author||"Unknown author")}</div><span class="book-category">${escapeHtml(libraryCategoryLabel(book.category))}</span></div></div>
-      <p class="book-purpose">${escapeHtml(book.purpose||"No description added yet.")}</p>
-      <div class="book-progress-head"><strong>${Number(p.percent)||0}% complete</strong><select data-book-status="${book.id}" aria-label="Reading status"><option${p.status==="Not started"?" selected":""}>Not started</option><option${p.status==="Reading"?" selected":""}>Reading</option><option${p.status==="Finished"?" selected":""}>Finished</option></select></div>
-      <input class="book-progress" type="range" min="0" max="100" step="1" value="${Number(p.percent)||0}" data-book-progress="${book.id}" aria-label="Reading progress">
-      <textarea class="book-note" maxlength="500" data-book-note="${book.id}" placeholder="Add a private note…">${escapeHtml(p.note||"")}</textarea>
-      <div class="book-actions">${url?`<button class="btn primary" data-book-open="${book.id}">Open</button>`:""}<button class="btn" data-book-session="${book.id}">+ Session</button><button class="btn" data-book-edit="${book.id}">Edit</button><button class="btn danger" data-book-delete="${book.id}">Delete</button></div>
+      <label class="book-page"><span>Last read page</span><input type="number" min="0" max="100000" step="1" value="${Number(p.lastPage)||0}" data-book-page="${book.id}" aria-label="Last read page for ${escapeHtml(book.title)}"></label>
+      <div class="book-actions">${url?`<button class="btn primary" data-book-open="${book.id}">Open</button>`:""}<button class="btn" data-book-edit="${book.id}">Edit</button><button class="btn danger" data-book-delete="${book.id}">Delete</button></div>
     </article>`;
   }).join(""):`<div class="box glass library-empty"><div>📚</div><strong>No books here yet</strong><p>Add a book or choose another filter.</p><button class="btn primary" data-library-add-empty>Add Book</button></div>`;
 }
@@ -55,7 +53,7 @@ function saveBookEditor(event){
   if(enteredUrl&&!url){showToast("Use a valid http or https link");return}
   const book={id:editId||`book-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,title,author:document.getElementById("bookAuthor").value.trim(),category:document.getElementById("bookCategory").value,icon:document.getElementById("bookIcon").value.trim()||"📘",url,purpose:document.getElementById("bookPurpose").value.trim()};
   if(editId){const index=library.books.findIndex(item=>item.id===editId);if(index>=0)library.books[index]=book}else library.books.unshift(book);
-  if(!library.progress[book.id])library.progress[book.id]={percent:0,status:"Not started",sessions:0,lastOpened:"",note:""};
+  if(!library.progress[book.id])library.progress[book.id]={percent:0,status:"Not started",sessions:0,lastOpened:"",note:"",lastPage:0};
   save();hideModal("bookEditorModal");renderLibrary();showToast(editId?"Book updated":"Book added to your library");
 }
 function deleteLibraryBook(id){
@@ -74,7 +72,6 @@ function attachLibraryEvents(){
   document.getElementById("libraryAddBtn").onclick=()=>openBookEditor();document.getElementById("libraryContinueBtn").onclick=continueLibraryReading;
   document.getElementById("bookEditorClose").onclick=()=>hideModal("bookEditorModal");document.getElementById("bookEditorCancel").onclick=()=>hideModal("bookEditorModal");document.getElementById("bookEditorForm").onsubmit=saveBookEditor;
   document.getElementById("libraryFilter").onclick=e=>{const button=e.target.closest("[data-library-filter]");if(!button)return;ensureLibrary().filter=button.dataset.libraryFilter;save();renderLibrary()};
-  document.getElementById("libraryGrid").onclick=e=>{const target=e.target.closest("button");if(!target)return;if(target.dataset.bookOpen)openLibraryBook(target.dataset.bookOpen);else if(target.dataset.bookEdit)openBookEditor(target.dataset.bookEdit);else if(target.dataset.bookDelete)deleteLibraryBook(target.dataset.bookDelete);else if(target.dataset.bookSession){const p=libraryProgress(target.dataset.bookSession);p.sessions=Number(p.sessions||0)+1;p.lastOpened=new Date().toISOString();if(p.status==="Not started")p.status="Reading";save();renderLibrary();showToast("Reading session recorded")}else if(target.hasAttribute("data-library-add-empty"))openBookEditor()};
-  document.getElementById("libraryGrid").oninput=e=>{const target=e.target;if(target.dataset.bookProgress){const p=libraryProgress(target.dataset.bookProgress);p.percent=Number(target.value);p.status=p.percent>=100?"Finished":p.percent>0&&p.status==="Not started"?"Reading":p.status;save();renderLibrary()}else if(target.dataset.bookNote){libraryProgress(target.dataset.bookNote).note=target.value;save()}};
-  document.getElementById("libraryGrid").onchange=e=>{const target=e.target;if(!target.dataset.bookStatus)return;const p=libraryProgress(target.dataset.bookStatus);p.status=target.value;if(p.status==="Finished")p.percent=100;save();renderLibrary()};
+  document.getElementById("libraryGrid").onclick=e=>{const target=e.target.closest("button");if(!target)return;if(target.dataset.bookOpen)openLibraryBook(target.dataset.bookOpen);else if(target.dataset.bookEdit)openBookEditor(target.dataset.bookEdit);else if(target.dataset.bookDelete)deleteLibraryBook(target.dataset.bookDelete);else if(target.hasAttribute("data-library-add-empty"))openBookEditor()};
+  document.getElementById("libraryGrid").oninput=e=>{const target=e.target;if(!target.dataset.bookPage)return;const p=libraryProgress(target.dataset.bookPage);p.lastPage=Math.max(0,Math.round(Number(target.value)||0));if(p.lastPage>0&&p.status==="Not started")p.status="Reading";p.lastOpened=new Date().toISOString();save()};
 }

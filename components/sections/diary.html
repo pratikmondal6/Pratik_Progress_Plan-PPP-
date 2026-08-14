@@ -33,6 +33,7 @@
         <input id="diaryAutoDelete" type="checkbox">
         <span><strong>Delete this entry automatically after 7 days</strong><small>Leave this unchecked to keep the entry until you delete it yourself.</small></span>
       </label>
+      <label class="diary-auto-delete"><input id="diaryExcludeAI" type="checkbox"><span><strong>Keep this entry out of Gemini reviews</strong><small>The entry remains available to the private local review.</small></span></label>
       <div class="diary-compose-footer">
         <span id="diaryCharacterCount" class="k-sub">0 / 10,000</span>
         <button class="btn primary" id="saveDiaryEntry">Save Entry</button>
@@ -53,8 +54,13 @@
     </aside>
   </div>
 
+  <section class="box glass consistency-checkin">
+    <div class="diary-review-head"><div><div class="diary-review-kicker">Automatic habit recovery</div><h3>Consistency Coach</h3><p>Automatically combines your Day progress, calendar commitments, sleep, active goals, and diary patterns. No duplicate input required.</p></div><button class="btn" id="refreshConsistencyCoach" type="button">Refresh</button></div>
+    <div id="consistencyWeekSummary"></div>
+  </section>
+
   <section class="box glass diary-review" id="diaryDailyReview">
-    <div class="diary-review-head"><div><div class="diary-review-kicker">✦ Private local intelligence</div><h3>Today’s Review</h3><p>Built from today’s diary entries without sending your writing anywhere.</p></div><button class="btn" id="refreshDiaryReview">Refresh Review</button></div>
+    <div class="diary-review-head"><div><div class="diary-review-kicker">✦ Diary intelligence</div><h3>My Progress Review</h3><p>Review today locally, or explicitly send included diary text to Gemini through your Apps Script service.</p><label class="gemini-consent"><input type="checkbox" id="geminiReviewConsent"> I understand that included diary text will be sent to Google Gemini for this review.</label></div><div class="diary-review-actions"><button class="btn" id="refreshDiaryReview">Today · Local</button><button class="btn" data-gemini-review="day">Gemini · Day</button><button class="btn" data-gemini-review="week">Gemini · Week</button><button class="btn" data-gemini-review="all">Gemini · All</button></div></div>
     <div id="diaryReviewContent"></div>
   </section>
 

@@ -17,10 +17,15 @@ function renderDashboard(){
   setText("forecastText",logged.length?`At this pace: ${Math.round(m.projection)} / ${state.profile.monthlyTarget} target points.`:"Log a few days to generate a forecast.");
   const risk=m.current===0&&logged.length?"High":m.recentCompletion<.55&&logged.length?"Medium":"Low";
   setText("riskLevel",risk);setText("riskText",risk==="High"?"Your streak is inactive. Complete a minimum mission day today.":risk==="Medium"?"Recent completion is low. Shrink today's plan and finish it.":"Momentum is currently protected.");
-  const coach=coachData(data);setText("coachHeadline",coach.headline);
+  const coachingHistory=rollingData(90),coach=coachData(coachingHistory);setText("coachHeadline",coach.headline);
   document.getElementById("coachPriorities").innerHTML=coach.items.map((x,i)=>`<div class="ai-item"><div class="ai-num">${i+1}</div><div><strong>${x[0]}</strong><span>${x[1]}</span></div></div>`).join("");
+  renderHabitCoach(coachingHistory);
   renderHabitBars(data);renderHeatmap(data);renderAchievements(data);drawWeekly(data);drawSleep(data);renderMiniAchievements(data);renderInsights(data);
 }
+function renderHabitCoach(data=currentData()){
+  const plan=habitCoachPlan(data);setText("habitCoachPhase",plan.phase);setText("habitCoachSummary",plan.summary);setText("habitCoachRule",plan.rule);const host=document.getElementById("habitCoachSteps");host.dataset.goal=plan.focus.key;host.dataset.minimum=plan.minimum;host.innerHTML=plan.steps.map(step=>`<article class="habit-coach-step"><span>${escapeHtml(step[0])}</span><strong>${escapeHtml(step[1])}</strong><p>${escapeHtml(step[2])}</p></article>`).join("");
+}
+function applyHabitCoachMinimum(){const host=document.getElementById("habitCoachSteps"),goal=host?.dataset.goal,minimum=Number(host?.dataset.minimum)||5;if(!GOAL_MAP[goal])return;const now=new Date(),key=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`,day=ensureMonth(key)[now.getDate()-1];day[goal]=Math.max(Number(day[goal])||0,minimum);currentMonth=key;save();renderAll();showTab("today");showToast(`${GOAL_MAP[goal].short}: ${minimum}-minute consistency minimum applied`)}
 function setTrend(id,val,text){const e=document.getElementById(id);e.textContent=text;e.className=`trend ${trendClass(val)}`}
 function renderHabitBars(data){
   document.getElementById("habitBars").innerHTML=habitScores(data).map(([name,v])=>`<div class="progress-row"><div class="progress-name">${name}</div><div class="track"><div class="fill" style="width:${Math.round(v*100)}%"></div></div><div class="pct">${Math.round(v*100)}%</div></div>`).join("");

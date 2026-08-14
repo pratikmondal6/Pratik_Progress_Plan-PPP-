@@ -1,4 +1,4 @@
-const CACHE="pratiks-progress-plan-v26-offline-complete-backup";
+const CACHE="pratiks-progress-plan-v33-compact-library";
 const ASSETS=[
   "./",
   "./index.html",
