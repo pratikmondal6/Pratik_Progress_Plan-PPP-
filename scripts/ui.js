@@ -68,7 +68,7 @@ function showTab(id){
   if(id==="activity")setTimeout(()=>requestActivity(false),20);
   if(id==="diary")setTimeout(()=>renderDiary(),20);
   if(id==="library")setTimeout(()=>renderLibrary(),20);
-  if(id==="bookings")setTimeout(()=>renderBookingDashboard(),20);
+  if(id==="bookings")setTimeout(()=>refreshBookingRequests(true),20);
   if(id==="calendar")setTimeout(()=>{
     const wrap=document.getElementById("calendarTableWrap");
     if(wrap)wrap.scrollLeft=0;

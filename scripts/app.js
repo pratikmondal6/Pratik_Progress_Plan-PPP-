@@ -100,6 +100,8 @@ async function startApp(){
   setTimeout(()=>requestActivity(false),700);
   setInterval(()=>{if(document.getElementById("activity")?.classList.contains("active"))requestActivity(false)},30000);
   setInterval(renderRoutine,60000);
+  setInterval(()=>{if(document.visibilityState==="visible"&&document.getElementById("bookings")?.classList.contains("active"))refreshBookingRequests(true)},30000);
+  window.addEventListener("focus",()=>{if(document.getElementById("bookings")?.classList.contains("active"))refreshBookingRequests(true)});
   const renderNetworkStatus=()=>{const status=document.getElementById("networkStatus");if(!status)return;const online=navigator.onLine;status.classList.toggle("offline",!online);status.querySelector("strong").textContent=online?"Online":"Offline ready"};renderNetworkStatus();window.addEventListener("online",()=>{renderNetworkStatus();showToast("Back online")});window.addEventListener("offline",()=>{renderNetworkStatus();showToast("Offline — PPP is using saved app files")});
 }
 
