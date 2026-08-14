@@ -1,4 +1,4 @@
-const CACHE="pratiks-progress-plan-v33-compact-library";
+const CACHE="pratiks-progress-plan-v35-gemini-entry-logic";
 const ASSETS=[
   "./",
   "./index.html",

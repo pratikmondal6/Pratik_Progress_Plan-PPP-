@@ -34,12 +34,13 @@
         <span><strong>Delete this entry automatically after 7 days</strong><small>Leave this unchecked to keep the entry until you delete it yourself.</small></span>
       </label>
       <label class="diary-auto-delete"><input id="diaryExcludeAI" type="checkbox"><span><strong>Keep this entry out of Gemini reviews</strong><small>The entry remains available to the private local review.</small></span></label>
+      <label class="diary-auto-delete"><input id="diaryAnalyzeGemini" type="checkbox" checked><span><strong>Analyze this entry with Gemini</strong><small>Gemini interprets the text; PPP validates and applies only safe, supported planner outcomes.</small></span></label>
       <div class="diary-compose-footer">
         <span id="diaryCharacterCount" class="k-sub">0 / 10,000</span>
         <button class="btn primary" id="saveDiaryEntry">Save Entry</button>
       </div>
       <p class="diary-hint">Tip: press Ctrl + Enter to save. Entries are stored only in this browser.</p>
-      <p class="diary-hint">✦ Smart analysis updates the planner only when your writing contains a confident habit result, duration, or day plan.</p>
+      <p class="diary-hint">✦ Gemini interprets meaning and returns structured outcomes. PPP accepts only known goals, explicit minutes, valid dates, schedule preferences, and commitments.</p>
     </div>
 
     <aside class="box glass diary-about">
@@ -60,7 +61,7 @@
   </section>
 
   <section class="box glass diary-review" id="diaryDailyReview">
-    <div class="diary-review-head"><div><div class="diary-review-kicker">✦ Diary intelligence</div><h3>My Progress Review</h3><p>Review today locally, or explicitly send included diary text to Gemini through your Apps Script service.</p><label class="gemini-consent"><input type="checkbox" id="geminiReviewConsent"> I understand that included diary text will be sent to Google Gemini for this review.</label></div><div class="diary-review-actions"><button class="btn" id="refreshDiaryReview">Today · Local</button><button class="btn" data-gemini-review="day">Gemini · Day</button><button class="btn" data-gemini-review="week">Gemini · Week</button><button class="btn" data-gemini-review="all">Gemini · All</button></div></div>
+    <div class="diary-review-head"><div><div class="diary-review-kicker">✦ Gemini diary intelligence</div><h3>My Progress Review</h3><p>Today combines the validated Gemini outcomes saved with each entry. Period reviews ask Gemini to analyze the selected entries together.</p><label class="gemini-consent"><input type="checkbox" id="geminiReviewConsent"> I understand that included diary text will be sent to Google Gemini for this period review.</label></div><div class="diary-review-actions"><button class="btn" id="refreshDiaryReview">Gemini Outcomes · Today</button><button class="btn" data-gemini-review="day">Gemini · Day</button><button class="btn" data-gemini-review="week">Gemini · Week</button><button class="btn" data-gemini-review="all">Gemini · All</button></div></div>
     <div id="diaryReviewContent"></div>
   </section>
 
