@@ -1,0 +1,11 @@
+<div id="planProgressModal" class="modal-backdrop hidden">
+  <div class="modal glass plan-progress-modal" role="dialog" aria-modal="true" aria-labelledby="planProgressTitle">
+    <div class="modal-head"><div><div class="plan-progress-eyebrow">21-Day Plan · Record progress</div><h2 id="planProgressTitle">Goal progress</h2></div><button class="icon-btn" id="closePlanProgress" type="button" aria-label="Close">✕</button></div>
+    <div class="plan-progress-context"><div class="plan-progress-icon" id="planProgressIcon">✓</div><div><strong id="planProgressGoal">Goal</strong><span id="planProgressDate">Scheduled date</span></div><div class="plan-progress-target"><strong id="planProgressTarget">0 min</strong><span>Target</span></div></div>
+    <label class="plan-progress-field"><span>Total minutes completed</span><div class="plan-progress-input"><input id="planProgressMinutes" type="number" min="0" max="1440" step="1" inputmode="numeric"><strong>minutes</strong></div></label>
+    <input class="plan-progress-range" id="planProgressRange" type="range" min="0" max="120" step="5">
+    <div class="plan-progress-quick" id="planProgressQuick"></div>
+    <div class="plan-progress-preview" id="planProgressPreview">Choose the actual total. PPP will update every connected progress view.</div>
+    <div class="modal-actions"><button class="btn" id="cancelPlanProgress" type="button">Cancel</button><button class="btn green" id="savePlanProgress" type="button">Save &amp; Sync</button></div>
+  </div>
+</div>

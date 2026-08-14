@@ -140,7 +140,7 @@ function finishAndSaveTimer(autoCompleted=false){
   timer.running=false;
   timer.startedAt=null;
   const focus=timer.sessionFocus||timer.focus;
-  const d=ensureMonth()[todayIndex()];
+  const todayKey=localDateKey(new Date()),todayMonth=todayKey.slice(0,7),todayDay=Number(todayKey.slice(8))-1,d=ensureMonth(todayMonth)[todayDay];
   d[focus]=Number(d[focus]||0)+minutes;
   timer.elapsed=0;
   timer.sessionFocus=null;
@@ -208,7 +208,19 @@ function confetti(big=false){
 function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(showToast.t);showToast.t=setTimeout(()=>t.classList.remove("show"),2300)}
 function showModal(id){document.getElementById(id).classList.remove("hidden")}function hideModal(id){document.getElementById(id).classList.add("hidden")}
 function download(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);showToast("File downloaded")}
-function exportBackup(){download("pratiks-progress-plan-backup.json",JSON.stringify({...state,diaryEntries:Array.isArray(diaryEntries)?diaryEntries:[]},null,2),"application/json")}
+function backupStorageJson(key,fallback){try{const value=JSON.parse(localStorage.getItem(key)||"null");return value??fallback}catch(error){return fallback}}
+function exportBackup(){
+  const booking=loadSharedBookingConfig(),backup={backupFormat:"PPP_FULL_BACKUP",version:2,exportedAt:new Date().toISOString(),state:clone(state),datasets:{diaryEntries:Array.isArray(diaryEntries)?diaryEntries:[],commitments:loadCommitments(),dayPreferences:loadDayPreferences(),plan21:load21DayCycle(),nowCoachDone:loadNowCoachDone(),nowCoachCollapsed:localStorage.getItem(NOW_COACH_COLLAPSED_KEY)==="1",focusTimer:backupStorageJson(FOCUS_TIMER_KEY,null),focusMusic:backupStorageJson(FOCUS_MUSIC_KEY,null),bookingPublicConnection:{url:booking.url||""}}};
+  download(`pratiks-progress-plan-full-backup-${localDateKey(new Date())}.json`,JSON.stringify(backup,null,2),"application/json")
+}
+function restoreBackupDataset(key,value){if(value===undefined)return;if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,JSON.stringify(value))}
+function restorePPPBackup(payload){
+  const source=payload?.state?.months?payload.state:payload;if(!source||!source.months||typeof source.months!=="object")throw new Error("Backup does not contain PPP progress data.");const lib=source.library||{},datasets=payload.datasets||{};
+  state={profile:{...DEFAULTS.profile,...source.profile},settings:{...DEFAULTS.settings,...source.settings,goalTargets:{...DEFAULTS.settings.goalTargets,...source.settings?.goalTargets}},weights:{...DEFAULTS.weights,...source.weights},months:source.months,library:{books:Array.isArray(lib.books)?lib.books:clone(DEFAULT_LIBRARY_BOOKS),progress:lib.progress||{},filter:lib.filter||"all"},acceptedBookings:Array.isArray(source.acceptedBookings)?source.acceptedBookings:[],bookingFeedback:source.bookingFeedback||{}};
+  const restoredDiary=datasets.diaryEntries!==undefined?datasets.diaryEntries:payload.diaryEntries;if(Array.isArray(restoredDiary))restoreBackupDataset(DIARY_KEY,restoredDiary);restoreBackupDataset(COMMITMENTS_KEY,datasets.commitments);restoreBackupDataset(DAY_PREFERENCES_KEY,datasets.dayPreferences);restoreBackupDataset(PLAN_21_KEY,datasets.plan21);restoreBackupDataset(NOW_COACH_DONE_KEY,datasets.nowCoachDone);if(datasets.nowCoachCollapsed!==undefined)localStorage.setItem(NOW_COACH_COLLAPSED_KEY,datasets.nowCoachCollapsed?"1":"0");if(datasets.focusTimer!==undefined)restoreBackupDataset(FOCUS_TIMER_KEY,datasets.focusTimer?{...datasets.focusTimer,running:false,startedAt:null}:null);restoreBackupDataset(FOCUS_MUSIC_KEY,datasets.focusMusic);
+  if(datasets.bookingPublicConnection?.url){const current=loadSharedBookingConfig();localStorage.setItem(SHARED_BOOKING_CONFIG_KEY,JSON.stringify({...current,url:safeBookingServiceUrl(datasets.bookingPublicConnection.url)}))}
+  save();loadDiaryEntries();timer=loadFocusTimer();focusMusic=loadFocusMusic();renderAll();restoreRunningTimer();return true
+}
 function exportCsv(){
   const data=currentData(),head=["Date","Day",...GOALS.map(goal=>`${goal.label} Minutes`),"Sleep","Wake","Sleep Hours","Sleep Status","Notes","Base Points","Completion","Mission Day","Streak","Bonus","Reward Points"];
   const rows=data.map((d,i)=>[dateLabel(dayDate(i)),dayDate(i).toLocaleDateString(undefined,{weekday:"long"}),...GOALS.map(goal=>Number(d[goal.key])||0),d.sleep,d.wake,d.sleepHours?.toFixed(1)||"",d.sleepStatus,d.notes,d.points.toFixed(1),Math.round(d.completion*100)+"%",d.mission?"YES":d.logged?"NO":"",d.streak,d.bonus,d.reward.toFixed(1)]);

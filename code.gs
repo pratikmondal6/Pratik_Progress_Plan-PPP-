@@ -13,8 +13,9 @@ function doGet(e){
   try{requireAdminKey_(p.key);let payload;if(action==='list')payload={ok:true,requests:listRequests_()};else if(action==='accept')payload={ok:true,request:updateRequestStatus_(p.id,'accepted')};else if(action==='decline')payload={ok:true,request:deleteRequest_(p.id)};else payload={ok:false,error:'Unknown action'};return jsonOrJsonp_(payload,callback)}catch(error){return jsonOrJsonp_({ok:false,error:String(error&&error.message||error)},callback)}
 }
 function doPost(e){try{return HtmlService.createHtmlOutput(successPage_(createRequest_(e&&e.parameter||{}))).setTitle('Request sent')}catch(error){return HtmlService.createHtmlOutput(messagePage_('Could not send request',String(error&&error.message||error),'#ff5d6c')).setTitle('Could not send request')}}
-function setupPPPBooking(){const properties=PropertiesService.getScriptProperties();if(!properties.getProperty('ADMIN_KEY'))properties.setProperty('ADMIN_KEY',Utilities.getUuid().replace(/-/g,''));ensureSheet_();Logger.log('ADMIN KEY: '+properties.getProperty('ADMIN_KEY'));Logger.log('Deploy as a Web app, then copy the /exec URL into PPP Settings.')}
+function setupPPPBooking(notificationEmail){const properties=PropertiesService.getScriptProperties();if(!properties.getProperty('ADMIN_KEY'))properties.setProperty('ADMIN_KEY',Utilities.getUuid().replace(/-/g,''));const email=clean_(notificationEmail||Session.getEffectiveUser().getEmail(),120);if(email)properties.setProperty('NOTIFICATION_EMAIL',email);ensureSheet_();Logger.log('ADMIN KEY: '+properties.getProperty('ADMIN_KEY'));Logger.log('NOTIFICATION EMAIL: '+(properties.getProperty('NOTIFICATION_EMAIL')||'Not set — run setPPPBookingNotificationEmail("you@example.com")'));Logger.log('Deploy as a Web app, then copy the /exec URL into PPP Settings.')}
 function getPPPBookingAdminKey(){const key=PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');if(!key)throw new Error('Run setupPPPBooking() first.');Logger.log(key);return key}
+function setPPPBookingNotificationEmail(email){email=clean_(email,120);if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))throw new Error('Enter a valid notification email address.');PropertiesService.getScriptProperties().setProperty('NOTIFICATION_EMAIL',email);Logger.log('Booking notifications will be sent to '+email);return email}
 function requireAdminKey_(key){const expected=PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');if(!expected)throw new Error('Run setupPPPBooking() first.');if(String(key||'')!==expected)throw new Error('Invalid admin key.')}
 function ensureSheet_(){const spreadsheet=SpreadsheetApp.getActiveSpreadsheet();if(!spreadsheet)throw new Error('This script must be attached to a Google Sheet.');let sheet=spreadsheet.getSheetByName(PPP_BOOKING_SHEET_NAME);if(!sheet)sheet=spreadsheet.insertSheet(PPP_BOOKING_SHEET_NAME);if(sheet.getLastRow()===0)sheet.appendRow(PPP_BOOKING_HEADERS);return sheet}
 function clean_(value,max){return String(value==null?'':value).trim().slice(0,max)}
@@ -22,7 +23,23 @@ function normalizeBookingTime_(raw){let value=String(raw==null?'':raw).trim().to
 function createRequest_(p){
   const name=clean_(p.name,80),email=clean_(p.email,120),type=clean_(p.type||'Appointment',50),what=clean_(p.what,140),date=clean_(p.date,10),time=normalizeBookingTime_(p.time),timezone=clean_(p.timezone||Session.getScriptTimeZone()||'Europe/Berlin',80),duration=Math.max(15,Math.min(240,Number(p.duration)||30)),note=clean_(p.note,500);
   if(!name)throw new Error('Please enter your name.');if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))throw new Error('Please enter a valid email.');if(!what)throw new Error('Please say what the booking is for.');if(!/^\d{4}-\d{2}-\d{2}$/.test(date))throw new Error('Please choose a date.');if(!time)throw new Error('Please enter a valid time.');
-  const row=['req_'+Utilities.getUuid().slice(0,8)+'_'+Date.now(),new Date().toISOString(),name,email,type,what,date,time,timezone,duration,note,'pending',''];ensureSheet_().appendRow(row);return rowToObject_(row);
+  const row=['req_'+Utilities.getUuid().slice(0,8)+'_'+Date.now(),new Date().toISOString(),name,email,type,what,date,time,timezone,duration,note,'pending',''];ensureSheet_().appendRow(row);const request=rowToObject_(row);try{notifyBookingOwner_(request)}catch(error){console.error('Booking saved, but notification failed: '+String(error&&error.message||error))}return request;
+}
+function notifyBookingOwner_(request){
+  const recipient=PropertiesService.getScriptProperties().getProperty('NOTIFICATION_EMAIL');if(!recipient){console.warn('No NOTIFICATION_EMAIL configured. Run setPPPBookingNotificationEmail("you@example.com").');return}
+  const subject='New booking request: '+request.what+' — '+request.date+' '+request.time;
+  const lines=['You received a new PPP booking request.','',
+    'Name: '+request.name,
+    request.email?'Email: '+request.email:'Email: Not provided',
+    'Purpose: '+request.what,
+    'Type: '+request.type,
+    'Date: '+request.date,
+    'Time: '+request.time+' ('+request.timezone+')',
+    'Duration: '+request.duration+' minutes',
+    request.note?'Message: '+request.note:'Message: None','',
+    'Open your PPP Booking Dashboard to accept or decline it.'
+  ];
+  MailApp.sendEmail({to:recipient,subject:subject,body:lines.join('\n'),name:'PPP Booking'});
 }
 function listRequests_(){const values=ensureSheet_().getDataRange().getValues();return values.length<=1?[]:values.slice(1).map(rowToObject_).filter(function(request){return request.id}).sort(function(a,b){return String(b.createdAt).localeCompare(String(a.createdAt))})}
 function rowToObject_(row){const object={};PPP_BOOKING_HEADERS.forEach(function(header,index){object[header]=row[index] instanceof Date?row[index].toISOString():row[index]});return object}

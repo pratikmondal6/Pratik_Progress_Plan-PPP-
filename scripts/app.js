@@ -31,12 +31,21 @@ function attachEvents(){
   document.getElementById("applyPlannerTimes").onclick=applyPlannerTimeInputs;
   document.getElementById("clearPlannerTimes").onclick=clearPlannerTimeInputs;
   document.getElementById("routineCommitments").onclick=e=>{const button=e.target.closest("[data-delete-commitment]");if(button&&confirm("Delete this fixed commitment?"))deleteCommitment(button.dataset.deleteCommitment)};
-  document.getElementById("planTodayBtn").onclick=()=>{render21DayPlan();showToast("21-day plan starts today")};
+  document.getElementById("planTodayBtn").onclick=restart21DayPlan;
+  document.getElementById("twentyOneDayPlan").onchange=event=>{const input=event.target.closest("[data-plan-item]");if(input)toggle21DayItem(input.dataset.planItem,input.checked,Number(input.dataset.planTarget))};
+  document.getElementById("closePlanProgress").onclick=close21DayProgressModal;document.getElementById("cancelPlanProgress").onclick=close21DayProgressModal;document.getElementById("savePlanProgress").onclick=save21DayProgress;
+  document.getElementById("planProgressMinutes").oninput=update21DayProgressPreview;document.getElementById("planProgressRange").oninput=event=>{document.getElementById("planProgressMinutes").value=event.target.value;update21DayProgressPreview()};document.getElementById("planProgressQuick").onclick=event=>{const button=event.target.closest("[data-plan-minutes]");if(!button)return;const input=document.getElementById("planProgressMinutes"),amount=Number(button.dataset.planMinutes);input.value=button.textContent.includes("Full")?amount:(Number(input.value)||0)+amount;update21DayProgressPreview()};
   document.getElementById("routineNextBtn").onclick=openRoutineNext;
+  document.getElementById("nowCoachDoBtn").onclick=startNowCoach;
+  document.getElementById("nowCoachDoneBtn").onclick=completeNowCoachAction;
+  document.getElementById("nowCoachEasyBtn").onclick=makeNowCoachEasier;
+  document.getElementById("nowCoachAnotherBtn").onclick=anotherNowCoachOption;
+  document.getElementById("nowCoachRefreshBtn").onclick=()=>{renderRoutine();showToast("Right-now recommendation refreshed")};
+  document.getElementById("nowCoachCollapseBtn").onclick=()=>setNowCoachCollapsed(!document.querySelector(".now-coach")?.classList.contains("collapsed"));
   document.getElementById("themeBtn").onclick=()=>{state.profile.theme=state.profile.theme==="dark"?"light":"dark";save();renderAll()};
   document.getElementById("exportBtn").onclick=exportBackup;document.getElementById("csvBtn").onclick=exportCsv;document.getElementById("printBtn").onclick=()=>window.print();document.getElementById("resetMonthBtn").onclick=resetMonth;
   document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
-  document.getElementById("importFile").onchange=async e=>{try{const x=JSON.parse(await e.target.files[0].text());if(!x.months)throw 0;const lib=x.library||{};state={profile:{...DEFAULTS.profile,...x.profile},settings:{...DEFAULTS.settings,...x.settings},weights:{...DEFAULTS.weights,...x.weights},months:x.months,library:{books:Array.isArray(lib.books)?lib.books:clone(DEFAULT_LIBRARY_BOOKS),progress:lib.progress||{},filter:lib.filter||"all"},acceptedBookings:Array.isArray(x.acceptedBookings)?x.acceptedBookings:[],bookingFeedback:x.bookingFeedback||{}};if(Array.isArray(x.diaryEntries)){localStorage.setItem(DIARY_KEY,JSON.stringify(x.diaryEntries));loadDiaryEntries()}save();renderAll();showToast("Backup restored")}catch(err){alert("Invalid backup file.")}e.target.value=""};
+  document.getElementById("importFile").onchange=async e=>{try{const file=e.target.files?.[0];if(!file)return;restorePPPBackup(JSON.parse(await file.text()));showToast("Full PPP backup restored ✓")}catch(err){showToast(err?.message||"Invalid backup file")}e.target.value=""};
   document.getElementById("celebrationToggle").onclick=()=>{state.profile.celebrations=!state.profile.celebrations;save();renderSettings()};
   document.getElementById("coachToggle").onclick=()=>{state.profile.coach=!state.profile.coach;save();renderAll()};
   attachLibraryEvents();
@@ -61,7 +70,7 @@ function attachEvents(){
       }
     }
     if(e.target.classList.contains("heat-day")&&e.target.dataset.day!==undefined){showTab("calendar");setTimeout(()=>document.getElementById(`row-${e.target.dataset.day}`)?.scrollIntoView({behavior:"smooth",block:"center"}),70)}
-    if(e.target.classList.contains("modal-backdrop"))hideModal(e.target.id);
+    if(e.target.classList.contains("modal-backdrop")){if(e.target.id==="planProgressModal")close21DayProgressModal();else hideModal(e.target.id)}
   });
   document.getElementById("goalCheckinGrid").addEventListener("input",e=>{if(e.target.dataset.goalRange)setTodayField(e.target.dataset.goalRange,Number(e.target.value))});
   ["sleepTime","wakeTime"].forEach((id,j)=>document.getElementById(id).onchange=e=>setTodayField(j?"wake":"sleep",e.target.value));
@@ -90,6 +99,8 @@ async function startApp(){
   restoreRunningTimer();
   setTimeout(()=>requestActivity(false),700);
   setInterval(()=>{if(document.getElementById("activity")?.classList.contains("active"))requestActivity(false)},30000);
+  setInterval(renderRoutine,60000);
+  const renderNetworkStatus=()=>{const status=document.getElementById("networkStatus");if(!status)return;const online=navigator.onLine;status.classList.toggle("offline",!online);status.querySelector("strong").textContent=online?"Online":"Offline ready"};renderNetworkStatus();window.addEventListener("online",()=>{renderNetworkStatus();showToast("Back online")});window.addEventListener("offline",()=>{renderNetworkStatus();showToast("Offline — PPP is using saved app files")});
 }
 
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});

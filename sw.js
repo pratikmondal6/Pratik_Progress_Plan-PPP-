@@ -1,4 +1,4 @@
-const CACHE="pratiks-progress-plan-v25-motivational-quotes";
+const CACHE="pratiks-progress-plan-v26-offline-complete-backup";
 const ASSETS=[
   "./",
   "./index.html",
@@ -35,8 +35,12 @@ const ASSETS=[
   "./components/sections/insights.html",
   "./components/sections/settings.html",
   "./components/overlays/quick-checkin.html",
+  "./components/overlays/plan-progress.html",
   "./components/overlays/feedback.html"
 ];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener("fetch",e=>e.respondWith(fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match(e.request))));
+self.addEventListener("fetch",e=>{
+  if(e.request.method!=="GET")return;
+  e.respondWith(fetch(e.request).then(response=>{if(response&&response.ok){const copy=response.clone();e.waitUntil(caches.open(CACHE).then(cache=>cache.put(e.request,copy)))}return response}).catch(async()=>await caches.match(e.request)||await caches.match(new URL(e.request.url).pathname.endsWith("/")?"./":"./index.html")));
+});

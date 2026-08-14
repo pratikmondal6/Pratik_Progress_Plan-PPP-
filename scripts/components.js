@@ -15,6 +15,7 @@ const COMPONENTS = [
   ["appRoot", "components/sections/settings.html"],
   ["appRoot", "components/layout/footer.html"],
   ["overlayRoot", "components/overlays/quick-checkin.html"],
+  ["overlayRoot", "components/overlays/plan-progress.html"],
   ["overlayRoot", "components/overlays/feedback.html"]
 ];
 
