@@ -1,11 +1,15 @@
-const CACHE="pratiks-progress-plan-v35-gemini-entry-logic";
+const CACHE="pratiks-progress-plan-v37-book-with-pratik";
 const ASSETS=[
   "./",
   "./index.html",
+  "./next-day-planner.html",
   "./manifest.json",
   "./icon.svg",
   "./styles/main.css",
+  "./styles/next-day-planner.css",
+  "./scripts/components-bundle.js",
   "./scripts/components.js",
+  "./scripts/next-day-page.js",
   "./scripts/config.js",
   "./scripts/state.js",
   "./scripts/analytics.js",

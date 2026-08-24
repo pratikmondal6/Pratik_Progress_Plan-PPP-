@@ -10,7 +10,10 @@ function attachEvents(){
   document.getElementById("prevMonth").onclick=()=>changeMonth(-1);document.getElementById("nextMonth").onclick=()=>changeMonth(1);
   document.getElementById("quickBtn").onclick=()=>showModal("quickModal");document.getElementById("closeQuick").onclick=()=>hideModal("quickModal");document.getElementById("openDetailed").onclick=()=>{hideModal("quickModal");showTab("today")};
   document.querySelectorAll("[data-quick]").forEach(b=>b.onclick=()=>applyQuick(b.dataset.quick));
-  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");document.getElementById("beastBtn").onclick=beastDay;document.getElementById("focusHeroBtn").onclick=openFocusTimer;
+  document.getElementById("todayHeroBtn").onclick=()=>showTab("today");
+  const openNextDayPlanner=()=>{let target="next-day-planner.html";try{const config=JSON.parse(localStorage.getItem("pppSharedBooking_v1")||"null")||{},url=String(config.url||"").trim();if(url)target+=`?booking=${encodeURIComponent(url)}`}catch(e){}window.location.href=target};
+  document.getElementById("nextDayHeroBtn").onclick=openNextDayPlanner;
+  document.getElementById("nextDayNavBtn").onclick=openNextDayPlanner;
   document.getElementById("autoSuggestBtn").onclick=smartMinimum;document.getElementById("completeTodayBtn").onclick=completeToday;document.getElementById("tableStartBtn").onclick=()=>{
     const wrap=document.getElementById("calendarTableWrap");
     if(wrap)wrap.scrollTo({left:0,behavior:"smooth"});

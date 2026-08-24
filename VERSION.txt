@@ -1,2 +1,1 @@
-PPP Final Complete Release v10
-Built: 2026-08-01 20:07
+v20 - Booking email diagnostics, owner notification, visitor confirmation, and calendar invite delivery
