@@ -61,3 +61,11 @@ PROJECT STRUCTURE
 - styles/main.css: design system, layouts, responsive and print styles
 - scripts/: state, analytics, dashboard, routine, activity, UI and bootstrap layers
 - ARCHITECTURE.md: module responsibilities and dependency order
+
+v26 Challenge Lifecycle
+- Current 21-day execution challenge can be restarted at any time.
+- Completing 21/21 archives the challenge and offers Start New 21-Day Challenge.
+- Restarting preserves tasks, completion history, focus sessions, rewards and lifetime stats.
+- Lifetime dashboard tracks completed items, current/best execution streak, focus time and completed challenges.
+- Challenge history records completed and restarted attempts.
+- Reset Progress History requires typing RESET and preserves planned items/intentions while clearing execution progress.

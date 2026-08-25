@@ -1,1 +1,1 @@
-v20 - Booking email diagnostics, owner notification, visitor confirmation, and calendar invite delivery
+v34 - Germany/Bangladesh Timezone Conversion

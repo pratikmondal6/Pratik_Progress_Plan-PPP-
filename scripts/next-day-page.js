@@ -2,8 +2,20 @@
   "use strict";
 
   const STORE_KEY = "pppNextDayPlanner_v2";
+  const FOCUS_SOUND_KEY = "pppFocusSound_v1";
+  const focusSoundModes = {
+    rain: { name: "Natural Rain", file: "assets/sounds/rain.ogg", note: "Layered rainfall with soft individual drops — steady enough for reading, coding, or study." },
+    birds: { name: "Forest Birds", file: "assets/sounds/birds.ogg", note: "Light breeze with occasional bird calls — calm, open, and less repetitive than music." },
+    ocean: { name: "Ocean Waves", file: "assets/sounds/ocean.ogg", note: "Slow wave swells with gentle foam — useful when you want a broad, relaxing background." },
+    forest: { name: "Forest Stream", file: "assets/sounds/forest.ogg", note: "Running water, soft wind, and distant birds — a natural background for longer focus blocks." }
+  };
   const LEGACY_KEY = "pppNextDayPlanner_v1";
-  const BOOKING_CONFIG_KEY = "pppSharedBooking_v1";
+  const DIRECT_BOOKING_URL = "https://script.google.com/macros/s/AKfycbz84LtyJlgNapkn5hVQ8bt8_VBKiKjdK-Yp9UxZZpWQJpuq2TumGxYsYNtBG9RgXSs/exec";
+  const TIMEZONE_PREF_KEY = "pppPlannerTimezone_v1";
+  const TIME_ZONES = {
+    "Europe/Berlin": { country: "Germany", flag: "🇩🇪", inputFormat: "24h", other: "Asia/Dhaka" },
+    "Asia/Dhaka": { country: "Bangladesh", flag: "🇧🇩", inputFormat: "12h", other: "Europe/Berlin" }
+  };
   const milestones = [
     { days: 3, label: "Momentum", icon: "⚡", bonus: 50 },
     { days: 7, label: "One Week", icon: "🔥", bonus: 100 },
@@ -86,10 +98,10 @@
 
   let viewDate = tomorrow();
   let itemType = "task";
-  let bookingMode = false;
   let toastTimer = null;
   let heroMessageIndex = Math.abs(new Date().getDate() + new Date().getMonth() * 7) % heroMessages.length;
   let heroMessageTimer = null;
+  let activePlannerTimeZone = "Europe/Berlin";
 
   const focusTimer = {
     duration: 25 * 60,
@@ -97,6 +109,21 @@
     running: false,
     deadline: 0,
     interval: null
+  };
+
+
+  const focusAudio = {
+    ctx: null,
+    master: null,
+    compressor: null,
+    element: null,
+    mode: "rain",
+    enabled: true,
+    volume: 0.28,
+    playing: false,
+    previewing: false,
+    nodes: [],
+    timers: []
   };
 
   function $(id) { return document.getElementById(id); }
@@ -139,70 +166,26 @@
   function uid() {
     return `p_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   }
-
-  function safeHttpsUrl(value) {
-    try {
-      const url = new URL(String(value || "").trim());
-      return url.protocol === "https:" ? url.href : "";
-    } catch (_) {
-      return "";
-    }
+  function challengeUid() {
+    return `c_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   }
-  function bookingServiceUrl() {
-    try {
-      const fromQuery = safeHttpsUrl(new URLSearchParams(window.location.search).get("booking"));
-      if (fromQuery) return fromQuery;
-    } catch (_) {}
-    try {
-      const config = JSON.parse(localStorage.getItem(BOOKING_CONFIG_KEY) || "null") || {};
-      return safeHttpsUrl(config.url);
-    } catch (_) {
-      return "";
-    }
+  function createChallenge(startDate = dateKey(today())) {
+    return { id: challengeUid(), startDate, status: "active", completedAt: null, completedDate: "" };
   }
-  function renderBookingQuick() {
-    const url = bookingServiceUrl();
-    const input = $("bookingPublicLink");
-    const open = $("openPlannerBookingLinkBtn");
-    const copy = $("copyPlannerBookingLinkBtn");
-    if (input) input.value = url;
-    if (open) open.disabled = !url;
-    if (copy) copy.disabled = !url;
-  }
-  function copyBookingLink() {
-    const url = bookingServiceUrl();
-    if (!url) { showToast("Connect Book with Pratik in PPP Settings first."); return; }
-    const input = $("bookingPublicLink");
-    const fallback = () => {
-      try { input?.focus(); input?.select(); document.execCommand("copy"); showToast("Booking link copied ✓"); }
-      catch (_) { showToast("Copy the booking link from the field."); }
+  function normalizeChallenge(challenge) {
+    if (!challenge || typeof challenge !== "object") return null;
+    const startDate = /^\d{4}-\d{2}-\d{2}$/.test(String(challenge.startDate || "")) ? String(challenge.startDate) : dateKey(today());
+    return {
+      id: String(challenge.id || challengeUid()),
+      startDate,
+      status: challenge.status === "completed" ? "completed" : "active",
+      completedAt: Number(challenge.completedAt) || null,
+      completedDate: /^\d{4}-\d{2}-\d{2}$/.test(String(challenge.completedDate || "")) ? String(challenge.completedDate) : ""
     };
-    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(url).then(() => showToast("Booking link copied ✓")).catch(fallback);
-    else fallback();
-  }
-  function openBookingPage(prefill = null) {
-    const base = bookingServiceUrl();
-    if (!base) { showToast("Plan saved. Connect Book with Pratik in PPP Settings to open the booking page."); return false; }
-    let target = base;
-    if (prefill) {
-      try {
-        const url = new URL(base);
-        if (prefill.what) url.searchParams.set("what", prefill.what);
-        if (prefill.date) url.searchParams.set("date", prefill.date);
-        if (prefill.time) url.searchParams.set("time", prefill.time);
-        if (prefill.duration) url.searchParams.set("duration", String(prefill.duration));
-        if (prefill.note) url.searchParams.set("note", prefill.note);
-        url.searchParams.set("type", "Appointment");
-        target = url.href;
-      } catch (_) {}
-    }
-    const opened = window.open(target, "_blank", "noopener,noreferrer");
-    if (!opened) showToast("Plan saved. Use the Book with Pratik link to finish the booking.");
-    return Boolean(opened);
   }
 
   function emptyData() {
-    return { items: [], sealedDays: [], planningLog: [], intentions: {}, sessions: [] };
+    return { items: [], sealedDays: [], planningLog: [], intentions: {}, sessions: [], challenge: createChallenge(), challengeHistory: [] };
   }
   function normalizeData(data) {
     const clean = data && typeof data === "object" ? data : emptyData();
@@ -211,12 +194,31 @@
     clean.planningLog = Array.isArray(clean.planningLog) ? clean.planningLog : [];
     clean.intentions = clean.intentions && typeof clean.intentions === "object" ? clean.intentions : {};
     clean.sessions = Array.isArray(clean.sessions) ? clean.sessions : [];
+    clean.challenge = normalizeChallenge(clean.challenge);
+    clean.challengeHistory = Array.isArray(clean.challengeHistory) ? clean.challengeHistory.filter(entry => entry && typeof entry === "object").map(entry => ({
+      id: String(entry.id || challengeUid()),
+      startDate: String(entry.startDate || ""),
+      endDate: String(entry.endDate || ""),
+      status: entry.status === "completed" ? "completed" : "restarted",
+      progress: clamp(Number(entry.progress) || 0, 0, 21),
+      endedAt: Number(entry.endedAt) || Date.now()
+    })) : [];
     return clean;
   }
   function loadData() {
     try {
       const stored = localStorage.getItem(STORE_KEY);
-      if (stored) return normalizeData(JSON.parse(stored));
+      if (stored) {
+        const clean = normalizeData(JSON.parse(stored));
+        if (!clean.challenge) {
+          const executionStats = executionStreakStats(clean);
+          const start = today();
+          if (executionStats.current > 0) start.setDate(start.getDate() - executionStats.current + 1);
+          clean.challenge = createChallenge(dateKey(start));
+          saveData(clean);
+        }
+        return clean;
+      }
     } catch (_) {}
 
     try {
@@ -229,6 +231,7 @@
           date: item.date || dateKey(tomorrow()),
           start: item.start || "",
           end: item.end || "",
+          timeZone: TIME_ZONES[item.timeZone] ? item.timeZone : detectedPlannerTimeZone(),
           notes: item.notes || "",
           type: ["task", "appointment", "plan"].includes(item.type) ? item.type : "task",
           priority: item.priority || "medium",
@@ -267,10 +270,21 @@
     toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
   }
 
+  function itemTimestamp(item, which = "start") {
+    const value = item?.[which] || "";
+    if (!value || !item?.date) return null;
+    const zone = TIME_ZONES[item.timeZone] ? item.timeZone : detectedPlannerTimeZone();
+    return wallTimeToTimestamp(item.date, value, zone);
+  }
+
   function itemsForDate(key = dateKey(viewDate), data = loadData()) {
     return data.items
       .filter(item => item.date === key)
-      .sort((a, b) => (a.start || "99:99").localeCompare(b.start || "99:99") || (a.createdAt || 0) - (b.createdAt || 0));
+      .sort((a, b) => {
+        const ta = itemTimestamp(a) ?? Number.POSITIVE_INFINITY;
+        const tb = itemTimestamp(b) ?? Number.POSITIVE_INFINITY;
+        return ta - tb || (a.createdAt || 0) - (b.createdAt || 0);
+      });
   }
   function itemTypeLabel(type) {
     return type === "appointment" ? "Appointment" : type === "plan" ? "Plan" : "Task";
@@ -280,11 +294,9 @@
   }
 
   function setType(type) {
-    bookingMode = false;
     itemType = ["task", "appointment", "plan"].includes(type) ? type : "task";
     document.querySelectorAll("[data-plan-type]").forEach(button => button.classList.toggle("active", button.dataset.planType === itemType));
     $("bookWithPratikBtn")?.classList.remove("active");
-    $("bookingQuick")?.classList.add("hidden");
     const isAppointment = itemType === "appointment";
     $("frogToggle").classList.toggle("hidden", isAppointment);
     $("tinyStepField").classList.toggle("hidden", isAppointment);
@@ -292,20 +304,220 @@
     if (!$("itemId").value) $("saveItemBtn").textContent = "＋ Add to plan";
   }
 
-  function setBookingMode() {
-    bookingMode = true;
-    itemType = "appointment";
-    document.querySelectorAll("[data-plan-type]").forEach(button => button.classList.remove("active"));
-    $("bookWithPratikBtn")?.classList.add("active");
-    $("bookingQuick")?.classList.remove("hidden");
-    $("frogToggle").classList.add("hidden");
-    $("tinyStepField").classList.add("hidden");
-    $("itemFrog").checked = false;
-    if (!$("itemTitle").value) $("itemTitle").placeholder = "What do you want to book with Pratik?";
-    $("itemArea").value = "Relationships";
-    $("saveItemBtn").textContent = "＋ Add to plan & Book with Pratik ↗";
-    renderBookingQuick();
-    $("itemTitle").focus();
+  function detectedPlannerTimeZone() {
+    let detected = "";
+    try { detected = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (_) {}
+    if (detected === "Asia/Dhaka") return "Asia/Dhaka";
+    if (detected === "Europe/Berlin") return "Europe/Berlin";
+    return "Europe/Berlin";
+  }
+
+  function loadPlannerTimeZone() {
+    let stored = "";
+    try { stored = localStorage.getItem(TIMEZONE_PREF_KEY) || ""; } catch (_) {}
+    activePlannerTimeZone = TIME_ZONES[stored] ? stored : detectedPlannerTimeZone();
+    return activePlannerTimeZone;
+  }
+
+  function savePlannerTimeZone(zone) {
+    if (!TIME_ZONES[zone]) return;
+    activePlannerTimeZone = zone;
+    try { localStorage.setItem(TIMEZONE_PREF_KEY, zone); } catch (_) {}
+  }
+
+  function parseTimeInput(value, zone = activePlannerTimeZone) {
+    const text = String(value || "").trim();
+    if (!text) return { empty: true, valid: true, hhmm: "" };
+    if (TIME_ZONES[zone]?.inputFormat === "12h") {
+      const match = text.match(/^(0?[1-9]|1[0-2])(?::([0-5]\d))?\s*([AaPp][Mm])$/);
+      if (!match) return { empty: false, valid: false, hhmm: "" };
+      let hour = Number(match[1]);
+      const minute = Number(match[2] || 0);
+      const meridiem = match[3].toUpperCase();
+      if (meridiem === "AM" && hour === 12) hour = 0;
+      if (meridiem === "PM" && hour !== 12) hour += 12;
+      return { empty: false, valid: true, hhmm: `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}` };
+    }
+    const match = text.match(/^([01]?\d|2[0-3]):([0-5]\d)$/);
+    if (!match) return { empty: false, valid: false, hhmm: "" };
+    return { empty: false, valid: true, hhmm: `${String(Number(match[1])).padStart(2, "0")}:${match[2]}` };
+  }
+
+  function formatLocalTime(hhmm, zone = activePlannerTimeZone) {
+    if (!hhmm) return "";
+    const [hour, minute] = hhmm.split(":").map(Number);
+    if (TIME_ZONES[zone]?.inputFormat === "12h") {
+      const h = hour % 12 || 12;
+      return `${h}:${String(minute).padStart(2, "0")} ${hour >= 12 ? "PM" : "AM"}`;
+    }
+    return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  }
+
+  function zonedParts(timestamp, zone) {
+    const formatter = new Intl.DateTimeFormat("en-GB", {
+      timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+    });
+    const parts = Object.fromEntries(formatter.formatToParts(new Date(timestamp)).filter(part => part.type !== "literal").map(part => [part.type, part.value]));
+    return {
+      year: Number(parts.year), month: Number(parts.month), day: Number(parts.day),
+      hour: Number(parts.hour), minute: Number(parts.minute)
+    };
+  }
+
+  function wallTimeToTimestamp(dateValue, hhmm, zone) {
+    if (!dateValue || !hhmm || !TIME_ZONES[zone]) return null;
+    const [year, month, day] = dateValue.split("-").map(Number);
+    const [hour, minute] = hhmm.split(":").map(Number);
+    if (![year, month, day, hour, minute].every(Number.isFinite)) return null;
+    const desired = Date.UTC(year, month - 1, day, hour, minute, 0, 0);
+    let timestamp = desired;
+    for (let i = 0; i < 4; i++) {
+      const seen = zonedParts(timestamp, zone);
+      const seenAsUtc = Date.UTC(seen.year, seen.month - 1, seen.day, seen.hour, seen.minute, 0, 0);
+      const diff = desired - seenAsUtc;
+      timestamp += diff;
+      if (Math.abs(diff) < 60000) break;
+    }
+    const verify = zonedParts(timestamp, zone);
+    if (verify.year !== year || verify.month !== month || verify.day !== day || verify.hour !== hour || verify.minute !== minute) return null;
+    return timestamp;
+  }
+
+  function formatTimestampForZone(timestamp, zone) {
+    if (timestamp === null || timestamp === undefined || !TIME_ZONES[zone]) return null;
+    const parts = zonedParts(timestamp, zone);
+    const date = `${parts.year}-${String(parts.month).padStart(2, "0")}-${String(parts.day).padStart(2, "0")}`;
+    const hhmm = `${String(parts.hour).padStart(2, "0")}:${String(parts.minute).padStart(2, "0")}`;
+    return { date, hhmm, display: formatLocalTime(hhmm, zone) };
+  }
+
+  function convertWallTime(dateValue, hhmm, fromZone, toZone) {
+    const timestamp = wallTimeToTimestamp(dateValue, hhmm, fromZone);
+    return timestamp === null ? null : formatTimestampForZone(timestamp, toZone);
+  }
+
+  function plannerZoneLabel(zone) {
+    const config = TIME_ZONES[zone];
+    return `${config.flag} ${config.country}`;
+  }
+
+  function updateTimeZoneUI() {
+    const zone = activePlannerTimeZone;
+    const config = TIME_ZONES[zone];
+    const other = config.other;
+    const otherConfig = TIME_ZONES[other];
+    const select = $("itemTimeZone");
+    if (select) select.value = zone;
+    const is12 = config.inputFormat === "12h";
+    if ($("startTimeLabel")) $("startTimeLabel").textContent = `Start · ${config.country} (${is12 ? "12h AM/PM" : "24h"})`;
+    if ($("endTimeLabel")) $("endTimeLabel").textContent = `End · ${config.country} (${is12 ? "12h AM/PM" : "24h"})`;
+    if ($("startMirrorLabel")) $("startMirrorLabel").textContent = `${otherConfig.flag} ${otherConfig.country} time`;
+    if ($("endMirrorLabel")) $("endMirrorLabel").textContent = `${otherConfig.flag} ${otherConfig.country} time`;
+    if ($("startTimeHelp")) $("startTimeHelp").textContent = is12 ? "Example: 2:30 PM" : "Example: 14:30";
+    if ($("endTimeHelp")) $("endTimeHelp").textContent = is12 ? "Example: 4:00 PM" : "Example: 16:00";
+    if ($("itemStart")) {
+      $("itemStart").placeholder = is12 ? "2:30 PM" : "14:30";
+      $("itemStart").inputMode = is12 ? "text" : "numeric";
+    }
+    if ($("itemEnd")) {
+      $("itemEnd").placeholder = is12 ? "4:00 PM" : "16:00";
+      $("itemEnd").inputMode = is12 ? "text" : "numeric";
+    }
+    let detected = "";
+    try { detected = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (_) {}
+    if ($("timezoneDetected")) {
+      const detectedText = detected === "Asia/Dhaka" ? "Bangladesh" : detected === "Europe/Berlin" ? "Germany" : detected || "unknown";
+      $("timezoneDetected").textContent = `Device detected: ${detectedText}. You can switch manually.`;
+    }
+    updateTimeMirrors();
+  }
+
+  function updateSingleTimeMirror(inputId, mirrorId) {
+    const input = $(inputId);
+    const mirror = $(mirrorId);
+    const dateValue = $("itemDate")?.value || "";
+    if (!input || !mirror) return;
+    const parsed = parseTimeInput(input.value, activePlannerTimeZone);
+    input.classList.toggle("time-invalid", !parsed.valid);
+    if (parsed.empty) {
+      mirror.value = "";
+      mirror.placeholder = "—";
+      return;
+    }
+    if (!parsed.valid || !dateValue) {
+      mirror.value = parsed.valid ? "Choose a date" : "Invalid time";
+      return;
+    }
+    const other = TIME_ZONES[activePlannerTimeZone].other;
+    const converted = convertWallTime(dateValue, parsed.hhmm, activePlannerTimeZone, other);
+    mirror.value = converted ? `${converted.display}${converted.date !== dateValue ? ` · ${converted.date}` : ""}` : "Unavailable (DST time)";
+  }
+
+  function updateTimeMirrors() {
+    updateSingleTimeMirror("itemStart", "startTimeMirror");
+    updateSingleTimeMirror("itemEnd", "endTimeMirror");
+  }
+
+  function changePlannerTimeZone(newZone) {
+    if (!TIME_ZONES[newZone] || newZone === activePlannerTimeZone) return;
+    const oldZone = activePlannerTimeZone;
+    const dateValue = $("itemDate")?.value || dateKey(viewDate);
+    const oldStart = parseTimeInput($("itemStart")?.value || "", oldZone);
+    const oldEnd = parseTimeInput($("itemEnd")?.value || "", oldZone);
+    let convertedStart = null;
+    let convertedEnd = null;
+    if (oldStart.valid && !oldStart.empty) convertedStart = convertWallTime(dateValue, oldStart.hhmm, oldZone, newZone);
+    if (oldEnd.valid && !oldEnd.empty) convertedEnd = convertWallTime(dateValue, oldEnd.hhmm, oldZone, newZone);
+    savePlannerTimeZone(newZone);
+    if (convertedStart && $("itemDate")) $("itemDate").value = convertedStart.date;
+    if ($("itemStart")) $("itemStart").value = convertedStart ? convertedStart.display : "";
+    if ($("itemEnd")) $("itemEnd").value = convertedEnd ? convertedEnd.display : "";
+    updateTimeZoneUI();
+  }
+
+  function normalizedFormTime(inputId) {
+    const parsed = parseTimeInput($(inputId)?.value || "", activePlannerTimeZone);
+    return parsed.valid ? parsed.hhmm : null;
+  }
+
+  function normalizeVisibleTime(inputId) {
+    const input = $(inputId);
+    if (!input) return;
+    const parsed = parseTimeInput(input.value, activePlannerTimeZone);
+    if (parsed.valid && !parsed.empty) input.value = formatLocalTime(parsed.hhmm, activePlannerTimeZone);
+    updateTimeMirrors();
+  }
+
+  function directBookWithPratik() {
+    try {
+      const url = new URL(DIRECT_BOOKING_URL);
+      const title = $("itemTitle")?.value.trim() || "";
+      const date = $("itemDate")?.value || "";
+      const start = normalizedFormTime("itemStart");
+      const end = normalizedFormTime("itemEnd");
+      const germanyZone = "Europe/Berlin";
+      const startGermany = start ? convertWallTime(date, start, activePlannerTimeZone, germanyZone) : null;
+      const endGermany = end ? convertWallTime(date, end, activePlannerTimeZone, germanyZone) : null;
+      if (title) url.searchParams.set("what", title);
+      if (startGermany) {
+        url.searchParams.set("date", startGermany.date);
+        url.searchParams.set("time", startGermany.hhmm);
+      } else if (date) {
+        url.searchParams.set("date", date);
+      }
+      if (startGermany && endGermany) {
+        const startStamp = wallTimeToTimestamp(startGermany.date, startGermany.hhmm, germanyZone);
+        const endStamp = wallTimeToTimestamp(endGermany.date, endGermany.hhmm, germanyZone);
+        if (startStamp !== null && endStamp !== null && endStamp > startStamp) {
+          url.searchParams.set("duration", String(clamp(Math.round((endStamp - startStamp) / 60000), 15, 240)));
+        }
+      }
+      url.searchParams.set("type", "Appointment");
+      window.open(url.href, "_blank", "noopener,noreferrer");
+    } catch (_) {
+      window.open(DIRECT_BOOKING_URL, "_blank", "noopener,noreferrer");
+    }
   }
 
   function timeToMinutes(value) {
@@ -314,13 +526,13 @@
     return h * 60 + m;
   }
   function itemDuration(item) {
-    const start = timeToMinutes(item.start);
-    const end = timeToMinutes(item.end);
-    return start !== null && end !== null && end > start ? end - start : 0;
+    const start = itemTimestamp(item, "start");
+    const end = itemTimestamp(item, "end");
+    return start !== null && end !== null && end > start ? Math.round((end - start) / 60000) : 0;
   }
   function scheduleHasOverlap(items) {
     const timed = items
-      .map(item => ({ start: timeToMinutes(item.start), end: timeToMinutes(item.end) }))
+      .map(item => ({ start: itemTimestamp(item, "start"), end: itemTimestamp(item, "end") }))
       .filter(block => block.start !== null && block.end !== null && block.end > block.start)
       .sort((a, b) => a.start - b.start);
     for (let i = 1; i < timed.length; i++) if (timed[i].start < timed[i - 1].end) return true;
@@ -395,11 +607,173 @@
     return { current, best, total: days.length };
   }
 
-  function rewardPoints(data, stats) {
-    const milestoneBonus = milestones.filter(item => stats.best >= item.days).reduce((sum, item) => sum + item.bonus, 0);
-    return data.planningLog.length * 25 + data.sessions.length * 10 + milestoneBonus;
+  function executionForDate(key, data = loadData()) {
+    const items = itemsForDate(key, data);
+    const total = items.length;
+    const done = items.filter(item => item.done).length;
+    const percent = total ? Math.round(done / total * 100) : 0;
+    const frog = items.find(item => item.frog);
+    const frogDone = Boolean(frog && frog.done);
+    const focusMinutes = data.sessions.filter(session => session.planDate === key).reduce((sum, session) => sum + (Number(session.minutes) || 0), 0);
+    const isFuture = parseDate(key) > today();
+    const success = !isFuture && total > 0 && (percent >= 70 || frogDone);
+    let status = "open";
+    if (isFuture) status = "future";
+    else if (!total) status = "open";
+    else if (percent === 100) status = "perfect";
+    else if (success) status = "strong";
+    else if (percent > 0) status = "partial";
+    else status = "missed";
+    return { key, items, total, done, percent, frog, frogDone, focusMinutes, isFuture, success, status };
   }
 
+  function executionStreakStats(data = loadData()) {
+    const todayKey = dateKey(today());
+    const candidateDays = [...new Set(data.items.map(item => item.date))]
+      .filter(key => key <= todayKey)
+      .sort();
+    const successDays = candidateDays.filter(key => executionForDate(key, data).success);
+    if (!successDays.length) return { current: 0, best: 0, total: 0 };
+
+    let best = 1;
+    let run = 1;
+    for (let i = 1; i < successDays.length; i++) {
+      const diff = Math.round((parseDate(successDays[i]) - parseDate(successDays[i - 1])) / 86400000);
+      run = diff === 1 ? run + 1 : 1;
+      best = Math.max(best, run);
+    }
+
+    const successSet = new Set(successDays);
+    let cursor = today();
+    if (!successSet.has(dateKey(cursor))) {
+      cursor = new Date(cursor);
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    let current = 0;
+    while (successSet.has(dateKey(cursor))) {
+      current += 1;
+      cursor = new Date(cursor);
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return { current, best, total: successDays.length };
+  }
+
+  function challengeExecutionStats(data = loadData()) {
+    const challenge = data.challenge || createChallenge();
+    if (challenge.status === "completed") {
+      return { progress: 21, complete: true, startDate: challenge.startDate, runStart: challenge.startDate, current: 21 };
+    }
+    const startDate = parseDate(challenge.startDate);
+    const todayDate = today();
+    const successSet = new Set(
+      [...new Set(data.items.map(item => item.date))]
+        .filter(key => key >= challenge.startDate && key <= dateKey(todayDate))
+        .filter(key => executionForDate(key, data).success)
+    );
+    let cursor = todayDate;
+    if (!successSet.has(dateKey(cursor))) {
+      cursor = new Date(cursor);
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    let current = 0;
+    let runStart = "";
+    while (cursor >= startDate && successSet.has(dateKey(cursor))) {
+      current += 1;
+      runStart = dateKey(cursor);
+      cursor = new Date(cursor);
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return { progress: clamp(current, 0, 21), complete: current >= 21, startDate: challenge.startDate, runStart, current };
+  }
+
+  function archiveChallenge(data, status, progress, endDate = dateKey(today())) {
+    const challenge = data.challenge;
+    if (!challenge) return;
+    if (data.challengeHistory.some(entry => entry.id === challenge.id)) return;
+    data.challengeHistory.push({
+      id: challenge.id,
+      startDate: challenge.startDate,
+      endDate,
+      status: status === "completed" ? "completed" : "restarted",
+      progress: clamp(Number(progress) || 0, 0, 21),
+      endedAt: Date.now()
+    });
+  }
+
+  function syncChallengeCompletion(data) {
+    if (!data.challenge) data.challenge = createChallenge();
+    if (data.challenge.status === "completed") return false;
+    const stats = challengeExecutionStats(data);
+    if (!stats.complete) return false;
+    data.challenge.status = "completed";
+    data.challenge.completedAt = Date.now();
+    data.challenge.completedDate = dateKey(today());
+    archiveChallenge(data, "completed", 21, data.challenge.completedDate);
+    return true;
+  }
+
+  function restartChallenge() {
+    const data = loadData();
+    const current = challengeExecutionStats(data);
+    const message = data.challenge?.status === "completed"
+      ? "Start a new 21-day challenge? Your completed challenge, tasks, points and lifetime stats will stay محفوظed."
+      : `Restart the current challenge from Day 0? Your ${current.progress}/21 challenge progress will reset, but tasks, completion history, points, focus sessions and lifetime stats will stay.`;
+    if (!window.confirm(message.replace("محفوظed", "saved"))) return;
+    mutate(currentData => {
+      if (!currentData.challenge) currentData.challenge = createChallenge();
+      const stats = challengeExecutionStats(currentData);
+      if (currentData.challenge.status !== "completed") archiveChallenge(currentData, "restarted", stats.progress);
+      currentData.challenge = createChallenge(dateKey(today()));
+    });
+    renderAll();
+    setHubTab("rewards");
+    burstCelebration(["🌱", "✨", "🚀"], 10);
+    showToast(data.challenge?.status === "completed" ? "New 21-day challenge started 🌱" : "Challenge restarted from Day 0 ↻");
+  }
+
+  function resetProgressHistory() {
+    const answer = window.prompt("This resets completion marks, seals, focus sessions, challenge history, streaks and points, but keeps your planned items and intentions. Type RESET to continue.");
+    if (String(answer || "").trim().toUpperCase() !== "RESET") {
+      showToast("Progress reset cancelled");
+      return;
+    }
+    mutate(data => {
+      data.items.forEach(item => { item.done = false; });
+      data.sealedDays = [];
+      data.planningLog = [];
+      data.sessions = [];
+      data.challengeHistory = [];
+      data.challenge = createChallenge(dateKey(today()));
+    });
+    renderAll();
+    setHubTab("rewards");
+    showToast("Progress history reset. Planned items were kept.");
+  }
+
+  function lifetimeStats(data = loadData()) {
+    const todayKey = dateKey(today());
+    const executionStats = executionStreakStats(data);
+    const completedItems = data.items.filter(item => item.date <= todayKey && item.done).length;
+    const focusMinutes = data.sessions.filter(session => session.planDate <= todayKey).reduce((sum, session) => sum + (Number(session.minutes) || 0), 0);
+    const completedChallenges = data.challengeHistory.filter(entry => entry.status === "completed").length;
+    const restartedChallenges = data.challengeHistory.filter(entry => entry.status === "restarted").length;
+    return { completedItems, focusMinutes, completedChallenges, restartedChallenges, currentStreak: executionStats.current, bestStreak: executionStats.best };
+  }
+
+  function rewardPoints(data, executionStats = executionStreakStats(data)) {
+    const todayKey = dateKey(today());
+    const eligibleItems = data.items.filter(item => item.date <= todayKey);
+    const doneItems = eligibleItems.filter(item => item.done);
+    const frogDone = doneItems.filter(item => item.frog).length;
+    const perfectDays = [...new Set(eligibleItems.map(item => item.date))].filter(key => executionForDate(key, data).status === "perfect").length;
+    const milestoneBonus = milestones.filter(item => executionStats.best >= item.days).reduce((sum, item) => sum + item.bonus, 0);
+    return data.sealedDays.filter(key => key <= todayKey).length * 10
+      + doneItems.length * 5
+      + frogDone * 20
+      + data.sessions.filter(session => session.planDate <= todayKey).length * 10
+      + perfectDays * 25
+      + milestoneBonus;
+  }
 
   function formatMinutesShort(total) {
     const safe = Math.max(0, Math.round(Number(total) || 0));
@@ -480,26 +854,22 @@
       const d = new Date(base);
       d.setDate(base.getDate() - i);
       const key = dateKey(d);
-      const plannedItems = data.items.filter(item => item.date === key).length;
-      const focused = data.sessions.filter(session => session.planDate === key).length;
-      const sealed = data.sealedDays.includes(key) || data.planningLog.includes(key) ? 1 : 0;
-      const score = plannedItems * 12 + focused * 18 + sealed * 35;
-      entries.push({ label: d.toLocaleDateString(undefined, { weekday: "short" }).slice(0, 2), value: score, sealed });
+      const execution = executionForDate(key, data);
+      entries.push({ label: d.toLocaleDateString(undefined, { weekday: "short" }).slice(0, 2), value: execution.percent, status: execution.status });
     }
-    const max = Math.max(...entries.map(entry => entry.value), 50);
     host.innerHTML = entries.map(entry => {
-      const height = Math.max(10, Math.round(entry.value / max * 100));
-      return `<div class="spark-col"><div class="spark-bar" style="height:${height}%; opacity:${entry.sealed ? 1 : .72}"></div><small>${escapeHtml(entry.label)}</small></div>`;
+      const height = Math.max(8, entry.value);
+      return `<div class="spark-col"><div class="spark-bar ${entry.status}" style="height:${height}%"></div><small>${escapeHtml(entry.label)}</small></div>`;
     }).join("");
 
-    const stats = streakStats(data);
+    const stats = executionStreakStats(data);
     const line = stats.current >= 7
-      ? "Momentum loves repetition. Keep the chain alive."
+      ? "Seven days of real follow-through. Protect the chain."
       : stats.current >= 3
-        ? "The habit is warming up. Keep showing up before the day arrives."
+        ? "Execution is becoming a pattern. Keep finishing what you planned."
         : stats.current >= 1
-          ? "A streak starts with one sealed evening. Repeat tomorrow."
-          : "Every sealed plan is one vote for your future self.";
+          ? "The streak is alive. Repeat the follow-through tomorrow."
+          : "Planning creates direction. Completion creates evidence.";
     if ($("rewardMotivation")) $("rewardMotivation").textContent = line;
   }
 
@@ -550,17 +920,22 @@
   function startHeroRotation() {
     clearInterval(heroMessageTimer);
     renderHeroMessage(false);
-    heroMessageTimer = setInterval(nextHeroMessage, 15000);
+    heroMessageTimer = setInterval(nextHeroMessage, 5000);
   }
 
   function renderHeaderDate() {
     $("plannerClockDate").textContent = `Tonight · ${formatDate(new Date(), true)}`;
   }
 
-  function renderIntent(data = loadData()) {
-    const key = dateKey(viewDate);
-    $("dayIntention").value = data.intentions[key] || "";
-    $("intentDateBadge").textContent = displayDayName(viewDate);
+  function renderIntent() {
+    const dayName = displayDayName(viewDate);
+    const isToday = dateKey(viewDate) === dateKey(today());
+    const isTomorrow = dateKey(viewDate) === dateKey(tomorrow());
+    $("intentDateBadge").textContent = dayName;
+    $("todayQuickBtn")?.classList.toggle("active", isToday);
+    $("tomorrowQuickBtn")?.classList.toggle("active", isTomorrow);
+    $("modalTodayBtn")?.classList.toggle("active", isToday);
+    $("modalTomorrowBtn")?.classList.toggle("active", isTomorrow);
   }
 
   function renderAgenda(data = loadData()) {
@@ -580,6 +955,7 @@
     if ($("agendaTaskCount")) $("agendaTaskCount").textContent = taskCount;
     if ($("agendaAppointmentCount")) $("agendaAppointmentCount").textContent = appointmentCount;
     if ($("agendaPlannedTime")) $("agendaPlannedTime").textContent = formatMinutesShort(totalMinutes);
+    if ($("agendaDoneCount")) $("agendaDoneCount").textContent = `${items.filter(item => item.done).length}/${items.length}`;
     if ($("sealQualityScore")) $("sealQualityScore").textContent = `${qualityFor(items).score}/100`;
 
     const host = $("agendaList");
@@ -599,11 +975,16 @@
       </div>`;
     } else {
       host.innerHTML = items.map(item => {
-        const time = item.start ? `${item.start}${item.end ? ` – ${item.end}` : ""}` : "Anytime";
+        const itemZone = TIME_ZONES[item.timeZone] ? item.timeZone : detectedPlannerTimeZone();
+        const zoneConfig = TIME_ZONES[itemZone];
+        const otherZone = zoneConfig.other;
+        const time = item.start ? `${formatLocalTime(item.start, itemZone)}${item.end ? ` – ${formatLocalTime(item.end, itemZone)}` : ""}` : "Anytime";
+        const convertedStart = item.start ? convertWallTime(item.date, item.start, itemZone, otherZone) : null;
+        const otherTime = convertedStart ? `${TIME_ZONES[otherZone].flag} ${convertedStart.display}` : "";
         const detail = [item.area, item.tinyStep ? `First: ${item.tinyStep}` : "", item.notes || ""].filter(Boolean).join(" · ");
         return `<article class="agenda-item ${escapeHtml(item.type)} ${item.frog ? "frog" : ""} ${item.done ? "done" : ""}">
           <button class="complete-btn" type="button" data-toggle="${escapeHtml(item.id)}" aria-label="${item.done ? "Mark incomplete" : "Mark complete"}">${item.done ? "✓" : "○"}</button>
-          <div class="agenda-time">${escapeHtml(time)}</div>
+          <div class="agenda-time">${escapeHtml(time)}${item.start ? `<small>${zoneConfig.flag} ${escapeHtml(zoneConfig.country)}${otherTime ? ` · ${escapeHtml(otherTime)}` : ""}</small>` : ""}</div>
           <div class="agenda-copy"><div class="agenda-title-line"><strong>${escapeHtml(item.title)}</strong>${item.frog ? '<span class="frog-pill">🐸 MUST-WIN</span>' : ""}</div>${detail ? `<span>${escapeHtml(detail)}</span>` : ""}</div>
           <div class="agenda-meta"><span class="type-pill ${escapeHtml(item.type)}">${itemTypeIcon(item.type)} ${itemTypeLabel(item.type)}</span><span class="priority-pill ${escapeHtml(item.priority || "medium")}">${escapeHtml((item.priority || "medium").toUpperCase())}</span></div>
           <div class="item-actions">
@@ -635,19 +1016,6 @@
       : quality.score >= 80 ? "Strong plan — one more refinement." : quality.score >= 60 ? "Good direction. Protect the important work." : quality.score >= 40 ? "The shape is forming. Make priorities sharper." : "Give tomorrow a clear target.";
     $("qualityList").innerHTML = quality.rules.map(rule => `<div class="quality-rule ${rule.good ? "good" : ""}"><span>${rule.good ? "✓" : "○"}</span><div><strong>${escapeHtml(rule.title)}</strong><small>${escapeHtml(rule.detail)}</small></div></div>`).join("");
 
-    if (quality.frog) {
-      $("frogTitle").textContent = quality.frog.title;
-      $("frogText").textContent = quality.frog.tinyStep
-        ? `First move: ${quality.frog.tinyStep}`
-        : "Give this task a tiny first step so starting requires less willpower.";
-      $("frogJumpBtn").textContent = "Edit must-win →";
-      $("frogJumpBtn").dataset.editFrog = quality.frog.id;
-    } else {
-      $("frogTitle").textContent = "Choose your Frog";
-      $("frogText").textContent = "Pick the one high-value task that deserves your best energy before easier work expands.";
-      $("frogJumpBtn").textContent = "Choose from the plan →";
-      delete $("frogJumpBtn").dataset.editFrog;
-    }
   }
 
   function renderFocusTasks(data = loadData()) {
@@ -660,50 +1028,177 @@
   }
 
   function renderRewards(data = loadData()) {
-    const stats = streakStats(data);
-    const challenge = clamp(stats.current, 0, 21);
-    $("heroStreak").textContent = stats.current;
-    $("challengeLabel").textContent = `Day ${challenge} of 21`;
-    $("challengeBar").style.width = `${challenge / 21 * 100}%`;
-    $("challengeMessage").textContent = stats.current >= 21
-      ? "Twenty-one consecutive plans. The preparation habit is established."
-      : stats.current > 0 ? `${21 - challenge} more consecutive day${21 - challenge === 1 ? "" : "s"} to complete the challenge.` : "Seal your first plan and start the chain.";
+    const executionStats = executionStreakStats(data);
+    const planningStats = streakStats(data);
+    const currentChallenge = challengeExecutionStats(data);
+    const challengeProgress = data.challenge?.status === "completed" ? 21 : currentChallenge.progress;
+    const lifetime = lifetimeStats(data);
 
-    const points = rewardPoints(data, stats);
+    $("heroStreak").textContent = executionStats.current;
+    $("challengeLabel").textContent = data.challenge?.status === "completed" ? "21 / 21 complete" : `Day ${challengeProgress} of 21`;
+    $("challengeBar").style.width = `${challengeProgress / 21 * 100}%`;
+    $("challengeMessage").textContent = data.challenge?.status === "completed"
+      ? "Challenge complete 🏆 Your lifetime execution streak can keep growing."
+      : challengeProgress > 0
+        ? `${21 - challengeProgress} more consecutive execution day${21 - challengeProgress === 1 ? "" : "s"} in this challenge.`
+        : "Complete at least 70% of a planned day—or finish its must-win—to start this challenge chain.";
+
+    const points = rewardPoints(data, executionStats);
     $("rewardPoints").textContent = points;
-    const next = milestones.find(item => stats.best < item.days);
+    const next = milestones.find(item => executionStats.best < item.days);
     if (next) {
       $("nextRewardIcon").textContent = next.icon;
       $("nextRewardTitle").textContent = `${next.label} badge`;
-      $("nextRewardText").textContent = `Seal ${next.days} consecutive days · +${next.bonus} bonus`;
-      $("rewardProgress").style.width = `${clamp(stats.current / next.days * 100, 0, 100)}%`;
+      $("nextRewardText").textContent = `Execute ${next.days} consecutive days · +${next.bonus} bonus`;
+      $("rewardProgress").style.width = `${clamp(executionStats.current / next.days * 100, 0, 100)}%`;
     } else {
       $("nextRewardIcon").textContent = "🏆";
-      $("nextRewardTitle").textContent = "21-day challenge complete";
-      $("nextRewardText").textContent = "All planning badges unlocked";
+      $("nextRewardTitle").textContent = "21-day execution milestone";
+      $("nextRewardText").textContent = "All lifetime execution badges unlocked";
       $("rewardProgress").style.width = "100%";
     }
 
-    $("badgeRow").innerHTML = milestones.map(item => `<div class="reward-badge ${stats.best >= item.days ? "unlocked" : ""}" title="${escapeHtml(item.label)}"><span>${item.icon}</span><small>${item.days} DAYS</small></div>`).join("");
+    $("badgeRow").innerHTML = milestones.map(item => `<div class="reward-badge ${executionStats.best >= item.days ? "unlocked" : ""}" title="${escapeHtml(item.label)}"><span>${item.icon}</span><small>${item.days} DAYS</small></div>`).join("");
     $("challengeDots").innerHTML = Array.from({ length: 21 }, (_, index) => {
       const number = index + 1;
-      const cls = number <= challenge ? "done" : number === challenge + 1 && challenge < 21 ? "current" : "";
+      const cls = number <= challengeProgress ? "done" : number === challengeProgress + 1 && challengeProgress < 21 ? "current" : "";
       return `<div class="challenge-dot ${cls}">${number}</div>`;
     }).join("");
+
+    $("currentChallengeProgress").textContent = `${challengeProgress}/21`;
+    $("completedChallengesCount").textContent = lifetime.completedChallenges;
+    $("challengeBestStreak").textContent = lifetime.bestStreak;
+    $("challengeStatePill").textContent = data.challenge?.status === "completed" ? "COMPLETE" : "ACTIVE";
+    $("challengeStatePill").classList.toggle("complete", data.challenge?.status === "completed");
+    $("challengeCardTitle").textContent = data.challenge?.status === "completed" ? "Challenge complete 🏆" : "Build the execution habit.";
+    $("challengeLifeNote").textContent = data.challenge?.status === "completed"
+      ? `Completed ${data.challenge.completedDate ? formatDate(parseDate(data.challenge.completedDate)) : ""}. Start a new challenge whenever you want; lifetime stats stay intact.`
+      : `Started ${formatDate(parseDate(data.challenge?.startDate || dateKey(today())))} · restarting resets only this attempt.`;
+    $("challengeActionBtn").textContent = data.challenge?.status === "completed" ? "🏆 Start new 21-day challenge" : "↻ Restart challenge";
+    $("restartChallengeMenuBtn").textContent = data.challenge?.status === "completed" ? "🏆 Start a new challenge" : "↻ Restart current challenge";
+
+    $("lifetimeCompletedTasks").textContent = lifetime.completedItems;
+    $("lifetimeCurrentStreak").textContent = lifetime.currentStreak;
+    $("lifetimeBestStreak").textContent = lifetime.bestStreak;
+    $("lifetimeFocusTime").textContent = formatMinutesShort(lifetime.focusMinutes);
+    $("challengeHistorySummary").textContent = lifetime.completedChallenges
+      ? `${lifetime.completedChallenges} completed${lifetime.restartedChallenges ? ` · ${lifetime.restartedChallenges} restarted` : ""}`
+      : lifetime.restartedChallenges ? `${lifetime.restartedChallenges} restarted attempt${lifetime.restartedChallenges === 1 ? "" : "s"}` : "No completed challenges yet";
+
+    const history = [...data.challengeHistory].sort((a, b) => (b.endedAt || 0) - (a.endedAt || 0)).slice(0, 5);
+    $("challengeHistoryList").innerHTML = history.length ? history.map(entry => {
+      const completed = entry.status === "completed";
+      const label = completed ? "Completed" : "Restarted";
+      const icon = completed ? "🏆" : "↻";
+      const dates = entry.startDate && entry.endDate ? `${formatDate(parseDate(entry.startDate))} → ${formatDate(parseDate(entry.endDate))}` : "Previous attempt";
+      return `<div class="challenge-history-row ${entry.status}"><span>${icon}</span><div><strong>${label}</strong><small>${escapeHtml(dates)}</small></div><b>${entry.progress}/21</b></div>`;
+    }).join("") : `<div class="challenge-history-empty">Finish or restart a challenge and its record will appear here.</div>`;
+
+    const rewardCard = document.querySelector(".reward-card");
+    if (rewardCard) rewardCard.dataset.planningStreak = String(planningStats.current);
+  }
+
+  function renderProgress(data = loadData()) {
+    const selectedKey = dateKey(viewDate);
+    const selected = executionForDate(selectedKey, data);
+    const executionStats = executionStreakStats(data);
+    $("progressDayTitle").textContent = `${displayDayName(viewDate)} · ${formatDate(viewDate)}`;
+    $("progressDoneCount").textContent = `${selected.done}/${selected.total}`;
+    $("progressFrogStatus").textContent = selected.frog ? (selected.frogDone ? "Done ✓" : "Open") : "None";
+    $("progressFocusMinutes").textContent = formatMinutesShort(selected.focusMinutes);
+    $("progressExecutionStreak").textContent = executionStats.current;
+    $("executionPercent").textContent = `${selected.percent}%`;
+    $("executionRing").style.background = `conic-gradient(${selected.percent >= 70 ? "#25b67a" : selected.percent > 0 ? "#e9a93a" : "#cbd5e1"} 0 ${selected.percent}%, rgba(83,99,126,.12) ${selected.percent}% 100%)`;
+    const statusText = selected.isFuture
+      ? "Future day — execution starts when the day arrives."
+      : !selected.total
+        ? "No planned items for this day."
+        : selected.status === "perfect"
+          ? "Perfect day: every planned item is complete. 🌟"
+          : selected.success
+            ? selected.frogDone && selected.percent < 70 ? "Must-win completed — this day counts as an execution win. 🐸" : "Strong follow-through — this day counts toward your execution streak."
+            : selected.status === "partial"
+              ? "Some progress, but below the 70% execution threshold."
+              : "Nothing completed yet. One finished item changes the direction.";
+    $("executionStatus").textContent = statusText;
+    $("executionStatus").className = `execution-status ${selected.status}`;
+
+    const bars = [];
+    let completedSum = 0;
+    let daysWithPlans = 0;
+    for (let i = 6; i >= 0; i--) {
+      const d = today();
+      d.setDate(d.getDate() - i);
+      const ex = executionForDate(dateKey(d), data);
+      if (ex.total) { completedSum += ex.percent; daysWithPlans += 1; }
+      bars.push({ d, ex });
+    }
+    $("completionBars").innerHTML = bars.map(({ d, ex }) => `<button type="button" class="completion-day ${ex.status}" data-progress-date="${dateKey(d)}" title="${formatDate(d)} · ${ex.done}/${ex.total} complete"><span class="completion-value">${ex.total ? ex.percent : 0}%</span><div class="completion-track"><i style="height:${Math.max(ex.total ? 8 : 3, ex.percent)}%"></i></div><small>${d.toLocaleDateString(undefined,{weekday:"short"}).slice(0,2)}</small></button>`).join("");
+    $("sevenDayAverage").textContent = `${daysWithPlans ? Math.round(completedSum / daysWithPlans) : 0}% avg`;
+
+    const heat = [];
+    for (let i = 20; i >= 0; i--) {
+      const d = today();
+      d.setDate(d.getDate() - i);
+      heat.push({ d, ex: executionForDate(dateKey(d), data) });
+    }
+    $("executionBestStreak").textContent = `Best ${executionStats.best}`;
+    $("executionHeatmap").innerHTML = heat.map(({ d, ex }) => `<button type="button" class="execution-cell ${ex.status}" data-progress-date="${dateKey(d)}" title="${formatDate(d)} · ${ex.done}/${ex.total} · ${ex.percent}%"><strong>${d.getDate()}</strong><span>${ex.total ? `${ex.percent}%` : "—"}</span></button>`).join("");
+
+    const historyDays = [...new Set(data.items.map(item => item.date))]
+      .filter(key => key <= dateKey(today()))
+      .sort().reverse().slice(0, 8);
+    $("executionHistory").innerHTML = historyDays.length ? historyDays.map(key => {
+      const ex = executionForDate(key, data);
+      const d = parseDate(key);
+      const frogText = ex.frog ? (ex.frogDone ? "🐸 ✓" : "🐸 open") : "";
+      return `<button type="button" class="history-row ${ex.status}" data-progress-date="${key}"><span class="history-date"><strong>${formatDate(d)}</strong><small>${frogText}${frogText && ex.focusMinutes ? " · " : ""}${ex.focusMinutes ? `🎯 ${formatMinutesShort(ex.focusMinutes)}` : ""}</small></span><span class="history-score"><strong>${ex.done}/${ex.total}</strong><small>${ex.percent}%</small></span><i>›</i></button>`;
+    }).join("") : `<div class="history-empty">Complete items on a planned day and your execution history will appear here.</div>`;
   }
 
   function renderAll() {
     const data = loadData();
+    if (syncChallengeCompletion(data)) saveData(data);
     renderHeaderDate();
     renderIntent(data);
     renderAgenda(data);
     renderQuality(data);
     renderFocusTasks(data);
     renderRewards(data);
+    renderProgress(data);
     renderMotivation(data);
     renderInsightCharts(data);
     renderWeeklyPulse(data);
-    renderBookingQuick();
+  }
+
+  function setQuickAddOpen(open = true) {
+    const modal = $("quickAddModal");
+    const body = $("quickAddBody");
+    if (!modal || !body) return;
+    body.classList.remove("collapsed");
+    if (open) {
+      if (typeof modal.showModal === "function") {
+        if (!modal.open) modal.showModal();
+      } else {
+        modal.setAttribute("open", "");
+        modal.classList.add("fallback-open");
+      }
+      $("composeCard")?.classList.add("quick-add-open");
+      requestAnimationFrame(() => $("itemTitle")?.focus());
+    } else {
+      if (typeof modal.close === "function" && modal.open) modal.close();
+      else {
+        modal.removeAttribute("open");
+        modal.classList.remove("fallback-open");
+      }
+      $("composeCard")?.classList.remove("quick-add-open");
+    }
+  }
+
+  function toggleQuickAdd() {
+    const modal = $("quickAddModal");
+    if (!modal) return;
+    setQuickAddOpen(!modal.open);
   }
 
   function resetForm() {
@@ -716,6 +1211,8 @@
     $("itemTitle").placeholder = "What needs to happen?";
     $("saveItemBtn").textContent = "＋ Add to plan";
     setType("task");
+    if ($("itemTimeZone")) $("itemTimeZone").value = activePlannerTimeZone;
+    updateTimeZoneUI();
   }
 
   function submitItem(event) {
@@ -723,52 +1220,50 @@
     const id = $("itemId").value;
     const title = $("itemTitle").value.trim();
     const date = $("itemDate").value;
-    const start = $("itemStart").value;
-    const end = $("itemEnd").value;
+    const startParsed = parseTimeInput($("itemStart").value, activePlannerTimeZone);
+    const endParsed = parseTimeInput($("itemEnd").value, activePlannerTimeZone);
+    const start = startParsed.valid ? startParsed.hhmm : null;
+    const end = endParsed.valid ? endParsed.hhmm : null;
     const priority = $("itemPriority").value;
     const area = $("itemArea").value;
     const tinyStep = itemType === "appointment" ? "" : $("itemTinyStep").value.trim();
     const notes = $("itemNotes").value.trim();
     const frog = itemType !== "appointment" && $("itemFrog").checked;
-    const shouldBookWithPratik = bookingMode;
 
     if (!title || !date) return;
-    if (shouldBookWithPratik && !start) {
-      showToast("Choose a start time for Book with Pratik.");
+    if (!startParsed.valid || !endParsed.valid) {
+      showToast(activePlannerTimeZone === "Asia/Dhaka" ? "Use time like 2:30 PM." : "Use 24-hour time like 14:30.");
+      updateTimeMirrors();
       return;
     }
-    if (start && end && end <= start) {
-      showToast("End time must be after start time.");
-      return;
+    if (start && end) {
+      const startStamp = wallTimeToTimestamp(date, start, activePlannerTimeZone);
+      const endStamp = wallTimeToTimestamp(date, end, activePlannerTimeZone);
+      if (startStamp === null || endStamp === null) {
+        showToast("That local time is unavailable on this date because of a daylight-saving change.");
+        return;
+      }
+      if (endStamp <= startStamp) {
+        showToast("End time must be after start time.");
+        return;
+      }
     }
 
     mutate(data => {
       if (frog) data.items.forEach(item => { if (item.date === date) item.frog = false; });
       if (id) {
         const item = data.items.find(entry => entry.id === id);
-        if (item) Object.assign(item, { title, date, start, end, priority: frog ? "high" : priority, area, tinyStep, notes, type: itemType, frog, source: shouldBookWithPratik ? "pratik-booking" : item.source, updatedAt: Date.now() });
+        if (item) Object.assign(item, { title, date, start: start || "", end: end || "", timeZone: activePlannerTimeZone, priority: frog ? "high" : priority, area, tinyStep, notes, type: itemType, frog, source: item.source, updatedAt: Date.now() });
       } else {
-        data.items.push({ id: uid(), title, date, start, end, priority: frog ? "high" : priority, area, tinyStep, notes, type: itemType, frog, source: shouldBookWithPratik ? "pratik-booking" : "manual", done: false, createdAt: Date.now() });
+        data.items.push({ id: uid(), title, date, start: start || "", end: end || "", timeZone: activePlannerTimeZone, priority: frog ? "high" : priority, area, tinyStep, notes, type: itemType, frog, source: "manual", done: false, createdAt: Date.now() });
       }
     });
-
-    let bookingDuration = 30;
-    if (start && end) {
-      const startMinutes = timeToMinutes(start);
-      const endMinutes = timeToMinutes(end);
-      if (startMinutes !== null && endMinutes !== null && endMinutes > startMinutes) bookingDuration = clamp(endMinutes - startMinutes, 15, 240);
-    }
-    const bookingPrefill = shouldBookWithPratik ? { what: title, date, time: start, duration: bookingDuration, note: notes } : null;
 
     viewDate = parseDate(date);
     resetForm();
     renderAll();
-    if (shouldBookWithPratik) {
-      const opened = openBookingPage(bookingPrefill);
-      if (opened) showToast("Added to your plan — finish the booking in the new tab 📅");
-    } else {
-      showToast(id ? "Plan item updated ✓" : frog ? "Must-win task added 🐸" : "Added to your plan ✨");
-    }
+    setQuickAddOpen(false);
+    showToast(id ? "Plan item updated ✓" : frog ? "Must-win task added 🐸" : "Added to your plan ✨");
   }
 
   function editItem(id) {
@@ -779,8 +1274,11 @@
     $("itemId").value = item.id;
     $("itemTitle").value = item.title;
     $("itemDate").value = item.date;
-    $("itemStart").value = item.start || "";
-    $("itemEnd").value = item.end || "";
+    activePlannerTimeZone = TIME_ZONES[item.timeZone] ? item.timeZone : activePlannerTimeZone;
+    if ($("itemTimeZone")) $("itemTimeZone").value = activePlannerTimeZone;
+    $("itemStart").value = formatLocalTime(item.start || "", activePlannerTimeZone);
+    $("itemEnd").value = formatLocalTime(item.end || "", activePlannerTimeZone);
+    updateTimeZoneUI();
     $("itemPriority").value = item.priority || "medium";
     $("itemArea").value = item.area || "Personal";
     $("itemTinyStep").value = item.tinyStep || "";
@@ -790,7 +1288,7 @@
     $("cancelEditBtn").classList.remove("hidden");
     $("saveItemBtn").textContent = "Save changes";
     if ($("moreDetails")) $("moreDetails").open = true;
-    $("composeCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    setQuickAddOpen(true);
   }
 
   function deleteItem(id) {
@@ -805,11 +1303,41 @@
   }
 
   function toggleItem(id) {
+    const beforeData = loadData();
+    const beforeItem = beforeData.items.find(entry => entry.id === id);
+    if (!beforeItem) return;
+    const beforeExecution = executionForDate(beforeItem.date, beforeData);
+    const markingDone = !beforeItem.done;
+    const wasFrog = Boolean(beforeItem.frog);
     mutate(data => {
       const item = data.items.find(entry => entry.id === id);
-      if (item) item.done = !item.done;
+      if (item) {
+        item.done = !item.done;
+        item.completedAt = item.done ? Date.now() : null;
+      }
     });
+    const afterData = loadData();
+    const afterExecution = executionForDate(beforeItem.date, afterData);
+    const challengeCompletedNow = syncChallengeCompletion(afterData);
+    if (challengeCompletedNow) saveData(afterData);
     renderAll();
+    if (challengeCompletedNow) {
+      burstCelebration(["🏆", "🔥", "✨", "💎", "🎉"], 32);
+      showToast("21-day challenge complete 🏆 Your lifetime streak continues.");
+      setHubTab("rewards");
+    } else if (markingDone) {
+      if (afterExecution.status === "perfect" && beforeExecution.status !== "perfect") {
+        burstCelebration(["🌟", "🎉", "✨", "🏆"], 24);
+        showToast(`Perfect day 🌟 ${afterExecution.done}/${afterExecution.total} complete · +25 day bonus`);
+      } else if (afterExecution.success && !beforeExecution.success) {
+        burstCelebration(["🔥", "✅", "⚡", "✨"], 18);
+        showToast(`Execution day unlocked 🔥 ${afterExecution.percent}% complete`);
+      } else {
+        showToast(wasFrog ? "Must-win completed 🐸 +25 points" : "Completed ✓ +5 points");
+      }
+    } else {
+      showToast("Marked incomplete — progress updated");
+    }
   }
 
   function makeFrog(id) {
@@ -823,23 +1351,13 @@
     showToast("Must-win task chosen 🐸");
   }
 
-  function saveIntention() {
-    const key = dateKey(viewDate);
-    const value = $("dayIntention").value.trim();
-    mutate(data => {
-      if (value) data.intentions[key] = value;
-      else delete data.intentions[key];
-    });
-    showToast(value ? "Tomorrow’s identity intention saved ✦" : "Intention cleared");
-  }
-
   function sealPlan() {
     const key = dateKey(viewDate);
     const data = loadData();
     const items = itemsForDate(key, data);
     if (!items.length) {
       showToast("Add at least one item before sealing the plan.");
-      $("composeCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      setQuickAddOpen(true);
       return;
     }
     if (data.sealedDays.includes(key)) {
@@ -864,6 +1382,12 @@
     renderAll();
   }
 
+  function goToday() {
+    viewDate = today();
+    resetForm();
+    renderAll();
+  }
+
   function goTomorrow() {
     viewDate = tomorrow();
     resetForm();
@@ -871,7 +1395,7 @@
   }
 
   function jumpToForm() {
-    $("composeCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    setQuickAddOpen(true);
     setTimeout(() => $("itemTitle").focus(), 400);
   }
 
@@ -883,6 +1407,419 @@
     document.querySelector(".focus-card")?.scrollIntoView({ behavior: "smooth", block: "center" });
     resetFocusTimer(false);
     showToast("Focus task selected 🎯");
+  }
+
+
+  function loadFocusSoundSettings() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(FOCUS_SOUND_KEY) || "null") || {};
+      if (focusSoundModes[stored.mode]) focusAudio.mode = stored.mode;
+      if (typeof stored.enabled === "boolean") focusAudio.enabled = stored.enabled;
+      if (Number.isFinite(Number(stored.volume))) focusAudio.volume = clamp(Number(stored.volume), 0, 1);
+    } catch (_) {}
+  }
+
+  function saveFocusSoundSettings() {
+    try {
+      localStorage.setItem(FOCUS_SOUND_KEY, JSON.stringify({ mode: focusAudio.mode, enabled: focusAudio.enabled, volume: focusAudio.volume }));
+    } catch (_) {}
+  }
+
+  function ensureFocusAudioContext() {
+    if (!focusAudio.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return null;
+      const ctx = new AudioCtx();
+      const master = ctx.createGain();
+      const compressor = ctx.createDynamicsCompressor();
+      master.gain.value = focusAudio.volume;
+      compressor.threshold.value = -18;
+      compressor.knee.value = 24;
+      compressor.ratio.value = 4;
+      compressor.attack.value = 0.01;
+      compressor.release.value = 0.35;
+      master.connect(compressor);
+      compressor.connect(ctx.destination);
+      focusAudio.ctx = ctx;
+      focusAudio.master = master;
+      focusAudio.compressor = compressor;
+    }
+    if (focusAudio.ctx.state === "suspended") focusAudio.ctx.resume().catch(() => {});
+    return focusAudio.ctx;
+  }
+
+  function registerAudioNode(node) {
+    focusAudio.nodes.push(node);
+    return node;
+  }
+
+  function registerAudioTimer(timer) {
+    focusAudio.timers.push(timer);
+    return timer;
+  }
+
+  function clearFocusAudioEngine() {
+    if (focusAudio.element) {
+      try { focusAudio.element.pause(); focusAudio.element.currentTime = 0; } catch (_) {}
+      focusAudio.element = null;
+    }
+    focusAudio.timers.forEach(timer => clearInterval(timer));
+    focusAudio.timers = [];
+    focusAudio.nodes.forEach(node => {
+      try { if (typeof node.stop === "function") node.stop(); } catch (_) {}
+      try { node.disconnect(); } catch (_) {}
+    });
+    focusAudio.nodes = [];
+    focusAudio.playing = false;
+    focusAudio.previewing = false;
+    renderFocusSoundUI();
+  }
+
+  function makeNoiseBuffer(ctx, kind = "brown") {
+    const seconds = 5;
+    const length = Math.floor(ctx.sampleRate * seconds);
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    let brown = 0;
+    for (let i = 0; i < length; i++) {
+      const white = Math.random() * 2 - 1;
+      if (kind === "brown") {
+        brown = (brown + 0.018 * white) / 1.018;
+        data[i] = brown * 3.4;
+      } else {
+        data[i] = white;
+      }
+    }
+    return buffer;
+  }
+
+  function createNoiseSource(ctx, kind, gainValue, filterType = "lowpass", frequency = 1800) {
+    const source = registerAudioNode(ctx.createBufferSource());
+    const filter = registerAudioNode(ctx.createBiquadFilter());
+    const gain = registerAudioNode(ctx.createGain());
+    source.buffer = makeNoiseBuffer(ctx, kind);
+    source.loop = true;
+    filter.type = filterType;
+    filter.frequency.value = frequency;
+    gain.gain.value = gainValue;
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(focusAudio.master);
+    source.start();
+    return { source, filter, gain };
+  }
+
+  function makeTone(ctx, frequency, duration = 1.8, gainValue = 0.035, type = "sine", delay = 0) {
+    const startAt = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    osc.type = type;
+    osc.frequency.value = frequency;
+    filter.type = "lowpass";
+    filter.frequency.value = 1800;
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), startAt + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(focusAudio.master);
+    osc.addEventListener("ended", () => {
+      try { osc.disconnect(); } catch (_) {}
+      try { filter.disconnect(); } catch (_) {}
+      try { gain.disconnect(); } catch (_) {}
+    }, { once: true });
+    osc.start(startAt);
+    osc.stop(startAt + duration + 0.08);
+    return osc;
+  }
+
+  function startLofiSound(ctx) {
+    createNoiseSource(ctx, "brown", 0.022, "lowpass", 1100);
+    const chords = [
+      [130.81, 164.81, 196.00, 246.94],
+      [110.00, 130.81, 164.81, 196.00],
+      [87.31, 110.00, 130.81, 164.81],
+      [98.00, 123.47, 146.83, 220.00]
+    ];
+    let chordIndex = 0;
+    const chordNodes = chords[0].map((frequency, index) => {
+      const osc = registerAudioNode(ctx.createOscillator());
+      const gain = registerAudioNode(ctx.createGain());
+      const filter = registerAudioNode(ctx.createBiquadFilter());
+      osc.type = index % 2 ? "triangle" : "sine";
+      osc.frequency.value = frequency;
+      osc.detune.value = index * 2 - 3;
+      filter.type = "lowpass";
+      filter.frequency.value = 950;
+      gain.gain.value = 0.018;
+      osc.connect(filter); filter.connect(gain); gain.connect(focusAudio.master); osc.start();
+      return { osc, gain };
+    });
+    const changeChord = () => {
+      chordIndex = (chordIndex + 1) % chords.length;
+      chordNodes.forEach((entry, index) => entry.osc.frequency.setTargetAtTime(chords[chordIndex][index], ctx.currentTime, 0.35));
+    };
+    registerAudioTimer(setInterval(changeChord, 6800));
+
+    let beatCount = 0;
+    const beat = () => {
+      makeTone(ctx, 65, 0.15, 0.042, "sine");
+      if (beatCount % 2 === 1) makeTone(ctx, 170, 0.09, 0.012, "triangle", 0.02);
+      beatCount += 1;
+    };
+    beat();
+    registerAudioTimer(setInterval(beat, 860));
+  }
+
+  function startAmbientSound(ctx) {
+    createNoiseSource(ctx, "brown", 0.012, "lowpass", 700);
+    const progression = [
+      [110.00, 164.81, 220.00],
+      [87.31, 130.81, 174.61],
+      [130.81, 196.00, 261.63],
+      [98.00, 146.83, 196.00]
+    ];
+    let step = 0;
+    const voices = progression[0].map((frequency, index) => {
+      const osc = registerAudioNode(ctx.createOscillator());
+      const gain = registerAudioNode(ctx.createGain());
+      const filter = registerAudioNode(ctx.createBiquadFilter());
+      const lfo = registerAudioNode(ctx.createOscillator());
+      const lfoGain = registerAudioNode(ctx.createGain());
+      osc.type = index === 1 ? "triangle" : "sine";
+      osc.frequency.value = frequency;
+      osc.detune.value = [-7, 3, 8][index];
+      filter.type = "lowpass"; filter.frequency.value = 900;
+      gain.gain.value = 0.025;
+      lfo.frequency.value = 0.06 + index * 0.025;
+      lfoGain.gain.value = 0.008;
+      lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+      osc.connect(filter); filter.connect(gain); gain.connect(focusAudio.master);
+      osc.start(); lfo.start();
+      return osc;
+    });
+    registerAudioTimer(setInterval(() => {
+      step = (step + 1) % progression.length;
+      voices.forEach((osc, index) => osc.frequency.setTargetAtTime(progression[step][index], ctx.currentTime, 1.5));
+    }, 12000));
+  }
+
+  function makeNatureNoiseBurst(ctx, { frequency = 3500, duration = 0.12, gainValue = 0.018, pan = 0 } = {}) {
+    const source = ctx.createBufferSource();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    const panner = typeof ctx.createStereoPanner === "function" ? ctx.createStereoPanner() : null;
+    source.buffer = makeNoiseBuffer(ctx, "white");
+    filter.type = "bandpass";
+    filter.frequency.value = frequency;
+    filter.Q.value = 0.9;
+    const now = ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(Math.max(0.0002, gainValue), now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    source.connect(filter);
+    filter.connect(gain);
+    if (panner) { panner.pan.value = clamp(pan, -1, 1); gain.connect(panner); panner.connect(focusAudio.master); }
+    else gain.connect(focusAudio.master);
+    source.start(now);
+    source.stop(now + duration + 0.04);
+  }
+
+  function makeBirdChirp(ctx, { base = 1800, pan = 0, gainValue = 0.018 } = {}) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    const panner = typeof ctx.createStereoPanner === "function" ? ctx.createStereoPanner() : null;
+    const now = ctx.currentTime;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(base, now);
+    osc.frequency.exponentialRampToValueAtTime(base * 1.55, now + 0.09);
+    osc.frequency.exponentialRampToValueAtTime(base * 1.18, now + 0.2);
+    filter.type = "highpass";
+    filter.frequency.value = 900;
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+    osc.connect(filter); filter.connect(gain);
+    if (panner) { panner.pan.value = clamp(pan, -1, 1); gain.connect(panner); panner.connect(focusAudio.master); }
+    else gain.connect(focusAudio.master);
+    osc.start(now); osc.stop(now + 0.24);
+    if (Math.random() > 0.35) {
+      const timer = setTimeout(() => makeTone(ctx, base * 1.08, 0.13, gainValue * 0.65, "sine"), 150 + Math.random() * 100);
+      registerAudioTimer(timer);
+    }
+  }
+
+  function startRainSound(ctx) {
+    const rumble = createNoiseSource(ctx, "brown", 0.028, "lowpass", 850);
+    createNoiseSource(ctx, "white", 0.026, "bandpass", 2800);
+    createNoiseSource(ctx, "white", 0.007, "highpass", 6500);
+    const lfo = registerAudioNode(ctx.createOscillator());
+    const lfoGain = registerAudioNode(ctx.createGain());
+    lfo.type = "sine"; lfo.frequency.value = 0.08; lfoGain.gain.value = 0.006;
+    lfo.connect(lfoGain); lfoGain.connect(rumble.gain.gain); lfo.start();
+    registerAudioTimer(setInterval(() => {
+      const drops = Math.random() > 0.45 ? 2 : 1;
+      for (let i = 0; i < drops; i++) makeNatureNoiseBurst(ctx, {
+        frequency: 2400 + Math.random() * 4200,
+        duration: 0.05 + Math.random() * 0.12,
+        gainValue: 0.006 + Math.random() * 0.012,
+        pan: Math.random() * 1.7 - 0.85
+      });
+    }, 420));
+  }
+
+  function startBirdsSound(ctx) {
+    createNoiseSource(ctx, "brown", 0.010, "lowpass", 650);
+    createNoiseSource(ctx, "white", 0.004, "bandpass", 1800);
+    const sing = () => {
+      if (Math.random() > 0.2) makeBirdChirp(ctx, { base: 1500 + Math.random() * 1100, pan: Math.random() * 1.6 - 0.8, gainValue: 0.010 + Math.random() * 0.008 });
+      if (Math.random() > 0.7) registerAudioTimer(setTimeout(() => makeBirdChirp(ctx, { base: 2100 + Math.random() * 900, pan: Math.random() * 1.4 - 0.7, gainValue: 0.008 }), 350));
+    };
+    sing();
+    registerAudioTimer(setInterval(sing, 2300));
+  }
+
+  function startOceanSound(ctx) {
+    const low = createNoiseSource(ctx, "brown", 0.030, "lowpass", 700);
+    const foam = createNoiseSource(ctx, "white", 0.009, "bandpass", 2600);
+    const waveLfo = registerAudioNode(ctx.createOscillator());
+    const waveDepth = registerAudioNode(ctx.createGain());
+    waveLfo.type = "sine"; waveLfo.frequency.value = 0.075; waveDepth.gain.value = 0.020;
+    waveLfo.connect(waveDepth); waveDepth.connect(low.gain.gain); waveLfo.start();
+    const foamLfo = registerAudioNode(ctx.createOscillator());
+    const foamDepth = registerAudioNode(ctx.createGain());
+    foamLfo.type = "sine"; foamLfo.frequency.value = 0.075; foamLfo.detune.value = 25; foamDepth.gain.value = 0.006;
+    foamLfo.connect(foamDepth); foamDepth.connect(foam.gain.gain); foamLfo.start();
+    registerAudioTimer(setInterval(() => {
+      if (Math.random() > 0.45) makeNatureNoiseBurst(ctx, { frequency: 1700 + Math.random() * 1800, duration: 0.4 + Math.random() * 0.6, gainValue: 0.005 + Math.random() * 0.005, pan: Math.random() * 1.2 - 0.6 });
+    }, 2400));
+  }
+
+  function startForestSound(ctx) {
+    createNoiseSource(ctx, "brown", 0.010, "lowpass", 700);
+    createNoiseSource(ctx, "white", 0.014, "bandpass", 1900);
+    createNoiseSource(ctx, "white", 0.005, "highpass", 4700);
+    const forestBird = () => {
+      if (Math.random() > 0.35) makeBirdChirp(ctx, { base: 1700 + Math.random() * 850, pan: Math.random() * 1.5 - 0.75, gainValue: 0.007 + Math.random() * 0.006 });
+    };
+    registerAudioTimer(setInterval(forestBird, 3900));
+    registerAudioTimer(setInterval(() => {
+      makeNatureNoiseBurst(ctx, { frequency: 900 + Math.random() * 1200, duration: 0.18 + Math.random() * 0.25, gainValue: 0.004, pan: Math.random() * 1.4 - 0.7 });
+    }, 1300));
+  }
+
+  function startKeysSound(ctx) {
+    createNoiseSource(ctx, "brown", 0.010, "lowpass", 850);
+    const notes = [130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63];
+    let cursor = 0;
+    const playPhrase = () => {
+      const base = notes[cursor % notes.length];
+      makeTone(ctx, base, 2.4, 0.045, "triangle");
+      if (cursor % 3 === 0) makeTone(ctx, base * 1.5, 1.8, 0.023, "sine", 0.35);
+      cursor = (cursor + (Math.random() > 0.45 ? 1 : 2)) % notes.length;
+    };
+    playPhrase();
+    registerAudioTimer(setInterval(playPhrase, 2800));
+  }
+
+  function startFocusSound({ preview = false } = {}) {
+    if (!focusAudio.enabled) return false;
+    clearFocusAudioEngine();
+    const mode = focusSoundModes[focusAudio.mode] || focusSoundModes.rain;
+    try {
+      const audio = new Audio(mode.file);
+      audio.loop = true;
+      audio.preload = "auto";
+      audio.volume = clamp(focusAudio.volume, 0, 1);
+      focusAudio.element = audio;
+      focusAudio.playing = true;
+      focusAudio.previewing = preview;
+      renderFocusSoundUI();
+      const play = audio.play();
+      if (play && typeof play.catch === "function") play.catch(() => {
+        if (focusAudio.element !== audio) return;
+        focusAudio.playing = false;
+        focusAudio.previewing = false;
+        renderFocusSoundUI();
+        showToast("Sound could not start. Click Preview or Start again.");
+      });
+      return true;
+    } catch (_) {
+      focusAudio.playing = false;
+      focusAudio.previewing = false;
+      renderFocusSoundUI();
+      showToast("This browser could not play the nature soundscape.");
+      return false;
+    }
+  }
+
+  function stopFocusSound() {
+    clearFocusAudioEngine();
+  }
+
+  function setFocusSoundMode(mode) {
+    if (!focusSoundModes[mode]) return;
+    const wasPlaying = focusAudio.playing;
+    const wasPreviewing = focusAudio.previewing;
+    focusAudio.mode = mode;
+    saveFocusSoundSettings();
+    if (wasPlaying) startFocusSound({ preview: wasPreviewing });
+    renderFocusSoundUI();
+  }
+
+  function setFocusSoundEnabled(enabled) {
+    focusAudio.enabled = Boolean(enabled);
+    saveFocusSoundSettings();
+    if (!focusAudio.enabled) stopFocusSound();
+    else if (focusTimer.running) startFocusSound();
+    renderFocusSoundUI();
+  }
+
+  function setFocusSoundVolume(value) {
+    focusAudio.volume = clamp(Number(value) / 100, 0, 1);
+    saveFocusSoundSettings();
+    if (focusAudio.element) focusAudio.element.volume = focusAudio.volume;
+    if (focusAudio.master && focusAudio.ctx) focusAudio.master.gain.setTargetAtTime(focusAudio.volume, focusAudio.ctx.currentTime, 0.03);
+    renderFocusSoundUI();
+  }
+
+  function toggleFocusSoundPreview() {
+    if (focusAudio.playing) {
+      stopFocusSound();
+      return;
+    }
+    if (!focusAudio.enabled) {
+      focusAudio.enabled = true;
+      saveFocusSoundSettings();
+    }
+    startFocusSound({ preview: !focusTimer.running });
+  }
+
+  function renderFocusSoundUI() {
+    document.querySelectorAll("[data-soundscape]").forEach(button => {
+      const active = button.dataset.soundscape === focusAudio.mode;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-checked", active ? "true" : "false");
+    });
+    const toggle = $("focusSoundToggle");
+    if (toggle) {
+      toggle.classList.toggle("active", focusAudio.enabled);
+      toggle.setAttribute("aria-pressed", focusAudio.enabled ? "true" : "false");
+    }
+    if ($("focusSoundToggleIcon")) $("focusSoundToggleIcon").textContent = focusAudio.enabled ? "🔊" : "🔇";
+    if ($("focusSoundToggleText")) $("focusSoundToggleText").textContent = focusAudio.enabled ? "Sound on" : "Sound off";
+    if ($("focusSoundVolume")) $("focusSoundVolume").value = String(Math.round(focusAudio.volume * 100));
+    if ($("focusSoundNow")) $("focusSoundNow").textContent = focusSoundModes[focusAudio.mode].name;
+    if ($("focusSoundPreview")) $("focusSoundPreview").textContent = focusAudio.playing ? "■ Stop sound" : "▶ Preview";
+    if ($("focusSoundNote")) {
+      $("focusSoundNote").textContent = focusAudio.playing
+        ? `${focusSoundModes[focusAudio.mode].name} is playing. Keep it quiet enough that your task remains the main event.`
+        : `${focusSoundModes[focusAudio.mode].note} Starts automatically with the Focus Sprint.`;
+    }
+    const wave = document.querySelector(".sound-wave");
+    if (wave) wave.classList.toggle("playing", focusAudio.playing);
   }
 
   function formatTimer(seconds) {
@@ -927,6 +1864,7 @@
     clearInterval(focusTimer.interval);
     focusTimer.interval = setInterval(tickFocusTimer, 250);
     renderTimer();
+    if (focusAudio.enabled) startFocusSound();
     $("focusFoot").textContent = "Stay with one target until the sprint ends. New decisions can wait.";
   }
   function pauseFocusTimer() {
@@ -936,6 +1874,7 @@
     clearInterval(focusTimer.interval);
     focusTimer.interval = null;
     renderTimer();
+    stopFocusSound();
     $("focusFoot").textContent = "Paused. Resume when you are ready to protect the block again.";
   }
   function resetFocusTimer(showMessage = true) {
@@ -943,6 +1882,7 @@
     clearInterval(focusTimer.interval);
     focusTimer.interval = null;
     focusTimer.remaining = focusTimer.duration;
+    stopFocusSound();
     renderTimer();
     $("focusFoot").textContent = "One protected block beats a vague intention to “work later.”";
     if (showMessage) showToast("Focus timer reset");
@@ -952,19 +1892,20 @@
     focusTimer.running = false;
     clearInterval(focusTimer.interval);
     focusTimer.interval = null;
+    stopFocusSound();
     const minutes = Math.round(focusTimer.duration / 60);
     mutate(data => data.sessions.push({ id: uid(), itemId: taskId, planDate: dateKey(viewDate), completedAt: Date.now(), minutes }));
     focusTimer.remaining = focusTimer.duration;
     renderAll();
     renderTimer();
     $("focusStatus").textContent = "Complete ✓";
-    $("focusFoot").textContent = `${minutes} focused minutes completed. +10 planning points.`;
+    $("focusFoot").textContent = `${minutes} focused minutes completed. +10 points.`;
     burstCelebration(["🎯", "⚡", "✨", "🚀"], 14);
     showToast(`Focus sprint complete 🎯 +10 points`);
   }
 
   function setHubTab(name) {
-    const target = ["focus", "quality", "rewards"].includes(name) ? name : "focus";
+    const target = ["focus", "quality", "progress", "rewards"].includes(name) ? name : "focus";
     document.querySelectorAll("[data-hub-tab]").forEach(button => {
       const active = button.dataset.hubTab === target;
       button.classList.toggle("active", active);
@@ -976,24 +1917,38 @@
   function attachEvents() {
     document.querySelectorAll("[data-hub-tab]").forEach(button => button.addEventListener("click", () => setHubTab(button.dataset.hubTab)));
     document.querySelectorAll("[data-plan-type]").forEach(button => button.addEventListener("click", () => setType(button.dataset.planType)));
-    $("bookWithPratikBtn").addEventListener("click", setBookingMode);
-    $("copyPlannerBookingLinkBtn").addEventListener("click", copyBookingLink);
-    $("openPlannerBookingLinkBtn").addEventListener("click", () => openBookingPage());
+    $("bookWithPratikBtn").addEventListener("click", directBookWithPratik);
+    $("challengeActionBtn")?.addEventListener("click", restartChallenge);
+    $("restartChallengeMenuBtn")?.addEventListener("click", restartChallenge);
+    $("resetAllProgressBtn")?.addEventListener("click", resetProgressHistory);
     $("plannerForm").addEventListener("submit", submitItem);
-    $("cancelEditBtn").addEventListener("click", resetForm);
-    $("saveIntentionBtn").addEventListener("click", saveIntention);
-    $("dayIntention").addEventListener("keydown", event => { if (event.key === "Enter") { event.preventDefault(); saveIntention(); } });
+    $("itemTimeZone")?.addEventListener("change", event => changePlannerTimeZone(event.target.value));
+    $("itemDate")?.addEventListener("change", updateTimeMirrors);
+    [$("itemStart"), $("itemEnd")].forEach(input => {
+      input?.addEventListener("input", updateTimeMirrors);
+      input?.addEventListener("blur", () => normalizeVisibleTime(input.id));
+    });
+    $("cancelEditBtn").addEventListener("click", () => { resetForm(); setQuickAddOpen(false); });
+    $("quickAddToggleBtn")?.addEventListener("click", () => setQuickAddOpen(false));
+    $("modalTodayBtn")?.addEventListener("click", () => { goToday(); setQuickAddOpen(true); });
+    $("modalTomorrowBtn")?.addEventListener("click", () => { goTomorrow(); setQuickAddOpen(true); });
+    $("quickAddModal")?.addEventListener("click", event => {
+      const modal = $("quickAddModal");
+      if (event.target === modal) setQuickAddOpen(false);
+    });
+    $("quickAddModal")?.addEventListener("close", () => {
+      if ($("itemId")?.value || $("itemTitle")?.value.trim()) resetForm();
+    });
+    $("topQuickAddBtn")?.addEventListener("click", jumpToForm);
+    $("todayQuickBtn")?.addEventListener("click", () => { goToday(); jumpToForm(); });
+    $("tomorrowQuickBtn")?.addEventListener("click", () => { goTomorrow(); jumpToForm(); });
     $("prevDayBtn").addEventListener("click", () => shiftView(-1));
     $("nextDayBtn").addEventListener("click", () => shiftView(1));
+    $("todayBtn")?.addEventListener("click", goToday);
     $("tomorrowBtn").addEventListener("click", goTomorrow);
     $("sealPlanBtn").addEventListener("click", sealPlan);
     $("heroSealBtn").addEventListener("click", () => { goTomorrow(); sealPlan(); });
-    $("heroAddBtn").addEventListener("click", () => { goTomorrow(); jumpToForm(); });
-    $("frogJumpBtn").addEventListener("click", () => {
-      const id = $("frogJumpBtn").dataset.editFrog;
-      if (id) editItem(id);
-      else jumpToForm();
-    });
+    $("heroAddBtn").addEventListener("click", jumpToForm);
 
     $("agendaList").addEventListener("click", event => {
       const button = event.target.closest("button");
@@ -1006,20 +1961,37 @@
       if (button.dataset.focus) selectFocusItem(button.dataset.focus);
     });
 
+    [$("completionBars"), $("executionHeatmap"), $("executionHistory")].forEach(host => host?.addEventListener("click", event => {
+      const button = event.target.closest("[data-progress-date]");
+      if (!button) return;
+      viewDate = parseDate(button.dataset.progressDate);
+      resetForm();
+      renderAll();
+      setHubTab("progress");
+    }));
+
+    document.querySelectorAll("[data-soundscape]").forEach(button => button.addEventListener("click", () => setFocusSoundMode(button.dataset.soundscape)));
+    $("focusSoundToggle")?.addEventListener("click", () => setFocusSoundEnabled(!focusAudio.enabled));
+    $("focusSoundVolume")?.addEventListener("input", event => setFocusSoundVolume(event.target.value));
+    $("focusSoundPreview")?.addEventListener("click", toggleFocusSoundPreview);
     document.querySelectorAll("[data-minutes]").forEach(button => button.addEventListener("click", () => chooseTimer(Number(button.dataset.minutes))));
     $("timerStartBtn").addEventListener("click", startFocusTimer);
     $("timerPauseBtn").addEventListener("click", pauseFocusTimer);
     $("timerResetBtn").addEventListener("click", () => resetFocusTimer(true));
-    window.addEventListener("beforeunload", () => { clearInterval(focusTimer.interval); clearInterval(heroMessageTimer); });
+    window.addEventListener("beforeunload", () => { clearInterval(focusTimer.interval); clearInterval(heroMessageTimer); stopFocusSound(); try { focusAudio.ctx?.close(); } catch (_) {} });
   }
 
   function init() {
+    loadPlannerTimeZone();
+    loadFocusSoundSettings();
     attachEvents();
     startHeroRotation();
     setHubTab("focus");
     resetForm();
+    setQuickAddOpen(false);
     renderAll();
     renderTimer();
+    renderFocusSoundUI();
   }
 
   init();

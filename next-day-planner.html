@@ -1,297 +1,359 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#dbe7e8">
-  <meta name="description" content="PPP Plan Next Day — an intentional, private day planner with focus, streaks and rewards.">
-  <title>Plan Next Day • PPP</title>
-  <link rel="stylesheet" href="styles/next-day-planner.css">
-  <script src="scripts/next-day-page.js" defer></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#dbe7e8" name="theme-color"/>
+<meta content="PPP Plan Next Day — an intentional, private day planner with focus, streaks and rewards." name="description"/>
+<title>Plan Next Day • PPP</title>
+<link href="styles/next-day-planner.css" rel="stylesheet"/>
+<script defer="" src="scripts/next-day-page.js"></script>
 </head>
 <body>
-  <div class="planner-app">
-    <header class="planner-topbar">
-      <a class="brand" href="index.html" aria-label="Back to PPP">
-        <span class="brand-mark">P</span>
-        <span><strong>PPP</strong><small>Progress Plan</small></span>
-      </a>
-      <div class="topbar-actions">
-        <div class="today-chip" id="plannerClockDate">Plan with intention</div>
-        <a class="back-btn" href="index.html">← Back to PPP</a>
-      </div>
-    </header>
-
-    <main>
-      <section class="compact-hero">
-        <div class="hero-copy">
-          <div class="eyebrow">✦ PLAN TONIGHT · MOVE CLEARLY TOMORROW</div>
-          <div class="hero-message" id="heroMessage" aria-live="polite">
-            <h1><span id="heroLead">Make tomorrow easier</span> <span class="hero-accent" id="heroAccent">before it gets busy.</span></h1>
-            <p id="heroSubline">Pick 1–3 real priorities, give important work an actual time, and leave enough room for life to happen.</p>
-          </div>
-          <div class="hero-rotation-track" aria-hidden="true"><span id="heroRotationBar"></span></div>
-          <div class="hero-actions">
-            <button class="hero-primary" id="heroAddBtn" type="button">＋ Add an item</button>
-            <button class="hero-secondary" id="heroSealBtn" type="button">✨ Seal tomorrow</button>
-          </div>
-        </div>
-
-        <aside class="hero-progress" aria-label="Planning streak">
-          <div class="streak-orbit">
-            <div class="streak-inner"><span>🔥</span><strong id="heroStreak">0</strong><small>STREAK</small></div>
-          </div>
-          <div class="hero-progress-copy">
-            <span class="mini-label">21-DAY CHALLENGE</span>
-            <strong id="challengeLabel">Day 0 of 21</strong>
-            <div class="progress-track"><span id="challengeBar"></span></div>
-            <p id="challengeMessage">Seal your first plan and start the chain.</p>
-          </div>
-          <section class="hero-visual-card surface-soft" aria-label="Momentum flow">
-            <div class="mini-label">MOMENTUM FLOW</div>
-            <svg viewBox="0 0 320 120" class="hero-flow-svg" role="img" aria-label="Flow diagram from clarity to rewards">
-              <defs>
-                <linearGradient id="flowStroke" x1="0" x2="1">
-                  <stop offset="0%" stop-color="#68e8bc"/>
-                  <stop offset="50%" stop-color="#72b6ff"/>
-                  <stop offset="100%" stop-color="#f2a4ff"/>
-                </linearGradient>
-              </defs>
-              <path d="M18 86 C58 22, 100 22, 140 60 S222 102, 300 28" fill="none" stroke="url(#flowStroke)" stroke-width="8" stroke-linecap="round"/>
-              <circle cx="24" cy="82" r="10" fill="#68e8bc"/>
-              <circle cx="110" cy="44" r="10" fill="#72b6ff"/>
-              <circle cx="204" cy="86" r="10" fill="#ffd166"/>
-              <circle cx="296" cy="28" r="10" fill="#f2a4ff"/>
-              <text x="6" y="108">Clarify</text>
-              <text x="86" y="20">Focus</text>
-              <text x="180" y="112">Momentum</text>
-              <text x="268" y="16">Reward</text>
-            </svg>
-            <p>Clarity → focus → momentum → reward. Make the plan visual, then make it real.</p>
-          </section>
-        </aside>
-      </section>
-
-      <section class="workspace-grid">
-        <div class="planner-main">
-          <section class="intent-strip surface">
-            <div class="intent-label">
-              <span class="section-kicker">IDENTITY</span>
-              <strong>Tomorrow I will be someone who…</strong>
-            </div>
-            <input id="dayIntention" type="text" maxlength="140" placeholder="starts the important work before distractions">
-            <button type="button" id="saveIntentionBtn">Save</button>
-            <span class="date-badge" id="intentDateBadge">Tomorrow</span>
-          </section>
-
-          <section class="compose-card surface" id="composeCard">
-            <div class="section-head compact-head">
-              <div>
-                <span class="section-kicker">BUILD THE DAY</span>
-                <h2>Create a plan item</h2>
-              </div>
-              <span class="date-badge" id="formDateBadge">Tomorrow</span>
-            </div>
-
-            <div class="type-tabs" role="group" aria-label="Plan item type">
-              <button type="button" class="active" data-plan-type="task"><span>✓</span> Task</button>
-              <button type="button" data-plan-type="appointment"><span>▣</span> Appointment</button>
-              <button type="button" data-plan-type="plan"><span>✦</span> Plan</button>
-              <button type="button" class="booking-option" id="bookWithPratikBtn"><span>📅</span> Book with Pratik</button>
-            </div>
-
-            <div class="booking-quick hidden" id="bookingQuick">
-              <div class="booking-quick-copy"><strong>Book with Pratik</strong><span>Add it to your planner and open the public booking page in the same flow.</span></div>
-              <div class="booking-link-row">
-                <input id="bookingPublicLink" type="text" readonly aria-label="Public Book with Pratik link" placeholder="Connect booking in PPP Settings">
-                <button type="button" id="copyPlannerBookingLinkBtn">Copy</button>
-                <button type="button" id="openPlannerBookingLinkBtn">Open ↗</button>
-              </div>
-            </div>
-
-            <form id="plannerForm" class="planner-form">
-              <input id="itemId" type="hidden">
-
-              <label class="field field-title"><span>What needs to happen?</span><input id="itemTitle" required maxlength="120" placeholder="e.g. Finish project proposal"></label>
-              <label class="field"><span>Date</span><input id="itemDate" type="date" required></label>
-              <label class="field"><span>Start</span><input id="itemStart" type="time"></label>
-              <label class="field"><span>End</span><input id="itemEnd" type="time"></label>
-              <label class="field"><span>Priority</span>
-                <select id="itemPriority">
-                  <option value="high">High — big rock</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="low">Low</option>
-                </select>
-              </label>
-              <label class="field"><span>Life area</span>
-                <select id="itemArea">
-                  <option value="Career">Career</option>
-                  <option value="Learning">Learning</option>
-                  <option value="Health">Health</option>
-                  <option value="Relationships">Relationships</option>
-                  <option value="Personal" selected>Personal</option>
-                  <option value="Admin">Admin</option>
-                </select>
-              </label>
-
-              <details class="more-details field-wide" id="moreDetails">
-                <summary><span>＋ Optional details</span><small>Tiny first step, notes, must-win</small></summary>
-                <div class="details-grid">
-                  <label class="field" id="tinyStepField"><span>Tiny first step</span><input id="itemTinyStep" maxlength="140" placeholder="The smallest useful first move"></label>
-                  <label class="field"><span>Notes</span><textarea id="itemNotes" rows="2" maxlength="500" placeholder="Context, location, preparation…"></textarea></label>
-                  <label class="frog-toggle" id="frogToggle"><input id="itemFrog" type="checkbox"><span><strong>🐸 Make this the must-win</strong><small>Give one high-value task first claim on your best energy.</small></span></label>
-                </div>
-              </details>
-
-              <div class="form-actions field-wide">
-                <button class="secondary-btn hidden" id="cancelEditBtn" type="button">Cancel</button>
-                <button class="primary-btn" id="saveItemBtn" type="submit">＋ Add to plan</button>
-              </div>
-            </form>
-          </section>
-
-          <section class="agenda-card surface">
-            <div class="section-head agenda-head">
-              <div>
-                <span class="section-kicker">YOUR REAL DAY</span>
-                <h2 id="agendaTitle">Tomorrow’s plan</h2>
-                <p id="agendaSubtitle">Your private planner stays separate from PPP auto plans.</p>
-              </div>
-              <div class="date-nav">
-                <button id="prevDayBtn" type="button" aria-label="Previous day">‹</button>
-                <button id="tomorrowBtn" type="button">Tomorrow</button>
-                <button id="nextDayBtn" type="button" aria-label="Next day">›</button>
-              </div>
-            </div>
-            <div class="agenda-summary" aria-label="Plan summary">
-              <div class="agenda-stat task-stat"><span>✓</span><div><strong id="agendaTaskCount">0</strong><small>tasks</small></div></div>
-              <div class="agenda-stat appointment-stat"><span>▣</span><div><strong id="agendaAppointmentCount">0</strong><small>appointments</small></div></div>
-              <div class="agenda-stat time-stat"><span>◷</span><div><strong id="agendaPlannedTime">0m</strong><small>scheduled</small></div></div>
-            </div>
-            <div class="agenda-list" id="agendaList"></div>
-            <div class="seal-row">
-              <div class="seal-copy"><strong id="sealStatusTitle">Not sealed yet</strong><span id="sealStatusText">Seal a realistic plan to count toward your streak.</span></div>
-              <div class="seal-actions"><div class="seal-quality"><small>Plan quality</small><strong id="sealQualityScore">0/100</strong></div><button class="seal-btn" id="sealPlanBtn" type="button">✨ Seal this plan</button></div>
-            </div>
-          </section>
-        </div>
-
-        <aside class="planner-side">
-          <section class="power-hub surface">
-            <div class="power-hub-head">
-              <div><span class="section-kicker">POWER PANEL</span><h2>Focus, improve, repeat.</h2></div>
-              <span class="hub-live">● LIVE</span>
-            </div>
-
-            <div class="hub-tabs" role="tablist" aria-label="Planner power panel">
-              <button type="button" class="active" data-hub-tab="focus">🎯 Focus</button>
-              <button type="button" data-hub-tab="quality">✦ Quality</button>
-              <button type="button" data-hub-tab="rewards">🔥 Rewards</button>
-            </div>
-
-            <div class="hub-panel active" data-hub-panel="focus">
-              <section class="frog-card" id="frogCard">
-                <div class="frog-icon">🐸</div>
-                <div>
-                  <span class="mini-label">THE MUST-WIN</span>
-                  <h3 id="frogTitle">Choose your Frog</h3>
-                  <p id="frogText">Pick one high-value task that deserves your best energy.</p>
-                  <button type="button" id="frogJumpBtn">Choose from plan →</button>
-                </div>
-              </section>
-
-              <section class="focus-card">
-                <div class="focus-head">
-                  <div><span class="mini-label">PROTECTED FOCUS</span><h3>Focus Sprint</h3></div>
-                  <span class="focus-status" id="focusStatus">Ready</span>
-                </div>
-                <label class="focus-task-label">Focus on
+<div class="planner-app">
+<header class="planner-topbar">
+<a aria-label="Back to PPP" class="brand" href="index.html">
+<span class="brand-mark">P</span>
+<span class="brand-copy"><strong>PPP</strong><small>· Progress Plan</small></span>
+</a>
+<div class="topbar-actions">
+<div class="today-chip" id="plannerClockDate">Plan with intention</div>
+<a class="back-btn" href="index.html">← Back to PPP</a>
+</div>
+</header>
+<main>
+<section class="compact-hero">
+<div class="hero-copy">
+<div class="eyebrow">✦ PLAN TONIGHT · MOVE CLEARLY TOMORROW</div>
+<div aria-live="polite" class="hero-message" id="heroMessage">
+<h1><span id="heroLead">Make tomorrow easier</span> <span class="hero-accent" id="heroAccent">before it gets busy.</span></h1>
+<p id="heroSubline">Pick 1–3 real priorities, give important work an actual time, and leave enough room for life to happen.</p>
+</div>
+<div aria-hidden="true" class="hero-rotation-track"><span id="heroRotationBar"></span></div>
+<div class="hero-actions">
+<button class="hero-primary" id="heroAddBtn" type="button">＋ Add an item</button>
+<button class="hero-secondary" id="heroSealBtn" type="button">✨ Seal tomorrow</button>
+</div>
+</div>
+<aside aria-label="Execution streak" class="hero-progress">
+<div class="streak-orbit">
+<div class="streak-inner"><span>🔥</span><strong id="heroStreak">0</strong><small>EXECUTION</small></div>
+</div>
+<div class="hero-progress-copy">
+<span class="mini-label">21-DAY EXECUTION</span>
+<strong id="challengeLabel">Day 0 of 21</strong>
+<div class="progress-track"><span id="challengeBar"></span></div>
+<p id="challengeMessage">Complete your planned work and start the chain.</p>
+</div>
+<section aria-label="Momentum flow" class="hero-visual-card surface-soft">
+<div class="mini-label">MOMENTUM FLOW</div>
+<svg aria-label="Flow diagram from clarity to rewards" class="hero-flow-svg" role="img" viewbox="0 0 320 120">
+<defs>
+<lineargradient id="flowStroke" x1="0" x2="1">
+<stop offset="0%" stop-color="#68e8bc"></stop>
+<stop offset="50%" stop-color="#72b6ff"></stop>
+<stop offset="100%" stop-color="#f2a4ff"></stop>
+</lineargradient>
+</defs>
+<path d="M18 86 C58 22, 100 22, 140 60 S222 102, 300 28" fill="none" stroke="url(#flowStroke)" stroke-linecap="round" stroke-width="8"></path>
+<circle cx="24" cy="82" fill="#68e8bc" r="10"></circle>
+<circle cx="110" cy="44" fill="#72b6ff" r="10"></circle>
+<circle cx="204" cy="86" fill="#ffd166" r="10"></circle>
+<circle cx="296" cy="28" fill="#f2a4ff" r="10"></circle>
+<text x="6" y="108">Clarify</text>
+<text x="86" y="20">Focus</text>
+<text x="180" y="112">Momentum</text>
+<text x="268" y="16">Reward</text>
+</svg>
+<p>Clarity → focus → momentum → reward. Make the plan visual, then make it real.</p>
+</section>
+</aside>
+</section>
+<section class="planner-command-center"><section class="add-day-strip surface" id="addDayStrip">
+<div class="add-day-copy">
+<div class="add-day-icon">＋</div>
+<div>
+<span class="section-kicker">QUICK ACTION</span>
+<strong>Add to the day</strong>
+<small>Capture a task, appointment, or plan in seconds.</small>
+</div>
+</div>
+<div class="add-day-actions">
+<div class="day-target-switch" role="group" aria-label="Choose day to add to">
+<button class="day-target-btn" id="todayQuickBtn" type="button">Today</button>
+<button class="day-target-btn" id="tomorrowQuickBtn" type="button">Tomorrow</button>
+</div>
+<span class="date-badge" id="intentDateBadge">Tomorrow</span>
+<button class="add-day-main-btn" id="topQuickAddBtn" type="button">＋ New item</button>
+</div>
+</section><section class="power-stage"><section class="power-hub surface">
+<div class="power-hub-head">
+<div><span class="section-kicker">YOUR COMMAND CENTER</span><h2>Power Panel</h2><p>Focus on what matters, measure execution, and keep momentum visible.</p></div>
+<span class="hub-live">● LIVE</span>
+</div>
+<div aria-label="Planner power panel" class="hub-tabs" role="tablist">
+<button class="active" data-hub-tab="focus" type="button"><span class="hub-tab-icon">🎯</span><span class="hub-tab-copy"><strong>Focus</strong><small>Do the work</small></span><span class="hub-tab-arrow" aria-hidden="true">›</span></button>
+<button data-hub-tab="quality" type="button"><span class="hub-tab-icon">✦</span><span class="hub-tab-copy"><strong>Quality</strong><small>Shape the day</small></span><span class="hub-tab-arrow" aria-hidden="true">›</span></button>
+<button data-hub-tab="progress" type="button"><span class="hub-tab-icon">📊</span><span class="hub-tab-copy"><strong>Progress</strong><small>See execution</small></span><span class="hub-tab-arrow" aria-hidden="true">›</span></button>
+<button data-hub-tab="rewards" type="button"><span class="hub-tab-icon">🔥</span><span class="hub-tab-copy"><strong>Rewards</strong><small>Keep momentum</small></span><span class="hub-tab-arrow" aria-hidden="true">›</span></button>
+</div>
+<div class="hub-panel active" data-hub-panel="focus">
+<section class="focus-card focus-workspace">
+<div class="focus-head">
+<div><span class="mini-label">PROTECTED FOCUS</span><h3>Focus Sprint</h3></div>
+<span class="focus-status" id="focusStatus">Ready</span>
+</div>
+<div class="focus-topline">
+<label class="focus-task-label">Focus on
                   <select id="focusTaskSelect"><option value="">Choose a planned task</option></select>
-                </label>
-                <div class="timer-row">
-                  <div class="timer-display" id="timerDisplay">25:00</div>
-                  <div class="timer-presets" role="group" aria-label="Timer duration">
-                    <button type="button" class="active" data-minutes="25">25m</button>
-                    <button type="button" data-minutes="50">50m</button>
-                    <button type="button" data-minutes="5">5m</button>
-                  </div>
-                </div>
-                <div class="timer-actions">
-                  <button class="timer-start" id="timerStartBtn" type="button">▶ Start</button>
-                  <button id="timerPauseBtn" type="button">Pause</button>
-                  <button id="timerResetBtn" type="button">Reset</button>
-                </div>
-                <p class="focus-foot" id="focusFoot">One protected block beats a vague intention to “work later.”</p>
-              </section>
-              <section class="micro-motivation-card surface-soft">
-                <div class="micro-head"><span class="mini-label">FOCUS ENERGY</span><span id="focusEnergyEmoji">🚀</span></div>
-                <strong id="focusEnergyTitle">Protect one meaningful block.</strong>
-                <p id="focusEnergyText">What gets scheduled gets a better chance of happening.</p>
-              </section>
-            </div>
-
-            <div class="hub-panel" data-hub-panel="quality">
-              <section class="quality-card colorful-card">
-                <div class="quality-top">
-                  <div><span class="mini-label">PLAN QUALITY</span><strong id="qualityScore">0</strong><small>/100</small></div>
-                  <div class="quality-ring" id="qualityRing"><span>0%</span></div>
-                </div>
-                <h3 id="qualityHeadline">Give tomorrow a clear target.</h3>
-                <div class="quality-list" id="qualityList"></div>
-                <p class="quality-note">Aim for clarity, not perfection. Fix one weak point, then move on.</p>
-              </section>
-              <section class="insight-grid">
-                <article class="mini-chart-card surface-soft">
-                  <span class="mini-label">PLAN MIX</span>
-                  <h3>Visual balance</h3>
-                  <div class="donut-wrap">
-                    <div class="mini-donut" id="planMixChart"><span id="planMixCenter">0 items</span></div>
-                    <div class="legend-stack" id="planMixLegend"></div>
-                  </div>
-                </article>
-                <article class="mini-chart-card surface-soft">
-                  <span class="mini-label">AREA ENERGY</span>
-                  <h3>Where your effort goes</h3>
-                  <div class="bars" id="areaBarChart"></div>
-                </article>
-                <article class="flow-card surface-soft">
-                  <span class="mini-label">SUCCESS FLOW</span>
-                  <h3>Simple execution loop</h3>
-                  <div class="flow-steps">
-                    <div><span>1</span><strong>Capture</strong><small>Write it down.</small></div>
-                    <div><span>2</span><strong>Protect</strong><small>Give it a time.</small></div>
-                    <div><span>3</span><strong>Focus</strong><small>Start tiny, stay present.</small></div>
-                    <div><span>4</span><strong>Review</strong><small>Seal, learn, repeat.</small></div>
-                  </div>
-                </article>
-              </section>
-            </div>
-
-            <div class="hub-panel" data-hub-panel="rewards">
-              <section class="reward-card">
-                <div class="reward-head"><div><span class="mini-label">CONSISTENCY REWARDS</span><h3><strong id="rewardPoints">0</strong> points</h3></div><span class="reward-spark">✦</span></div>
-                <div class="reward-next"><span id="nextRewardIcon">⚡</span><div><strong id="nextRewardTitle">Momentum badge</strong><small id="nextRewardText">Seal 3 consecutive days</small></div></div>
-                <div class="reward-progress"><span id="rewardProgress"></span></div>
-                <div class="badge-row" id="badgeRow"></div>
-              </section>
-
-              <section class="challenge-card">
-                <div class="challenge-copy"><span class="mini-label">21 DAYS</span><h3>Build the planning habit.</h3></div>
-                <div class="challenge-dots" id="challengeDots" aria-label="21 day challenge progress"></div>
-              </section>
-              <section class="celebration-card surface-soft">
-                <div class="celebration-head"><span class="mini-label">WEEKLY PULSE</span><h3>Momentum chart</h3></div>
-                <div class="spark-bars" id="weeklyBars"></div>
-                <p class="celebration-quote" id="rewardMotivation">Every sealed plan is one vote for your future self.</p>
-              </section>
-            </div>
-          </section>
-        </aside>
-      </section>
-    </main>
-
-    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</label>
+</div>
+<section class="focus-soundscape compact-soundscape" aria-label="Natural focus background audio">
+  <div class="soundscape-head">
+    <div><span class="mini-label">NATURE SOUND</span><strong>Choose a calm background</strong><small>Natural ambience, no music or lyrics.</small></div>
+    <button class="sound-toggle active" id="focusSoundToggle" type="button" aria-pressed="true"><span id="focusSoundToggleIcon">🔊</span><span id="focusSoundToggleText">Sound on</span></button>
   </div>
+  <div class="soundscape-options" role="radiogroup" aria-label="Natural focus sound type">
+    <button class="soundscape-option active" type="button" data-soundscape="rain" role="radio" aria-checked="true"><span class="sound-icon">🌧️</span><span><strong>Natural Rain</strong><small>Steady rain + soft drops</small></span><i>≈</i></button>
+    <button class="soundscape-option" type="button" data-soundscape="birds" role="radio" aria-checked="false"><span class="sound-icon">🐦</span><span><strong>Forest Birds</strong><small>Birdsong + light breeze</small></span><i>♬</i></button>
+    <button class="soundscape-option" type="button" data-soundscape="ocean" role="radio" aria-checked="false"><span class="sound-icon">🌊</span><span><strong>Ocean Waves</strong><small>Slow waves + soft foam</small></span><i>〰</i></button>
+    <button class="soundscape-option" type="button" data-soundscape="forest" role="radio" aria-checked="false"><span class="sound-icon">🌿</span><span><strong>Forest Stream</strong><small>Water + wind + distant birds</small></span><i>⌁</i></button>
+  </div>
+  <div class="soundscape-controls">
+    <div class="now-playing"><span class="sound-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span><small>SELECTED</small><strong id="focusSoundNow">Natural Rain</strong></span></div>
+    <label class="volume-control" for="focusSoundVolume"><span>🔉</span><input id="focusSoundVolume" type="range" min="0" max="100" value="28" aria-label="Focus sound volume"><span>🔊</span></label>
+    <button class="sound-preview-btn" id="focusSoundPreview" type="button">▶ Preview</button>
+  </div>
+  <p class="soundscape-note" id="focusSoundNote">Starts with Focus Sprint and stops when you pause or finish.</p>
+</section>
+<div class="timer-row">
+<div class="timer-display" id="timerDisplay">25:00</div>
+<div aria-label="Timer duration" class="timer-presets" role="group">
+<button class="active" data-minutes="25" type="button">25m</button>
+<button data-minutes="50" type="button">50m</button>
+<button data-minutes="5" type="button">5m</button>
+</div>
+</div>
+<div class="timer-actions">
+<button class="timer-start" id="timerStartBtn" type="button">▶ Start</button>
+<button id="timerPauseBtn" type="button">Pause</button>
+<button id="timerResetBtn" type="button">Reset</button>
+</div>
+<p class="focus-foot" id="focusFoot">One protected block beats a vague intention to “work later.”</p>
+</section>
+
+</div>
+<div class="hub-panel" data-hub-panel="quality">
+<section class="quality-card colorful-card">
+<div class="quality-top">
+<div><span class="mini-label">PLAN QUALITY</span><strong id="qualityScore">0</strong><small>/100</small></div>
+<div class="quality-ring" id="qualityRing"><span>0%</span></div>
+</div>
+<h3 id="qualityHeadline">Give tomorrow a clear target.</h3>
+<div class="quality-list" id="qualityList"></div>
+<p class="quality-note">Aim for clarity, not perfection. Fix one weak point, then move on.</p>
+</section>
+<section class="insight-grid">
+<article class="mini-chart-card surface-soft">
+<span class="mini-label">PLAN MIX</span>
+<h3>Visual balance</h3>
+<div class="donut-wrap">
+<div class="mini-donut" id="planMixChart"><span id="planMixCenter">0 items</span></div>
+<div class="legend-stack" id="planMixLegend"></div>
+</div>
+</article>
+<article class="mini-chart-card surface-soft">
+<span class="mini-label">AREA ENERGY</span>
+<h3>Where your effort goes</h3>
+<div class="bars" id="areaBarChart"></div>
+</article>
+<article class="flow-card surface-soft">
+<span class="mini-label">SUCCESS FLOW</span>
+<h3>Simple execution loop</h3>
+<div class="flow-steps">
+<div><span>1</span><strong>Capture</strong><small>Write it down.</small></div>
+<div><span>2</span><strong>Protect</strong><small>Give it a time.</small></div>
+<div><span>3</span><strong>Focus</strong><small>Start tiny, stay present.</small></div>
+<div><span>4</span><strong>Review</strong><small>Seal, learn, repeat.</small></div>
+</div>
+</article>
+</section>
+</div>
+<div class="hub-panel" data-hub-panel="progress">
+<section class="progress-overview-card">
+<div class="progress-overview-head">
+<div><span class="mini-label">ACTUAL EXECUTION</span><h3 id="progressDayTitle">Selected day</h3></div>
+<div class="execution-ring" id="executionRing"><span id="executionPercent">0%</span></div>
+</div>
+<div class="execution-metrics">
+<div><span>✅</span><strong id="progressDoneCount">0/0</strong><small>completed</small></div>
+<div><span>🐸</span><strong id="progressFrogStatus">—</strong><small>must-win</small></div>
+<div><span>🎯</span><strong id="progressFocusMinutes">0m</strong><small>focused</small></div>
+<div><span>🔥</span><strong id="progressExecutionStreak">0</strong><small>day streak</small></div>
+</div>
+<div class="execution-status" id="executionStatus">Nothing completed yet.</div>
+</section>
+<section class="progress-chart-card surface-soft">
+<div class="progress-section-head"><div><span class="mini-label">LAST 7 DAYS</span><h3>Completion rate</h3></div><strong id="sevenDayAverage">0% avg</strong></div>
+<div aria-label="Seven day completion chart" class="completion-bars" id="completionBars"></div>
+<div class="completion-legend"><span><i class="legend-perfect"></i>100%</span><span><i class="legend-strong"></i>70%+</span><span><i class="legend-partial"></i>Partial</span></div>
+</section>
+<section class="execution-heatmap-card surface-soft">
+<div class="progress-section-head"><div><span class="mini-label">21-DAY EXECUTION</span><h3>Your follow-through map</h3></div><span id="executionBestStreak">Best 0</span></div>
+<div aria-label="21 day execution history" class="execution-heatmap" id="executionHeatmap"></div>
+<div class="heatmap-caption"><span>Tap a day to view it.</span><span>🟢 strong · 🟡 partial · 🔴 missed · ⚪ future/open</span></div>
+</section>
+<section class="history-card surface-soft">
+<div class="progress-section-head"><div><span class="mini-label">RECENT DAYS</span><h3>What you actually did</h3></div></div>
+<div class="execution-history" id="executionHistory"></div>
+</section>
+</div>
+<div class="hub-panel" data-hub-panel="rewards">
+<section class="reward-card">
+<div class="reward-head"><div><span class="mini-label">EXECUTION REWARDS</span><h3><strong id="rewardPoints">0</strong> points</h3></div><span class="reward-spark">✦</span></div>
+<div class="reward-next"><span id="nextRewardIcon">⚡</span><div><strong id="nextRewardTitle">Momentum badge</strong><small id="nextRewardText">Execute 3 consecutive days</small></div></div>
+<div class="reward-progress"><span id="rewardProgress"></span></div>
+<div class="reward-rules"><span>✅ +5 complete</span><span>🐸 +20 must-win</span><span>🎯 +10 focus</span><span>✨ +10 seal</span><span>🌟 +25 perfect day</span></div>
+<div class="badge-row" id="badgeRow"></div>
+</section>
+<section class="challenge-card challenge-lifecycle-card">
+<div class="challenge-copy challenge-title-row">
+<div><span class="mini-label">CURRENT 21-DAY CHALLENGE</span><h3 id="challengeCardTitle">Build the execution habit.</h3></div>
+<span class="challenge-state-pill" id="challengeStatePill">ACTIVE</span>
+</div>
+<div class="challenge-summary-grid">
+<div><strong id="currentChallengeProgress">0/21</strong><small>current attempt</small></div>
+<div><strong id="completedChallengesCount">0</strong><small>completed</small></div>
+<div><strong id="challengeBestStreak">0</strong><small>lifetime best</small></div>
+</div>
+<div aria-label="21 day challenge progress" class="challenge-dots" id="challengeDots"></div>
+<p class="challenge-life-note" id="challengeLifeNote">Your challenge progress is separate from lifetime execution history.</p>
+<div class="challenge-actions">
+<button class="challenge-primary-action" id="challengeActionBtn" type="button">↻ Restart challenge</button>
+<details class="challenge-settings" id="challengeSettings">
+<summary>⋯ Settings</summary>
+<div class="challenge-settings-popover">
+<strong>Challenge controls</strong>
+<p>Restart keeps your tasks, completion history, points, focus sessions and lifetime stats.</p>
+<button id="restartChallengeMenuBtn" type="button">↻ Restart current challenge</button>
+<button class="danger-action" id="resetAllProgressBtn" type="button">⚠ Reset progress history</button>
+</div>
+</details>
+</div>
+</section>
+<section class="lifetime-card surface-soft">
+<div class="progress-section-head"><div><span class="mini-label">LIFETIME</span><h3>What you have built</h3></div><span>Never resets</span></div>
+<div class="lifetime-stats-grid">
+<div><span>✅</span><strong id="lifetimeCompletedTasks">0</strong><small>items completed</small></div>
+<div><span>🔥</span><strong id="lifetimeCurrentStreak">0</strong><small>current streak</small></div>
+<div><span>🏅</span><strong id="lifetimeBestStreak">0</strong><small>best streak</small></div>
+<div><span>🎯</span><strong id="lifetimeFocusTime">0m</strong><small>focus time</small></div>
+</div>
+<div class="challenge-history-wrap">
+<div class="history-label"><span>Challenge history</span><small id="challengeHistorySummary">No completed challenges yet</small></div>
+<div class="challenge-history-list" id="challengeHistoryList"></div>
+</div>
+</section>
+<section class="celebration-card surface-soft">
+<div class="celebration-head"><span class="mini-label">WEEKLY PULSE</span><h3>Momentum chart</h3></div>
+<div class="spark-bars" id="weeklyBars"></div>
+<p class="celebration-quote" id="rewardMotivation">Planning matters. Follow-through earns the reward.</p>
+</section>
+</div>
+</section></section><section class="daily-workbench"><div class="agenda-zone"><section class="agenda-card surface">
+<div class="section-head agenda-head">
+<div>
+<span class="section-kicker">YOUR REAL DAY</span>
+<h2 id="agendaTitle">Tomorrow’s plan</h2>
+<p id="agendaSubtitle">Your private planner stays separate from PPP auto plans.</p>
+</div>
+<div class="date-nav">
+<button aria-label="Previous day" id="prevDayBtn" type="button">‹</button>
+<button id="todayBtn" type="button">Today</button>
+<button id="tomorrowBtn" type="button">Tomorrow</button>
+<button aria-label="Next day" id="nextDayBtn" type="button">›</button>
+</div>
+</div>
+<div aria-label="Plan summary" class="agenda-summary">
+<div class="agenda-stat task-stat"><span>✓</span><div><strong id="agendaTaskCount">0</strong><small>tasks</small></div></div>
+<div class="agenda-stat appointment-stat"><span>▣</span><div><strong id="agendaAppointmentCount">0</strong><small>appointments</small></div></div>
+<div class="agenda-stat time-stat"><span>◷</span><div><strong id="agendaPlannedTime">0m</strong><small>scheduled</small></div></div>
+<div class="agenda-stat done-stat"><span>🏁</span><div><strong id="agendaDoneCount">0/0</strong><small>completed</small></div></div>
+</div>
+<div class="agenda-list" id="agendaList"></div>
+<div class="seal-row">
+<div class="seal-copy"><strong id="sealStatusTitle">Not sealed yet</strong><span id="sealStatusText">Seal a realistic plan to count toward your streak.</span></div>
+<div class="seal-actions"><div class="seal-quality"><small>Plan quality</small><strong id="sealQualityScore">0/100</strong></div><button class="seal-btn" id="sealPlanBtn" type="button">✨ Seal this plan</button></div>
+</div>
+</section></div></section></section>
+<dialog class="quick-add-modal" id="quickAddModal" aria-labelledby="quickAddTitle">
+<section class="compose-card surface" id="composeCard">
+<div class="section-head compact-head modal-head">
+<div>
+<span class="section-kicker">QUICK CAPTURE</span>
+<h2 id="quickAddTitle">Add to the day</h2>
+<p>No scrolling. Capture it here and stay in your plan.</p>
+</div>
+<div class="quick-head-actions"><span class="date-badge" id="formDateBadge">Tomorrow</span><button class="quick-add-toggle modal-close-btn" id="quickAddToggleBtn" type="button" aria-label="Close add item">×</button></div></div>
+<div class="modal-day-switch" role="group" aria-label="Choose day">
+<button id="modalTodayBtn" type="button">Today</button>
+<button id="modalTomorrowBtn" type="button">Tomorrow</button>
+</div>
+<div class="quick-add-body" id="quickAddBody"><div aria-label="Plan item type" class="type-tabs" role="group">
+<button class="active" data-plan-type="task" type="button"><span>✓</span> Task</button>
+<button data-plan-type="appointment" type="button"><span>▣</span> Appointment</button>
+<button data-plan-type="plan" type="button"><span>✦</span> Plan</button>
+<button class="booking-option" id="bookWithPratikBtn" title="Open Book with Pratik" type="button"><span>📅</span> Book with Pratik ↗</button>
+</div><form class="planner-form" id="plannerForm">
+<input id="itemId" type="hidden"/>
+<label class="field field-title"><span>What needs to happen?</span><input id="itemTitle" maxlength="120" placeholder="e.g. Finish project proposal" required=""/></label>
+<label class="field"><span>Date</span><input id="itemDate" required="" type="date"/></label>
+<label class="field timezone-field"><span>Your time zone</span>
+<select id="itemTimeZone" aria-label="Time zone used for entered times">
+<option value="Europe/Berlin">🇩🇪 Germany · 24-hour</option>
+<option value="Asia/Dhaka">🇧🇩 Bangladesh · 12-hour AM/PM</option>
+</select>
+<small class="timezone-detected" id="timezoneDetected">Detecting your time zone…</small>
+</label>
+<div class="time-conversion-grid field-wide" id="timeConversionGrid">
+<label class="field time-primary"><span id="startTimeLabel">Start · Germany (24h)</span><input id="itemStart" type="text" inputmode="numeric" autocomplete="off" placeholder="14:30"/><small class="time-help" id="startTimeHelp">Enter Germany time in 24-hour format.</small></label>
+<label class="field time-mirror"><span id="startMirrorLabel">Bangladesh time</span><input id="startTimeMirror" type="text" readonly tabindex="-1" placeholder="—"/><small>Converted automatically</small></label>
+<label class="field time-primary"><span id="endTimeLabel">End · Germany (24h)</span><input id="itemEnd" type="text" inputmode="numeric" autocomplete="off" placeholder="15:30"/><small class="time-help" id="endTimeHelp">Enter Germany time in 24-hour format.</small></label>
+<label class="field time-mirror"><span id="endMirrorLabel">Bangladesh time</span><input id="endTimeMirror" type="text" readonly tabindex="-1" placeholder="—"/><small>Converted automatically</small></label>
+</div>
+<details class="more-details field-wide" id="moreDetails">
+<summary><span>＋ More options</span><small>Priority, area, first step, notes, must-win</small></summary>
+<div class="details-grid"><label class="field"><span>Priority</span>
+<select id="itemPriority">
+<option value="high">High — big rock</option>
+<option selected="" value="medium">Medium</option>
+<option value="low">Low</option>
+</select>
+</label><label class="field"><span>Life area</span>
+<select id="itemArea">
+<option value="Career">Career</option>
+<option value="Learning">Learning</option>
+<option value="Health">Health</option>
+<option value="Relationships">Relationships</option>
+<option selected="" value="Personal">Personal</option>
+<option value="Admin">Admin</option>
+</select>
+</label>
+<label class="field" id="tinyStepField"><span>Tiny first step</span><input id="itemTinyStep" maxlength="140" placeholder="The smallest useful first move"/></label>
+<label class="field"><span>Notes</span><textarea id="itemNotes" maxlength="500" placeholder="Context, location, preparation…" rows="2"></textarea></label>
+<label class="frog-toggle" id="frogToggle"><input id="itemFrog" type="checkbox"/><span><strong>🐸 Make this the must-win</strong><small>Give one high-value task first claim on your best energy.</small></span></label>
+</div>
+</details>
+<div class="form-actions field-wide">
+<button class="secondary-btn hidden" id="cancelEditBtn" type="button">Cancel</button>
+<button class="primary-btn" id="saveItemBtn" type="submit">＋ Add to plan</button>
+</div>
+</form></div></section>
+</dialog>
+</main>
+<div aria-hidden="true" class="confetti-layer" id="confettiLayer"></div>
+<div aria-live="polite" class="toast" id="toast" role="status"></div>
+</div>
 </body>
 </html>
