@@ -356,34 +356,49 @@
 </main>
 
 <section class="planner-library-view" id="plannerLibraryView" hidden>
-  <div class="pl-library-heading">
-    <div><span class="pl-library-kicker">YOUR READING SPACE</span><h1>📚 My Library</h1><p>Keep your books, record your last page, and continue where you left off.</p></div>
-    <div class="pl-library-head-actions"><button class="pl-library-btn" id="plannerLibraryBackBtn" type="button">← Back to planner</button><button class="pl-library-btn" id="plannerLibraryContinueBtn" type="button">Continue Reading</button><button class="pl-library-btn primary" id="plannerLibraryAddBtn" type="button">＋ Add Book</button></div>
+  <div class="section-head pl-library-heading">
+    <div>
+      <span class="section-kicker">YOUR READING SPACE</span>
+      <h2>📚 My Library</h2>
+      <p>Keep your books, record your last page, and continue where you left off.</p>
+    </div>
+    <div class="pl-library-head-actions">
+      <button class="secondary-btn" id="plannerLibraryBackBtn" type="button">← Back to planner</button>
+      <button class="secondary-btn" id="plannerLibraryContinueBtn" type="button">Continue Reading</button>
+      <button class="primary-btn" id="plannerLibraryAddBtn" type="button">＋ Add Book</button>
+    </div>
   </div>
-  <div class="pl-library-overview">
+  <section class="agenda-card surface pl-library-overview">
     <div class="pl-library-summary" id="plannerLibrarySummary"></div>
     <div class="pl-library-filter" id="plannerLibraryFilter">
       <button class="active" data-pl-library-filter="all" type="button">All books</button><button data-pl-library-filter="german" type="button">🇩🇪 German</button><button data-pl-library-filter="english" type="button">🇬🇧 English</button><button data-pl-library-filter="growth" type="button">🧠 Growth</button><button data-pl-library-filter="technical" type="button">💻 Technical</button><button data-pl-library-filter="other" type="button">Other</button><button data-pl-library-filter="reading" type="button">Currently reading</button>
     </div>
-  </div>
+  </section>
   <div class="pl-library-grid" id="plannerLibraryGrid"></div>
 </section>
-<dialog class="pl-book-editor" id="plBookEditor" aria-labelledby="plBookEditorTitle">
-  <form id="plBookEditorForm">
-    <div class="pl-book-editor-head"><div><span class="pl-library-kicker">YOUR COLLECTION</span><h2 id="plBookEditorTitle">Add Book</h2></div><button type="button" class="pl-library-close" id="plBookEditorClose" aria-label="Close">×</button></div>
-    <input type="hidden" id="plBookEditId">
-    <div class="pl-library-form-grid">
-      <label class="pl-library-field wide"><span>Title *</span><input id="plBookTitle" maxlength="160" required></label>
-      <label class="pl-library-field"><span>Author</span><input id="plBookAuthor" maxlength="120"></label>
-      <label class="pl-library-field"><span>Category</span><select id="plBookCategory"><option value="german">German</option><option value="english">English</option><option value="growth">Personal Growth</option><option value="technical">Technical</option><option value="other">Other</option></select></label>
-      <label class="pl-library-field"><span>Icon</span><input id="plBookIcon" maxlength="12" placeholder="📘"></label>
-      <label class="pl-library-field wide"><span>Book or resource URL</span><input id="plBookUrl" type="url" placeholder="https://…"></label>
-      <label class="pl-library-field wide"><span>Purpose / description</span><textarea id="plBookPurpose" maxlength="600" rows="3"></textarea></label>
-    </div>
-    <div class="pl-book-editor-actions"><button type="button" class="pl-library-btn" id="plBookEditorCancel">Cancel</button><button type="submit" class="pl-library-btn primary">Save Book</button></div>
-  </form>
+<dialog class="quick-add-modal pl-book-editor" id="plBookEditor" aria-labelledby="plBookEditorTitle">
+  <section class="compose-card surface">
+    <form id="plBookEditorForm">
+      <div class="modal-head pl-book-editor-head">
+        <div><span class="section-kicker">YOUR COLLECTION</span><h2 id="plBookEditorTitle">Add Book</h2></div>
+        <button type="button" class="quick-add-toggle pl-library-close" id="plBookEditorClose" aria-label="Close">×</button>
+      </div>
+      <input type="hidden" id="plBookEditId">
+      <div class="pl-library-form-grid">
+        <label class="field field-wide"><span>Title *</span><input id="plBookTitle" maxlength="160" required></label>
+        <label class="field"><span>Author</span><input id="plBookAuthor" maxlength="120"></label>
+        <label class="field"><span>Category</span><select id="plBookCategory"><option value="german">German</option><option value="english">English</option><option value="growth">Personal Growth</option><option value="technical">Technical</option><option value="other">Other</option></select></label>
+        <label class="field"><span>Icon</span><input id="plBookIcon" maxlength="12" placeholder="📘"></label>
+        <label class="field field-wide"><span>Book or resource URL</span><input id="plBookUrl" type="url" placeholder="https://…"></label>
+        <label class="field field-wide"><span>Purpose / description</span><textarea id="plBookPurpose" maxlength="600" rows="3"></textarea></label>
+      </div>
+      <div class="form-actions pl-book-editor-actions">
+        <button type="button" class="secondary-btn" id="plBookEditorCancel">Cancel</button>
+        <button type="submit" class="primary-btn">Save Book</button>
+      </div>
+    </form>
+  </section>
 </dialog>
-
 <div aria-hidden="true" class="confetti-layer" id="confettiLayer"></div>
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 </div>
