@@ -193,15 +193,18 @@
       else if (button.dataset.plBookDelete) deleteBook(button.dataset.plBookDelete);
       else if (button.hasAttribute("data-pl-library-add-empty")) openEditor();
     });
-    $("plannerLibraryGrid").addEventListener("change", event => {
+    $("plannerLibraryGrid").addEventListener("input", event => {
       const input = event.target;
       if (!input.dataset.plBookPage) return;
       const progress = library.progress[input.dataset.plBookPage];
+      if (!progress) return;
       progress.lastPage = Math.max(0, Math.min(100000, Math.round(Number(input.value) || 0)));
       if (progress.lastPage > 0 && progress.status === "Not started") progress.status = "Reading";
       progress.lastOpened = new Date().toISOString();
       persistLibrary();
-      render();
+      const pageTotal = library.books.reduce((sum, book) => sum + (Number(library.progress[book.id]?.lastPage) || 0), 0);
+      const pageStat = $("plannerLibrarySummary")?.querySelector(".pl-library-stat:last-child strong");
+      if (pageStat) pageStat.textContent = pageTotal;
     });
     window.addEventListener("storage", event => {
       if (event.key === APP_KEY) { readLibrary(); if (!$("plannerLibraryView").hidden) render(); }
