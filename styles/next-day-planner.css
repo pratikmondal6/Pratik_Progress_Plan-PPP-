@@ -1285,3 +1285,56 @@ button:active{transform:translateY(1px) scale(.99)}
   .today-chip{display:none!important}
   .back-btn{min-height:34px!important;padding:6px 9px!important;font-size:.64rem!important}
 }
+
+
+/* My Library — integrated view for Plan Next Day */
+.planner-library-open,.pl-library-btn{appearance:none;border:1px solid var(--line);border-radius:11px;padding:9px 12px;background:rgba(17,24,51,.82);color:var(--text);font-size:.72rem;font-weight:850;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+.planner-library-open:hover,.pl-library-btn:hover{transform:translateY(-1px);border-color:rgba(53,221,211,.45)}
+.planner-library-open[aria-pressed="true"]{background:linear-gradient(135deg,rgba(53,221,211,.18),rgba(139,92,246,.2));border-color:rgba(53,221,211,.4)}
+#plannerMainContent[hidden],#plannerLibraryView[hidden]{display:none!important}
+.planner-library-view{padding:24px 0 42px;min-height:65vh}
+.pl-library-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin:12px 0 20px}
+.pl-library-heading h1{margin:7px 0 5px;font-size:clamp(1.7rem,4vw,2.5rem);letter-spacing:-.045em}
+.pl-library-heading p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.6}
+.pl-library-kicker{font-size:.63rem;font-weight:950;letter-spacing:.14em;color:var(--cyan)}
+.pl-library-head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.pl-library-btn.primary{background:linear-gradient(135deg,var(--blue),var(--violet));border-color:transparent;color:#fff}
+.pl-library-btn.danger{color:#ff9ba5;border-color:rgba(255,107,122,.28);background:rgba(255,107,122,.09)}
+.pl-library-overview{padding:17px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(135deg,rgba(79,140,255,.13),rgba(139,92,246,.13),rgba(53,221,211,.07));}
+.pl-library-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pl-library-stat{padding:13px;border:1px solid var(--line);border-radius:13px;background:rgba(5,10,25,.28)}
+.pl-library-stat strong{display:block;font-size:1.25rem}
+.pl-library-stat span{display:block;margin-top:4px;color:var(--muted);font-size:.7rem}
+.pl-library-filter{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}
+.pl-library-filter button{border:1px solid var(--line);border-radius:999px;padding:8px 12px;background:rgba(8,13,32,.55);color:var(--muted);font-size:.73rem;font-weight:850;cursor:pointer}
+.pl-library-filter button.active{background:linear-gradient(135deg,var(--blue),var(--violet));border-color:transparent;color:#fff}
+.pl-library-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:14px}
+.pl-book-card{display:flex;flex-direction:column;gap:11px;min-width:0;padding:16px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(21,30,63,.94),rgba(12,20,48,.94));box-shadow:0 14px 35px rgba(0,0,0,.16)}
+.pl-book-top{display:flex;align-items:flex-start;gap:12px}
+.pl-book-icon{width:46px;height:46px;display:grid;place-items:center;flex:0 0 auto;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.045);font-size:1.4rem}
+.pl-book-meta{min-width:0}
+.pl-book-meta h3{margin:1px 0 0;font-size:.96rem;line-height:1.4;overflow-wrap:anywhere}
+.pl-book-author{margin-top:4px;color:var(--muted);font-size:.73rem}
+.pl-book-category{display:inline-flex;margin-top:7px;padding:4px 8px;border-radius:999px;background:rgba(79,140,255,.13);color:#a9c6ff;font-size:.65rem;font-weight:900}
+.pl-book-purpose{margin:0;color:var(--muted);font-size:.75rem;line-height:1.55}
+.pl-book-page{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:2px;color:var(--muted);font-size:.72rem;font-weight:850}
+.pl-book-page input{width:105px;min-width:0;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:rgba(5,10,25,.65);color:var(--text);text-align:center}
+.pl-book-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}
+.pl-book-actions .pl-library-btn{padding:7px 10px;font-size:.69rem}
+.pl-library-empty{grid-column:1/-1;padding:48px 18px;text-align:center;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}
+.pl-library-empty>div{font-size:2.4rem}.pl-library-empty strong{display:block;margin-top:8px;color:var(--text)}.pl-library-empty p{font-size:.8rem}
+.pl-book-editor{width:min(680px,calc(100% - 28px));max-width:680px;max-height:min(90vh,850px);padding:0;border:1px solid rgba(255,255,255,.14);border-radius:20px;background:#111833;color:var(--text);box-shadow:0 28px 90px rgba(0,0,0,.58)}
+.pl-book-editor::backdrop{background:rgba(2,5,16,.76);backdrop-filter:blur(5px)}
+.pl-book-editor form{padding:22px}
+.pl-book-editor-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pl-book-editor-head h2{margin:5px 0 0;font-size:1.35rem}
+.pl-library-close{width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.05);color:var(--text);font-size:1.3rem;cursor:pointer}
+.pl-library-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:19px}
+.pl-library-field{display:grid;gap:6px;min-width:0}
+.pl-library-field.wide{grid-column:1/-1}
+.pl-library-field span{color:var(--muted);font-size:.73rem;font-weight:850}
+.pl-library-field input,.pl-library-field select,.pl-library-field textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#0c1430;color:var(--text);outline:none}
+.pl-library-field textarea{resize:vertical;min-height:90px}
+.pl-book-editor-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+@media(max-width:1050px){.pl-library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.planner-topbar{flex-wrap:wrap;padding:10px 0}.topbar-actions{flex-wrap:wrap;justify-content:flex-end}.planner-library-open{order:0}.pl-library-heading{align-items:stretch;flex-direction:column}.pl-library-head-actions .pl-library-btn{flex:1}.pl-library-grid{grid-template-columns:1fr}.pl-library-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.pl-library-form-grid{grid-template-columns:1fr}.pl-library-field.wide{grid-column:auto}.planner-library-view{padding-top:15px}}
