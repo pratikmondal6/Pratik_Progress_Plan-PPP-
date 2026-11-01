@@ -103,3 +103,15 @@ function badge(text){
 
 state=loadState();
 timer=loadFocusTimer();
+
+// Keep My Library in sync when it is edited from the Plan Next Day page.
+window.addEventListener("storage",event=>{
+  if(event.key!==APP_KEY||!event.newValue)return;
+  try{
+    const latest=JSON.parse(event.newValue);
+    if(latest&&latest.library&&typeof latest.library==="object"){
+      state.library=latest.library;
+      if(document.getElementById("library")?.classList.contains("active"))renderLibrary();
+    }
+  }catch(e){}
+});
